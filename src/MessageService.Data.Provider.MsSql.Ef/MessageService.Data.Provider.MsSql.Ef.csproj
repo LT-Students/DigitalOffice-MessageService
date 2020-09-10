@@ -17,8 +17,4 @@
     <ProjectReference Include="..\MessageService.Data.Provider\MessageService.Data.Provider.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

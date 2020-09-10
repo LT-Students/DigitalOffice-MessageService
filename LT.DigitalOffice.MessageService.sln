@@ -3,27 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService", "LT.DigitalOffice.MessageService\MessageService.csproj", "{5CFE5F7B-0789-44CD-8006-9848D36CB5AF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FE67FD7C-7E83-49B0-84A2-4C3408858457}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{05FCAF3C-1524-4494-B71F-8E021A6788C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Models.Db", "src\MessageService.Models.Db\MessageService.Models.Db.csproj", "{02BB80CD-ADD6-4F7F-9F60-6E1B836DB91E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Models.Db", "src\MessageService.Models.Db\MessageService.Models.Db.csproj", "{02BB80CD-ADD6-4F7F-9F60-6E1B836DB91E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Models.Dto", "src\MessageService.Models.Dto\MessageService.Models.Dto.csproj", "{A847977B-2209-4B5C-83CF-8C81A508CA85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Models.Dto", "src\MessageService.Models.Dto\MessageService.Models.Dto.csproj", "{A847977B-2209-4B5C-83CF-8C81A508CA85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Data", "src\MessageService.Data\MessageService.Data.csproj", "{A1811DD8-F802-4C45-877B-317A228ACC2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Data", "src\MessageService.Data\MessageService.Data.csproj", "{A1811DD8-F802-4C45-877B-317A228ACC2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Data.Provider", "src\MessageService.Data.Provider\MessageService.Data.Provider.csproj", "{AB49FD31-0D41-4FFC-A0C7-32BBB66252C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Data.Provider", "src\MessageService.Data.Provider\MessageService.Data.Provider.csproj", "{AB49FD31-0D41-4FFC-A0C7-32BBB66252C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Data.Provider.MsSql.Ef", "src\MessageService.Data.Provider.MsSql.Ef\MessageService.Data.Provider.MsSql.Ef.csproj", "{16840991-D8D4-43FB-ABB1-5A3079EF561C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Data.Provider.MsSql.Ef", "src\MessageService.Data.Provider.MsSql.Ef\MessageService.Data.Provider.MsSql.Ef.csproj", "{16840991-D8D4-43FB-ABB1-5A3079EF561C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Mappers", "src\MessageService.Mappers\MessageService.Mappers.csproj", "{D551ACEC-458F-4C90-9033-06DEB5F6B463}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Mappers", "src\MessageService.Mappers\MessageService.Mappers.csproj", "{D551ACEC-458F-4C90-9033-06DEB5F6B463}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Business", "src\MessageService.Business\MessageService.Business.csproj", "{03F63DEB-1EE5-4320-AFA8-1F88A8C7107B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Business", "src\MessageService.Business\MessageService.Business.csproj", "{03F63DEB-1EE5-4320-AFA8-1F88A8C7107B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Broker", "src\MessageService.Broker\MessageService.Broker.csproj", "{9B9E025F-1161-4FBA-B907-EBB78EB4E318}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Broker", "src\MessageService.Broker\MessageService.Broker.csproj", "{9B9E025F-1161-4FBA-B907-EBB78EB4E318}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService", "src\MessageService\MessageService.csproj", "{79277E6B-EF64-48A4-9E8C-0567983FDB58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +31,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5CFE5F7B-0789-44CD-8006-9848D36CB5AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5CFE5F7B-0789-44CD-8006-9848D36CB5AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5CFE5F7B-0789-44CD-8006-9848D36CB5AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5CFE5F7B-0789-44CD-8006-9848D36CB5AF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02BB80CD-ADD6-4F7F-9F60-6E1B836DB91E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{02BB80CD-ADD6-4F7F-9F60-6E1B836DB91E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02BB80CD-ADD6-4F7F-9F60-6E1B836DB91E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,12 +63,15 @@ Global
 		{9B9E025F-1161-4FBA-B907-EBB78EB4E318}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B9E025F-1161-4FBA-B907-EBB78EB4E318}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B9E025F-1161-4FBA-B907-EBB78EB4E318}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79277E6B-EF64-48A4-9E8C-0567983FDB58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79277E6B-EF64-48A4-9E8C-0567983FDB58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79277E6B-EF64-48A4-9E8C-0567983FDB58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79277E6B-EF64-48A4-9E8C-0567983FDB58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{5CFE5F7B-0789-44CD-8006-9848D36CB5AF} = {FE67FD7C-7E83-49B0-84A2-4C3408858457}
 		{02BB80CD-ADD6-4F7F-9F60-6E1B836DB91E} = {FE67FD7C-7E83-49B0-84A2-4C3408858457}
 		{A847977B-2209-4B5C-83CF-8C81A508CA85} = {FE67FD7C-7E83-49B0-84A2-4C3408858457}
 		{A1811DD8-F802-4C45-877B-317A228ACC2E} = {FE67FD7C-7E83-49B0-84A2-4C3408858457}
@@ -81,6 +80,7 @@ Global
 		{D551ACEC-458F-4C90-9033-06DEB5F6B463} = {FE67FD7C-7E83-49B0-84A2-4C3408858457}
 		{03F63DEB-1EE5-4320-AFA8-1F88A8C7107B} = {FE67FD7C-7E83-49B0-84A2-4C3408858457}
 		{9B9E025F-1161-4FBA-B907-EBB78EB4E318} = {FE67FD7C-7E83-49B0-84A2-4C3408858457}
+		{79277E6B-EF64-48A4-9E8C-0567983FDB58} = {FE67FD7C-7E83-49B0-84A2-4C3408858457}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {04444C6B-F340-4D33-8C99-270ACD057A32}
