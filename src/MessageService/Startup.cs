@@ -1,9 +1,11 @@
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Data;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -35,9 +37,38 @@ namespace LT.DigitalOffice.MessageService
             services.AddControllers();
 
             ConfigureRepositories(services);
+            ConfigureMassTransit(services);
         }
 
-        private void ConfigureRepositories(IServiceCollection services)
+        private void ConfigureMassTransit(IServiceCollection services)
+        {
+            const string serviceSection = "RabbitMQ";
+            string serviceName = Configuration.GetSection(serviceSection)["Username"];
+            string servicePassword = Configuration.GetSection(serviceSection)["Password"];
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<SendEmailConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", host =>
+                    {
+                        host.Username($"{serviceName}_{servicePassword}");
+                        host.Password(servicePassword);
+                    });
+
+                    cfg.ReceiveEndpoint(serviceName, ep =>
+                    {
+                        ep.ConfigureConsumer<SendEmailConsumer>(context);
+                    });
+                });
+            });
+
+            services.AddMassTransitHostedService();
+        }
+
+            private void ConfigureRepositories(IServiceCollection services)
         {
             services.AddTransient<IDataProvider, MessageServiceDbContext>();
 
