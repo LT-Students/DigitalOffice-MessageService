@@ -1,4 +1,6 @@
-﻿namespace LT.DigitalOffice.MessageService.Data.Interfaces
+﻿using LT.DigitalOffice.MessageService.Models.Db;
+
+namespace LT.DigitalOffice.MessageService.Data.Interfaces
 {
     /// <summary>
     /// Represents interface of repository in repository pattern.
@@ -6,5 +8,10 @@
     /// </summary>
     public interface IMessageRepository
     {
+        /// <summary>
+        /// Adds a new message to the database.
+        /// </summary>
+        /// <param name="message">Message to save.</param>
+        void SaveMessage(DbMessage message);
     }
 }
