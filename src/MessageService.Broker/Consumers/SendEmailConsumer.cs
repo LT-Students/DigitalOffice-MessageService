@@ -1,4 +1,5 @@
 ﻿using LT.DigitalOffice.Broker.Requests;
+using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -24,10 +25,12 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
         public async Task Consume(ConsumeContext<ISendEmailRequest> context)
         {
-            await SendEmail(context.Message);
+            var response = OperationResultWrapper.CreateResponse(SendEmail, context.Message);
+
+            await context.RespondAsync<IOperationResult<bool>>(response);
         }
 
-        private async Task SendEmail(ISendEmailRequest request)
+        private bool SendEmail(ISendEmailRequest request)
         {
             MailAddress from = new MailAddress(request.SenderEmail);
             MailAddress to = new MailAddress(request.RecipientEmail);
@@ -42,15 +45,16 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
                 Credentials = new NetworkCredential("er0289741@gmail.com", "er0289741123456"),
                 EnableSsl = true
             };
-            await smtp.SendMailAsync(m);
+            smtp.Send(m);
 
             var message = new Message
             {
                 Title = request.Title,
                 Content = request.Content
             };
-
             repository.SaveMessage(mapper.Map(message));
+
+            return true;
         }
     }
 }
