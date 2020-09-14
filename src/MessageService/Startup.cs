@@ -1,3 +1,4 @@
+using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
@@ -16,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace LT.DigitalOffice.MessageService
 {
@@ -68,6 +70,8 @@ namespace LT.DigitalOffice.MessageService
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
                 });
+
+                x.AddRequestClient<IGetUserIdByEmailRequest>(new Uri("rabbitmq://localhost/UserService"));
             });
 
             services.AddMassTransitHostedService();

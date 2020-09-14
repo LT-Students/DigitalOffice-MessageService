@@ -24,6 +24,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         private Mock<IMessageRepository> repository;
         private Mock<IMapper<Message, DbMessage>> mapper;
         private IRequestClient<ISendEmailRequest> requestClient;
+        private Mock<IRequestClient<IGetUserIdByEmailRequest>> client;
 
         private string Title;
         private string Content;
@@ -35,14 +36,15 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         {
             repository = new Mock<IMessageRepository>();
             mapper = new Mock<IMapper<Message, DbMessage>>();
+            client = new Mock<IRequestClient<IGetUserIdByEmailRequest>>();
 
             harness = new InMemoryTestHarness();
             consumerTestHarness = harness.Consumer(() =>
-                new SendEmailConsumer(repository.Object, mapper.Object));
+                new SendEmailConsumer(repository.Object, client.Object, mapper.Object));
 
             Title = "Title";
             Content = "Content";
-            SenderEmail = "er0289741 @gmail.com";
+            SenderEmail = "er0289741@gmail.com";
             RecipientEmail = "lalagvanan@gmail.com";
         }
 

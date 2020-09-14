@@ -19,7 +19,8 @@ namespace LT.DigitalOffice.MessageService.Mappers
                 Id = Guid.NewGuid(),
                 Title = message.Title,
                 Content = message.Content,
-                Status = 0
+                Status = 0,
+                SenderUserId = message.SenderUserId
             };
         }
     }
