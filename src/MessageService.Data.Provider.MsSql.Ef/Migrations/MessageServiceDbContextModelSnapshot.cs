@@ -29,6 +29,10 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Receiver")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("SenderId")
                         .HasColumnType("uniqueidentifier");
 
@@ -41,19 +45,6 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Emails");
-                });
-
-            modelBuilder.Entity("LT.DigitalOffice.MessageService.Models.Db.DbEmailReciever", b =>
-                {
-                    b.Property<Guid>("EmailId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("RecieverEmail")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("EmailId", "RecieverEmail");
-
-                    b.ToTable("DbEmailReciever");
                 });
 
             modelBuilder.Entity("LT.DigitalOffice.MessageService.Models.Db.DbMessage", b =>
@@ -104,15 +95,6 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
                     b.HasKey("MessageId", "RecipientUserId");
 
                     b.ToTable("DbMessageRecipientUser");
-                });
-
-            modelBuilder.Entity("LT.DigitalOffice.MessageService.Models.Db.DbEmailReciever", b =>
-                {
-                    b.HasOne("LT.DigitalOffice.MessageService.Models.Db.DbEmail", "Email")
-                        .WithMany("Receivers")
-                        .HasForeignKey("EmailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("LT.DigitalOffice.MessageService.Models.Db.DbMessageFile", b =>
