@@ -4,14 +4,16 @@ using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
 {
     [DbContext(typeof(MessageServiceDbContext))]
-    partial class MessageServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200916113747_AddEmailTable")]
+    partial class AddEmailTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

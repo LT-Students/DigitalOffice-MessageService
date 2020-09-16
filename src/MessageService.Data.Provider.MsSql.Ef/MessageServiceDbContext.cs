@@ -15,6 +15,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef
         }
 
         public DbSet<DbMessage> Messages { get; set; }
+        public DbSet<DbEmail> Emails { get; set; }
 
         void IDataProvider.Save()
         {
