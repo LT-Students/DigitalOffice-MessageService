@@ -15,9 +15,9 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
     public class SendEmailConsumer : IConsumer<ISendEmailRequest>
     {
         private readonly IMessageRepository repository;
-        private readonly IMapper<Message, DbMessage> mapper;
+        private readonly IMapper<Email, DbEmail> mapper;
 
-        public SendEmailConsumer([FromServices] IMessageRepository repository, IMapper<Message, DbMessage> mapper)
+        public SendEmailConsumer([FromServices] IMessageRepository repository, IMapper<Email, DbEmail> mapper)
         {
             this.repository = repository;
             this.mapper = mapper;
@@ -33,11 +33,11 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
         private bool SendEmail(ISendEmailRequest request)
         {
             MailAddress from = new MailAddress(request.SenderEmail);
-            MailAddress to = new MailAddress(request.RecipientEmail);
+            MailAddress to = new MailAddress(request.Receiver);
             var m = new MailMessage(from, to)
             {
-                Subject = request.Title,
-                Body = request.Content
+                Subject = request.Subject,
+                Body = request.Body
             };
 
             SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
@@ -47,12 +47,9 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
             };
             smtp.Send(m);
 
-            var message = new Message
-            {
-                Title = request.Title,
-                Content = request.Content
-            };
-            repository.SaveMessage(mapper.Map(message));
+            Email email = (Email)request;
+
+            repository.SaveMessage(mapper.Map(email));
 
             return true;
         }

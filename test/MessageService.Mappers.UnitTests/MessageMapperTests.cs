@@ -9,19 +9,19 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 {
     public class MessageMapperTests
     {
-        private IMapper<Message, DbMessage> mapper;
+        private IMapper<Email, DbMessage> mapper;
 
         [SetUp]
         public void SetUp()
         {
-            mapper = new MessageMapper();
+            mapper = new EmailMapper();
         }
 
         #region MessageToDbMessage
         [Test]
         public void ShouldReturnDbMessageCorrectly()
         {
-            var message = new Message
+            var message = new Email
             {
                 Title = "Title",
                 Content = "Content"

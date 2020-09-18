@@ -12,6 +12,6 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
         /// Adds a new message to the database.
         /// </summary>
         /// <param name="message">Message to save.</param>
-        void SaveMessage(DbMessage message);
+        void SaveEmail(DbEmail email);
     }
 }

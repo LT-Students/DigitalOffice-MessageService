@@ -13,9 +13,9 @@ namespace LT.DigitalOffice.MessageService.Data
             this.provider = provider;
         }
 
-        public void SaveMessage(DbMessage message)
+        public void SaveEmail(DbEmail email)
         {
-            provider.Messages.Add(message);
+            provider.Emails.Add(email);
             provider.Save();
         }
     }

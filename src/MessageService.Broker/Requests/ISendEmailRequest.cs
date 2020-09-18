@@ -5,9 +5,9 @@
     /// </summary>
     public interface ISendEmailRequest
     {
-        string Title { get; }
-        string Content { get; }
         string SenderEmail { get; }
-        string RecipientEmail { get; }
+        string Receiver { get; }
+        string Subject { get; }
+        string Body { get; }
     }
 }

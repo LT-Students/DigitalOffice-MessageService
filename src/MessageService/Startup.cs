@@ -75,7 +75,7 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMappers(IServiceCollection services)
         {
-            services.AddTransient<IMapper<Message, DbMessage>, MessageMapper>();
+            services.AddTransient<IMapper<Email, DbEmail>, EmailMapper>();
         }
 
         private void ConfigureRepositories(IServiceCollection services)
