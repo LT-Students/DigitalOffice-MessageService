@@ -49,7 +49,14 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
             smtp.Send(m);
 
-            Email email = (Email)request;
+            Email email = new Email
+            {
+                SenderEmail = request.SenderEmail,
+                Receiver = request.Receiver,
+                Subject = request.Subject,
+                Body = request.Body
+            };
+
             repository.SaveEmail(mapper.Map(email));
 
             return true;

@@ -32,6 +32,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             emailToSave = new DbEmail
             {
                 Id = Guid.NewGuid(),
+                SenderId = Guid.NewGuid(),
                 Receiver = "lalagvanan@gmail.com",
                 Subject = "Subject",
                 Body = "Body"
@@ -53,7 +54,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         {
             repository.SaveEmail(emailToSave);
 
-            Assert.That(provider.Messages.Find(emailToSave.Id), Is.EqualTo(emailToSave));
+            Assert.That(provider.Emails.Find(emailToSave.Id), Is.EqualTo(emailToSave));
         }
         #endregion
     }
