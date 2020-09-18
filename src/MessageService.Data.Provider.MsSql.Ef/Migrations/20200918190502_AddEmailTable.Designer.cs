@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
 {
     [DbContext(typeof(MessageServiceDbContext))]
-    [Migration("20200916185335_AddEmailTable")]
+    [Migration("20200918190502_AddEmailTable")]
     partial class AddEmailTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Subject")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Time")

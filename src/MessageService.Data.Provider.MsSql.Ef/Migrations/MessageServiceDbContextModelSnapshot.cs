@@ -37,6 +37,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Subject")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Time")

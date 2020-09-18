@@ -15,7 +15,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
                     SenderId = table.Column<Guid>(nullable: true),
                     Receiver = table.Column<string>(nullable: false),
                     Time = table.Column<DateTime>(nullable: false),
-                    Subject = table.Column<string>(nullable: true),
+                    Subject = table.Column<string>(nullable: false),
                     Body = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
