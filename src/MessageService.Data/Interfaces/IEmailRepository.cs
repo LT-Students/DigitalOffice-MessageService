@@ -6,7 +6,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     /// Represents interface of repository in repository pattern.
     /// Provides methods for working with the database of MessageService.
     /// </summary>
-    public interface IMessageRepository
+    public interface IEmailRepository
     {
         /// <summary>
         /// Adds a new message to the database.

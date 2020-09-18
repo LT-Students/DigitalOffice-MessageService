@@ -21,29 +21,29 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         private ConsumerTestHarness<SendEmailConsumer> consumerTestHarness;
 
         private InMemoryTestHarness harness;
-        private Mock<IMessageRepository> repository;
-        private Mock<IMapper<Email, DbMessage>> mapper;
+        private Mock<IEmailRepository> repository;
+        private Mock<IMapper<Email, DbEmail>> mapper;
         private IRequestClient<ISendEmailRequest> requestClient;
 
-        private string Title;
-        private string Content;
+        private string Subject;
+        private string Body;
         private string SenderEmail;
-        private string RecipientEmail;
+        private string Receiver;
 
         [SetUp]
         public void SetUp()
         {
-            repository = new Mock<IMessageRepository>();
-            mapper = new Mock<IMapper<Email, DbMessage>>();
+            repository = new Mock<IEmailRepository>();
+            mapper = new Mock<IMapper<Email, DbEmail>>();
 
             harness = new InMemoryTestHarness();
             consumerTestHarness = harness.Consumer(() =>
                 new SendEmailConsumer(repository.Object, mapper.Object));
 
-            Title = "Title";
-            Content = "Content";
+            Subject = "Title";
+            Body = "Content";
             SenderEmail = "er0289741 @gmail.com";
-            RecipientEmail = "lalagvanan@gmail.com";
+            Receiver = "lalagvanan@gmail.com";
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             await harness.Start();
 
             repository
-                .Setup(x => x.SaveMessage(It.IsAny<DbMessage>()));
+                .Setup(x => x.SaveEmail(It.IsAny<DbEmail>()));
 
             try
             {
@@ -60,10 +60,10 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
 
                 var response = await requestClient.GetResponse<IOperationResult<bool>>(new
                 {
-                    Title,
-                    Content,
                     SenderEmail,
-                    RecipientEmail
+                    Receiver,
+                    Subject,
+                    Body
                 });
 
                 var expected = new
@@ -98,10 +98,10 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
 
                 var response = await requestClient.GetResponse<IOperationResult<bool>>(new
                 {
-                    Title,
-                    Content,
                     SenderEmail,
-                    RecipientEmail
+                    Receiver,
+                    Subject,
+                    Body
                 });
 
                 var expected = new

@@ -82,7 +82,7 @@ namespace LT.DigitalOffice.MessageService
         {
             services.AddTransient<IDataProvider, MessageServiceDbContext>();
 
-            services.AddTransient<IMessageRepository, MessageRepository>();
+            services.AddTransient<IEmailRepository, EmailRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

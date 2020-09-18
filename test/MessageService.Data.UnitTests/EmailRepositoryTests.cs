@@ -8,12 +8,12 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Data.UnitTests
 {
-    public class MessageRepositoryTests
+    public class EmailRepositoryTests
     {
         private IDataProvider provider;
-        private IMessageRepository repository;
+        private IEmailRepository repository;
 
-        private DbMessage messageToSave;
+        private DbEmail emailToSave;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -23,18 +23,18 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 .Options;
             provider = new MessageServiceDbContext(dbOptions);
 
-            repository = new MessageRepository(provider);
+            repository = new EmailRepository(provider);
         }
 
         [SetUp]
         public void SetUp()
         {
-            messageToSave = new DbMessage
+            emailToSave = new DbEmail
             {
                 Id = Guid.NewGuid(),
-                Title = "Title",
-                Content = "Content",
-                Status = 0
+                Receiver = "lalagvanan@gmail.com",
+                Subject = "Subject",
+                Body = "Body"
             };
         }
 
@@ -49,11 +49,11 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 
         #region SaveMessage
         [Test]
-        public void ShouldSaveMessageCorrectly()
+        public void ShouldSaveEmailCorrectly()
         {
-            repository.SaveMessage(messageToSave);
+            repository.SaveEmail(emailToSave);
 
-            Assert.That(provider.Messages.Find(messageToSave.Id), Is.EqualTo(messageToSave));
+            Assert.That(provider.Messages.Find(emailToSave.Id), Is.EqualTo(emailToSave));
         }
         #endregion
     }

@@ -7,9 +7,9 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 {
-    public class MessageMapperTests
+    public class EmailMapperTests
     {
-        private IMapper<Email, DbMessage> mapper;
+        private IMapper<Email, DbEmail> mapper;
 
         [SetUp]
         public void SetUp()
@@ -17,31 +17,33 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
             mapper = new EmailMapper();
         }
 
-        #region MessageToDbMessage
+        #region EmailToDbEmail
         [Test]
-        public void ShouldReturnDbMessageCorrectly()
+        public void ShouldReturnDbEmailCorrectly()
         {
-            var message = new Email
+            var email = new Email
             {
-                Title = "Title",
-                Content = "Content"
+                Receiver = "lalagvanan@gmail.com",
+                Subject = "Subject",
+                Body = "Body"
             };
 
-            var result = mapper.Map(message);
+            var result = mapper.Map(email);
 
-            var dbMessage = new DbMessage
+            var dbEmail = new DbEmail
             {
                 Id = result.Id,
-                Title = "Title",
-                Content = "Content",
-                Status = 0
+                Receiver = email.Receiver,
+                Time = result.Time,
+                Subject = email.Subject,
+                Body = email.Body
             };
 
-            SerializerAssert.AreEqual(dbMessage, result);
+            SerializerAssert.AreEqual(dbEmail, result);
         }
 
         [Test]
-        public void ShouldThrowExceptionIfMessageIsNull()
+        public void ShouldThrowExceptionIfEmailIsNull()
         {
             Assert.Throws<ArgumentNullException>(() => mapper.Map(null));
         }

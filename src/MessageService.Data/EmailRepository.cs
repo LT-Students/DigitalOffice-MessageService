@@ -4,11 +4,11 @@ using LT.DigitalOffice.MessageService.Models.Db;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
-    public class MessageRepository : IMessageRepository
+    public class EmailRepository : IEmailRepository
     {
         private readonly IDataProvider provider;
 
-        public MessageRepository(IDataProvider provider)
+        public EmailRepository(IDataProvider provider)
         {
             this.provider = provider;
         }
