@@ -49,6 +49,13 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
             smtp.Send(m);
 
+            SaveEmail(request);
+
+            return true;
+        }
+
+        private void SaveEmail(ISendEmailRequest request)
+        {
             Email email = new Email
             {
                 SenderEmail = request.SenderEmail,
@@ -58,8 +65,6 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
             };
 
             repository.SaveEmail(mapper.Map(email));
-
-            return true;
         }
     }
 }
