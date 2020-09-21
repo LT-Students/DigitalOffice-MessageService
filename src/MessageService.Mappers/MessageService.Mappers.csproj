@@ -1,9 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>LT.DigitalOffice.MessageService.Mappers</AssemblyName>
     <RootNamespace>LT.DigitalOffice.MessageService.Mappers</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MessageService.Models.Db\MessageService.Models.Db.csproj" />
+    <ProjectReference Include="..\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />
+  </ItemGroup>
 
 </Project>
