@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200920213932_AddEmailTemplates.cs" />
-    <Compile Remove="Migrations\20200920213932_AddEmailTemplates.Designer.cs" />
+    <Compile Remove="Migrations\20200920213932_RemoveEmailTemplates.cs" />
+    <Compile Remove="Migrations\20200920213932_RemoveEmailTemplates.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

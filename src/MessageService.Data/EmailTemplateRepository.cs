@@ -14,12 +14,19 @@ namespace LT.DigitalOffice.MessageService.Data
             this.provider = provider;
         }
 
-        public Guid AddEmailTemplate(DbEmailTemplate emailTemplate)
+        public void RemoveEmailTemplate(Guid emailTemplateId)
         {
-            provider.EmailTemplates.Add(emailTemplate);
-            provider.Save();
+            var dbEmailTemplate = provider.EmailTemplates.Find(emailTemplateId);
 
-            return emailTemplate.Id;
+            if (dbEmailTemplate == null)
+            {
+                throw new Exception("Email template with this Id does not exist.");
+            }
+
+            dbEmailTemplate.IsActive = false;
+
+            provider.EmailTemplates.Update(dbEmailTemplate);
+            provider.Save();
         }
     }
 }

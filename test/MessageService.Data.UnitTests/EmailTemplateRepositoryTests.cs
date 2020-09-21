@@ -5,6 +5,7 @@ using LT.DigitalOffice.MessageService.Models.Db;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Data.UnitTests
 {
@@ -14,6 +15,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         private IEmailTemplateRepository repository;
 
         private DbEmailTemplate dbEmailTemplate;
+        private Guid emailTemplateId;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -29,15 +31,19 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [SetUp]
         public void SetUp()
         {
+            emailTemplateId = Guid.NewGuid();
             dbEmailTemplate = new DbEmailTemplate
             {
-                Id = Guid.NewGuid(),
+                Id = emailTemplateId,
                 Subject = "Subject",
                 Body = "Body",
                 AuthorId = Guid.NewGuid(),
                 IsActive = true,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow
             };
+
+            provider.EmailTemplates.Add(dbEmailTemplate);
+            provider.Save();
         }
 
         [TearDown]
@@ -49,12 +55,30 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             }
         }
 
+        #region RemoveEmailTemplate
         [Test]
-        public void ShouldAddEmailTemplateCorrectly()
+        public void ShouldThrowExceptionIfEmailTemplateDoesNotExist()
         {
-            Assert.AreEqual(dbEmailTemplate.Id, repository.AddEmailTemplate(dbEmailTemplate));
-            Assert.AreEqual(dbEmailTemplate, provider.EmailTemplates.Find(dbEmailTemplate.Id));
+            Assert.Throws<Exception>(() => repository.RemoveEmailTemplate(Guid.NewGuid()));
+            Assert.AreEqual(provider.EmailTemplates, new List<DbEmailTemplate> { dbEmailTemplate });
         }
+
+        [Test]
+        public void ShouldRemoveEmailTemplateSuccessfully()
+        {
+            repository.RemoveEmailTemplate(emailTemplateId);
+
+            Assert.IsTrue(provider.EmailTemplates.Find(emailTemplateId).IsActive == false);
+            Assert.AreEqual(provider.EmailTemplates, new List<DbEmailTemplate> { dbEmailTemplate });
+        }
+
+        [Test]
+        public void ShouldThrowExceptionIfEmailTemplateIdNull()
+        {
+            Assert.Throws<Exception>(() => repository.RemoveEmailTemplate(Guid.Empty));
+            Assert.AreEqual(provider.EmailTemplates, new List<DbEmailTemplate> { dbEmailTemplate });
+        }
+        #endregion
     }
 }
 

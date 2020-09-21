@@ -43,18 +43,12 @@ namespace LT.DigitalOffice.MessageService
             services.AddControllers();
 
             ConfigureCommands(services);
-            ConfigureMappers(services);
             ConfigureRepositories(services);
         }
 
         private void ConfigureCommands(IServiceCollection services)
         {
-            services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
-        }
-
-        private void ConfigureMappers(IServiceCollection services)
-        {
-            services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
+            services.AddTransient<IRemoveEmailTemplateCommand, RemoveEmailTemplateCommand>();
         }
 
         private void ConfigureRepositories(IServiceCollection services)

@@ -1,5 +1,4 @@
-﻿using LT.DigitalOffice.MessageService.Models.Db;
-using System;
+﻿using System;
 
 namespace LT.DigitalOffice.MessageService.Data.Interfaces
 {
@@ -10,10 +9,9 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     public interface IEmailTemplateRepository
     {
         /// <summary>
-        /// Adds new user to the database. Returns whether it was successful to add.
+        /// Disable an email template by its Id.
         /// </summary>
-        /// <param name="emailTemplate">Email template to add.</param>
-        /// <returns>Guid of added email template.</returns>
-        Guid AddEmailTemplate(DbEmailTemplate emailTemplate);
+        /// <param name="emailTemplateId">Email template Id.</param>
+        void RemoveEmailTemplate(Guid emailTemplateId);
     }
 }

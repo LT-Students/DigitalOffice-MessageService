@@ -1,5 +1,4 @@
 ﻿using LT.DigitalOffice.MessageService.Business.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -9,13 +8,13 @@ namespace LT.DigitalOffice.MessageService.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
-        [HttpPost("addEmailTemplate")]
-        public Guid AddEmailTemplate(
-            [FromServices] IAddEmailTemplateCommand command,
-            [FromBody] EmailTemplate emailTemplate,
+        [HttpGet("removeEmailTemplate")]
+        public void removeEmailTemplate(
+            [FromServices] IRemoveEmailTemplateCommand command,
+            [FromQuery] Guid emailTemplateId,
             [FromHeader] Guid requestingUser)
         {
-            return command.Execute(emailTemplate, requestingUser);
+            command.Execute(emailTemplateId, requestingUser);
         }
     }
 }
