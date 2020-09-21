@@ -15,11 +15,30 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         private IAddEmailTemplateCommand command;
         private Mock<IMapper<EmailTemplate, DbEmailTemplate>> mapperMock;
 
-        private Guid emailId = Guid.NewGuid();
-        private EmailTemplate emailTemplate = new EmailTemplate
-        {
+        private Guid emailId;
+        private EmailTemplate emailTemplate;
+        private DbEmailTemplate dbEmailTemplate;
 
-        };
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            emailId = Guid.NewGuid();
+            emailTemplate = new EmailTemplate
+            {
+                Subject = "Subject",
+                Body = "Body",
+                AuthorId = Guid.NewGuid()
+            };
+
+            dbEmailTemplate = new DbEmailTemplate
+            {
+                Id = emailId,
+                Subject = emailTemplate.Subject,
+                Body = emailTemplate.Body,
+                AuthorId = emailTemplate.AuthorId,
+                IsActive = true
+            };
+        }
 
         [SetUp]
         public void SetUp()
@@ -39,7 +58,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
             mapperMock
                 .Setup(mapper => mapper.Map(It.IsAny<EmailTemplate>()))
-                .Returns(new DbEmailTemplate());
+                .Returns(dbEmailTemplate);
 
             Assert.That(command.Execute(emailTemplate), Is.EqualTo(emailId));
 

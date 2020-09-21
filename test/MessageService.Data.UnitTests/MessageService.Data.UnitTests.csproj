@@ -16,4 +16,9 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MessageService.Data.Provider.MsSql.Ef\MessageService.Data.Provider.MsSql.Ef.csproj" />
+    <ProjectReference Include="..\..\src\MessageService.Data\MessageService.Data.csproj" />
+  </ItemGroup>
+
 </Project>
