@@ -12,9 +12,10 @@ namespace LT.DigitalOffice.MessageService.Controllers
         [HttpPost("addEmailTemplate")]
         public Guid AddEmailTemplate(
             [FromServices] IAddEmailTemplateCommand command,
-            [FromBody] EmailTemplate emailTemplate)
+            [FromBody] EmailTemplate emailTemplate,
+            [FromHeader] Guid requestingUser)
         {
-            return command.Execute(emailTemplate);
+            return command.Execute(emailTemplate, requestingUser);
         }
     }
 }

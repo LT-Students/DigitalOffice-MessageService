@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.MessageService.Business.Interfaces;
+﻿using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -14,7 +15,9 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         private Mock<IEmailTemplateRepository> repositoryMock;
         private IAddEmailTemplateCommand command;
         private Mock<IMapper<EmailTemplate, DbEmailTemplate>> mapperMock;
+        private Mock<IAccessValidator> accessValidatorMock;
 
+        private Guid requestingUserId;
         private Guid emailId;
         private EmailTemplate emailTemplate;
         private DbEmailTemplate dbEmailTemplate;
@@ -22,6 +25,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
+            requestingUserId = Guid.NewGuid();
             emailId = Guid.NewGuid();
             emailTemplate = new EmailTemplate
             {
@@ -45,13 +49,18 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         {
             repositoryMock = new Mock<IEmailTemplateRepository>();
             mapperMock = new Mock<IMapper<EmailTemplate, DbEmailTemplate>>();
+            accessValidatorMock = new Mock<IAccessValidator>();
 
-            command = new AddEmailTemplateCommand(mapperMock.Object, repositoryMock.Object);
+            command = new AddEmailTemplateCommand(mapperMock.Object, repositoryMock.Object, accessValidatorMock.Object);
         }
 
         [Test]
         public void ShouldAddEmailTemplateCorrectly()
         {
+            accessValidatorMock
+                .Setup(x => x.HasRights(3))
+                .Returns(true);
+
             repositoryMock
                 .Setup(x => x.AddEmailTemplate(It.IsAny<DbEmailTemplate>()))
                 .Returns(emailId);
@@ -60,7 +69,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(mapper => mapper.Map(It.IsAny<EmailTemplate>()))
                 .Returns(dbEmailTemplate);
 
-            Assert.That(command.Execute(emailTemplate), Is.EqualTo(emailId));
+            Assert.That(command.Execute(emailTemplate, requestingUserId), Is.EqualTo(emailId));
 
             mapperMock.Verify();
 
@@ -70,15 +79,29 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenMapperThrowsIt()
         {
+            accessValidatorMock
+                .Setup(x => x.HasRights(3))
+                .Returns(true);
+
             mapperMock
                 .Setup(mapper => mapper.Map(It.IsAny<EmailTemplate>()))
                 .Throws<Exception>();
 
-            Assert.Throws<Exception>(() => command.Execute(emailTemplate));
+            Assert.Throws<Exception>(() => command.Execute(emailTemplate, requestingUserId));
 
             mapperMock.Verify();
 
             repositoryMock.Verify(repository => repository.AddEmailTemplate(It.IsAny<DbEmailTemplate>()), Times.Never());
+        }
+
+        [Test]
+        public void ShouldThrowExceptionWhenUserHasNoRight()
+        {
+            accessValidatorMock
+                .Setup(x => x.HasRights(3))
+                .Returns(false);
+
+            Assert.Throws<Exception>(() => command.Execute(emailTemplate, requestingUserId));
         }
     }
 }
