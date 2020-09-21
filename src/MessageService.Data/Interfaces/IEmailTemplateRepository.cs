@@ -10,7 +10,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     public interface IEmailTemplateRepository
     {
         /// <summary>
-        /// Adds new user to the database. Returns whether it was successful to add.
+        /// Adds new email template to the database.
         /// </summary>
         /// <param name="emailTemplate">Email template to add.</param>
         /// <returns>Guid of added email template.</returns>
