@@ -46,6 +46,8 @@ namespace LT.DigitalOffice.MessageService
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseHealthChecks("/api/healthcheck");
+
             app.UseExceptionHandler(tempApp => tempApp.Run(CustomExceptionHandler.HandleCustomException));
 
             UpdateDatabase(app);
