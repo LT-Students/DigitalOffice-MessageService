@@ -25,13 +25,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Broker", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService", "src\MessageService\MessageService.csproj", "{79277E6B-EF64-48A4-9E8C-0567983FDB58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Data.UnitTests", "test\MessageService.Data.UnitTests\MessageService.Data.UnitTests.csproj", "{F6153AA1-1706-4364-89CE-BBBAAF8AA148}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Data.UnitTests", "test\MessageService.Data.UnitTests\MessageService.Data.UnitTests.csproj", "{F6153AA1-1706-4364-89CE-BBBAAF8AA148}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Business.UnitTests", "test\MessageService.Business.UnitTests\MessageService.Business.UnitTests.csproj", "{A2DC138C-48E3-4D0F-8482-45FA0FD6B8FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Business.UnitTests", "test\MessageService.Business.UnitTests\MessageService.Business.UnitTests.csproj", "{A2DC138C-48E3-4D0F-8482-45FA0FD6B8FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Mappers.UnitTests", "test\MessageService.Mappers.UnitTests\MessageService.Mappers.UnitTests.csproj", "{F67EA334-6752-49F3-BBB7-B37EA0E3628D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Mappers.UnitTests", "test\MessageService.Mappers.UnitTests\MessageService.Mappers.UnitTests.csproj", "{F67EA334-6752-49F3-BBB7-B37EA0E3628D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Broker.UnitTests", "test\MessageService.Broker.UnitTests\MessageService.Broker.UnitTests.csproj", "{CAC01F27-B5D2-49A7-97D3-E65F7DD5C148}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Broker.UnitTests", "test\MessageService.Broker.UnitTests\MessageService.Broker.UnitTests.csproj", "{CAC01F27-B5D2-49A7-97D3-E65F7DD5C148}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService.Models.BrokerRequests", "src\MessageService.Models.BrokerRequests\MessageService.Models.BrokerRequests.csproj", "{C1AF819C-BF30-4CEF-A6C3-C0977CB1728B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +93,10 @@ Global
 		{CAC01F27-B5D2-49A7-97D3-E65F7DD5C148}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAC01F27-B5D2-49A7-97D3-E65F7DD5C148}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAC01F27-B5D2-49A7-97D3-E65F7DD5C148}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1AF819C-BF30-4CEF-A6C3-C0977CB1728B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1AF819C-BF30-4CEF-A6C3-C0977CB1728B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1AF819C-BF30-4CEF-A6C3-C0977CB1728B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1AF819C-BF30-4CEF-A6C3-C0977CB1728B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,6 +115,7 @@ Global
 		{A2DC138C-48E3-4D0F-8482-45FA0FD6B8FB} = {05FCAF3C-1524-4494-B71F-8E021A6788C5}
 		{F67EA334-6752-49F3-BBB7-B37EA0E3628D} = {05FCAF3C-1524-4494-B71F-8E021A6788C5}
 		{CAC01F27-B5D2-49A7-97D3-E65F7DD5C148} = {05FCAF3C-1524-4494-B71F-8E021A6788C5}
+		{C1AF819C-BF30-4CEF-A6C3-C0977CB1728B} = {FE67FD7C-7E83-49B0-84A2-4C3408858457}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {04444C6B-F340-4D33-8C99-270ACD057A32}

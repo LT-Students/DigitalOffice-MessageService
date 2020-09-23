@@ -1,3 +1,4 @@
+using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
@@ -75,7 +76,7 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMappers(IServiceCollection services)
         {
-            services.AddTransient<IMapper<Email, DbEmail>, EmailMapper>();
+            services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
         }
 
         private void ConfigureRepositories(IServiceCollection services)
@@ -87,6 +88,8 @@ namespace LT.DigitalOffice.MessageService
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseHealthChecks("/api/healthcheck");
+
             app.UseExceptionHandler(tempApp => tempApp.Run(CustomExceptionHandler.HandleCustomException));
 
             UpdateDatabase(app);

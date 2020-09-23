@@ -1,13 +1,14 @@
-﻿using LT.DigitalOffice.MessageService.Mappers.Interfaces;
+﻿using LT.DigitalOffice.Broker.Requests;
+using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers
 {
-    public class EmailMapper : IMapper<Email, DbEmail>
+    public class EmailMapper : IMapper<ISendEmailRequest, DbEmail>
     {
-        public DbEmail Map(Email email)
+        public DbEmail Map(ISendEmailRequest email)
         {
             if (email == null)
             {
@@ -17,6 +18,7 @@ namespace LT.DigitalOffice.MessageService.Mappers
             return new DbEmail
             {
                 Id = Guid.NewGuid(),
+                SenderId = email.SenderId,
                 Receiver = email.Receiver,
                 Time = DateTime.UtcNow,
                 Subject = email.Subject,

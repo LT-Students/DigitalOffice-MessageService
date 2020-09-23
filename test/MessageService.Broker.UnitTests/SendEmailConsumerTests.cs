@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
 
         private InMemoryTestHarness harness;
         private Mock<IEmailRepository> repository;
-        private Mock<IMapper<Email, DbEmail>> mapper;
+        private Mock<IMapper<ISendEmailRequest, DbEmail>> mapper;
         private IRequestClient<ISendEmailRequest> requestClient;
 
         private string Subject;
@@ -34,7 +34,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         public void SetUp()
         {
             repository = new Mock<IEmailRepository>();
-            mapper = new Mock<IMapper<Email, DbEmail>>();
+            mapper = new Mock<IMapper<ISendEmailRequest, DbEmail>>();
 
             harness = new InMemoryTestHarness();
             consumerTestHarness = harness.Consumer(() =>
@@ -88,7 +88,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             await harness.Start();
 
             mapper
-                .Setup(x => x.Map(It.IsAny<Email>()))
+                .Setup(x => x.Map(It.IsAny<ISendEmailRequest>()))
                 .Throws(new ArgumentNullException());
 
             try
