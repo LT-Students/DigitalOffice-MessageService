@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="LT.DigitalOffice.Kernel" Version="1.0.2" />
     <PackageReference Include="MassTransit" Version="7.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.8" />
     <PackageReference Include="Moq" Version="4.14.5" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
@@ -21,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\MessageService.Broker\MessageService.Broker.csproj" />
+    <ProjectReference Include="..\..\src\MessageService\MessageService.csproj" />
   </ItemGroup>
 
 </Project>

@@ -32,6 +32,7 @@ namespace LT.DigitalOffice.MessageService
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<RabbitMQOptions>(Configuration);
+            services.Configure<NetworkCredentialsOptions>(Configuration);
 
             services.AddHealthChecks();
 

@@ -3,9 +3,9 @@ using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -16,11 +16,16 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
     {
         private readonly IEmailRepository repository;
         private readonly IMapper<ISendEmailRequest, DbEmail> mapper;
+        private readonly IOptions<NetworkCredentialsOptions> options;
 
-        public SendEmailConsumer([FromServices] IEmailRepository repository, IMapper<ISendEmailRequest, DbEmail> mapper)
+        public SendEmailConsumer(
+            [FromServices] IEmailRepository repository,
+            [FromServices] IMapper<ISendEmailRequest, DbEmail> mapper,
+            [FromServices] IOptions<NetworkCredentialsOptions> options)
         {
             this.repository = repository;
             this.mapper = mapper;
+            this.options = options;
         }
 
         public async Task Consume(ConsumeContext<ISendEmailRequest> context)
@@ -32,7 +37,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
         private bool SendEmail(ISendEmailRequest request)
         {
-            MailAddress from = new MailAddress("er0289741@gmail.com");
+            MailAddress from = new MailAddress(options.Value.Email);
             MailAddress to = new MailAddress(request.Receiver);
 
             var m = new MailMessage(from, to)
@@ -41,9 +46,9 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
                 Body = request.Body
             };
 
-            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
+            SmtpClient smtp = new SmtpClient(options.Value.Host, options.Value.Port)
             {
-                Credentials = new NetworkCredential("er0289741@gmail.com", "er0289741123456"),
+                Credentials = new NetworkCredential(options.Value.Email, options.Value.Password),
                 EnableSsl = true
             };
 

@@ -5,13 +5,14 @@ using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto;
 using MassTransit;
 using MassTransit.Testing;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Broker.UnitTests
@@ -24,10 +25,11 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         private Mock<IEmailRepository> repository;
         private Mock<IMapper<ISendEmailRequest, DbEmail>> mapper;
         private IRequestClient<ISendEmailRequest> requestClient;
+        private IOptions<NetworkCredentialsOptions> options;
 
         private string Subject;
         private string Body;
-        private string SenderEmail;
+        private Guid SenderId;
         private string Receiver;
 
         [SetUp]
@@ -36,13 +38,20 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             repository = new Mock<IEmailRepository>();
             mapper = new Mock<IMapper<ISendEmailRequest, DbEmail>>();
 
+            options = Options.Create(new NetworkCredentialsOptions());
+
+            options.Value.Host = "smtp.gmail.com";
+            options.Value.Port = 587;
+            options.Value.Email = "er0289741@gmail.com";
+            options.Value.Password = "er0289741123456";
+
             harness = new InMemoryTestHarness();
             consumerTestHarness = harness.Consumer(() =>
-                new SendEmailConsumer(repository.Object, mapper.Object));
+                new SendEmailConsumer(repository.Object, mapper.Object, options));
 
             Subject = "Title";
             Body = "Content";
-            SenderEmail = "er0289741 @gmail.com";
+            SenderId = Guid.NewGuid();
             Receiver = "lalagvanan@gmail.com";
         }
 
@@ -60,7 +69,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
 
                 var response = await requestClient.GetResponse<IOperationResult<bool>>(new
                 {
-                    SenderEmail,
+                    SenderId,
                     Receiver,
                     Subject,
                     Body
@@ -98,7 +107,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
 
                 var response = await requestClient.GetResponse<IOperationResult<bool>>(new
                 {
-                    SenderEmail,
+                    SenderId,
                     Receiver,
                     Subject,
                     Body
