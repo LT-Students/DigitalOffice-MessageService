@@ -34,15 +34,7 @@ namespace LT.DigitalOffice.MessageService.Business
         {
             int numberRight = 3;
 
-            if (accessValidator.IsAdmin())
-            {
-                return true;
-            }
-
-            else
-            {
-                return accessValidator.HasRights(numberRight);
-            }
+            return accessValidator.IsAdmin() || accessValidator.HasRights(numberRight);
         }
     }
 }
