@@ -7,9 +7,9 @@ namespace LT.DigitalOffice.Broker.Requests
     /// </summary>
     public interface ISendEmailRequest
     {
-        Guid? SenderId { get; set; }
-        string Receiver { get; set; }
-        string Subject { get; set; }
-        string Body { get; set; }
+        Guid? SenderId { get; }
+        string Receiver { get; }
+        string Subject { get; }
+        string Body { get; }
     }
 }
