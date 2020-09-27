@@ -38,7 +38,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
         [Test]
         public void ShouldThrowArgumentNullExceptionWhenEmailTemplateIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => mapper.Map(null));
+            emailTemplate = null;
+
+            Assert.Throws<ArgumentNullException>(() => mapper.Map(emailTemplate));
         }
 
         [Test]
