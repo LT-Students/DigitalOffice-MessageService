@@ -1,8 +1,8 @@
 ﻿using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel.UnitTestLibrary;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.UnitTests.Models;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto;
 using NUnit.Framework;
 using System;
 
@@ -23,6 +23,13 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
         [Test]
         public void ShouldReturnDbEmailCorrectly()
         {
+            email = new SendEmailRequest
+            {
+                Receiver = "lalagvana@gmail.com",
+                Subject = "Subject",
+                Body = "Body"
+            };
+
             var result = mapper.Map(email);
 
             var dbEmail = new DbEmail
