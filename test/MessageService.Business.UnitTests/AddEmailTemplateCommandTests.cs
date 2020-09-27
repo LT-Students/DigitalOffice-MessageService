@@ -72,7 +72,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             Assert.That(command.Execute(emailTemplate, requestingUserId), Is.EqualTo(emailId));
 
             mapperMock.Verify();
-
             repositoryMock.Verify();
         }
 
@@ -90,7 +89,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             Assert.Throws<Exception>(() => command.Execute(emailTemplate, requestingUserId));
 
             mapperMock.Verify();
-
             repositoryMock.Verify(repository => repository.AddEmailTemplate(It.IsAny<DbEmailTemplate>()), Times.Never());
         }
 

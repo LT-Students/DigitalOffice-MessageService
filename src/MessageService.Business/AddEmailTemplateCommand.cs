@@ -30,6 +30,7 @@ namespace LT.DigitalOffice.MessageService.Business
         public Guid Execute(EmailTemplate emailTemplate, Guid requestingUserId)
         {
             var isAcces = GetResultCheckingUserRights(requestingUserId);
+
             if (!isAcces)
             {
                 throw new Exception("Not enough rights.");
@@ -42,15 +43,7 @@ namespace LT.DigitalOffice.MessageService.Business
         {
             int numberRight = 3;
 
-            if (accessValidator.IsAdmin())
-            {
-                return true;
-            }
-
-            else
-            {
-                return accessValidator.HasRights(numberRight);
-            }
+            return accessValidator.IsAdmin() || accessValidator.HasRights(numberRight);
         }
     }
 }
