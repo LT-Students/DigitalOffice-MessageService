@@ -12,7 +12,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Broker.UnitTests

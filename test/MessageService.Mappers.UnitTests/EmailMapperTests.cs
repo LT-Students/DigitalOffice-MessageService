@@ -11,6 +11,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
     public class EmailMapperTests
     {
         private IMapper<ISendEmailRequest, DbEmail> mapper;
+        private ISendEmailRequest email;
 
         [SetUp]
         public void SetUp()
@@ -19,16 +20,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
         }
 
         #region ISendEmailRequestToDbEmail
-        /*[Test]
+        [Test]
         public void ShouldReturnDbEmailCorrectly()
         {
-            var email = new Email
-            {
-                Receiver = "lalagvanan@gmail.com",
-                Subject = "Subject",
-                Body = "Body"
-            };
-
             var result = mapper.Map(email);
 
             var dbEmail = new DbEmail
@@ -42,10 +36,12 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 
             SerializerAssert.AreEqual(dbEmail, result);
         }
-        */
+
         [Test]
         public void ShouldThrowExceptionIfEmailIsNull()
         {
+            email = null;
+
             Assert.Throws<ArgumentNullException>(() => mapper.Map(null));
         }
         #endregion
