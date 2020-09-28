@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LT.DigitalOffice.MessageService.Models.Db;
+using System;
 
 namespace LT.DigitalOffice.MessageService.Data.Interfaces
 {
@@ -13,5 +14,11 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
         /// </summary>
         /// <param name="emailTemplateId">Email template Id.</param>
         void RemoveEmailTemplate(Guid emailTemplateId);
+
+        /// Adds new email template to the database.
+        /// </summary>
+        /// <param name="emailTemplate">Email template to add.</param>
+        /// <returns>Guid of added email template.</returns>
+        Guid AddEmailTemplate(DbEmailTemplate emailTemplate);
     }
 }

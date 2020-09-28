@@ -43,12 +43,19 @@ namespace LT.DigitalOffice.MessageService
             services.AddControllers();
 
             ConfigureCommands(services);
+            ConfigureMappers(services);
             ConfigureRepositories(services);
         }
 
         private void ConfigureCommands(IServiceCollection services)
         {
             services.AddTransient<IRemoveEmailTemplateCommand, RemoveEmailTemplateCommand>();
+            services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
+        }
+
+        private void ConfigureMappers(IServiceCollection services)
+        {
+            services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
         }
 
         private void ConfigureRepositories(IServiceCollection services)
@@ -60,6 +67,8 @@ namespace LT.DigitalOffice.MessageService
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseHealthChecks("/api/healthcheck");
+
             app.UseExceptionHandler(tempApp => tempApp.Run(CustomExceptionHandler.HandleCustomException));
 
             UpdateDatabase(app);

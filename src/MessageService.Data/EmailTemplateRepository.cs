@@ -28,5 +28,13 @@ namespace LT.DigitalOffice.MessageService.Data
             provider.EmailTemplates.Update(dbEmailTemplate);
             provider.Save();
         }
+        
+        public Guid AddEmailTemplate(DbEmailTemplate emailTemplate)
+        {
+            provider.EmailTemplates.Add(emailTemplate);
+            provider.Save();
+
+            return emailTemplate.Id;
+        }
     }
 }

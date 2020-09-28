@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
 {
     [DbContext(typeof(MessageServiceDbContext))]
-    [Migration("20200920214219_RemoveEmailTemplates")]
-    partial class RemoveEmailTemplates
+    [Migration("20200920214219_AddEmailTemplates")]
+    partial class AddEmailTemplates
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -79,6 +79,13 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             Assert.AreEqual(provider.EmailTemplates, new List<DbEmailTemplate> { dbEmailTemplate });
         }
         #endregion
+
+        [Test]
+        public void ShouldAddEmailTemplateCorrectly()
+        {
+            Assert.AreEqual(dbEmailTemplate.Id, repository.AddEmailTemplate(dbEmailTemplate));
+            Assert.AreEqual(dbEmailTemplate, provider.EmailTemplates.Find(dbEmailTemplate.Id));
+        }
     }
 }
 

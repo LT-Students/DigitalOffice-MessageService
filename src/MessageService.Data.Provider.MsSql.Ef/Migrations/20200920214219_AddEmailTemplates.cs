@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
 {
-    public partial class RemoveEmailTemplates : Migration
+    public partial class AddEmailTemplates : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
