@@ -6,6 +6,8 @@ namespace LT.DigitalOffice.MessageService.Data.Provider
     public interface IDataProvider
     {
         DbSet<DbMessage> Messages { get; set; }
+        DbSet<DbEmail> Emails { get; set; }
+        DbSet<DbEmailTemplate> EmailTemplates { get; set; }
 
         void Save();
         void EnsureDeleted();
