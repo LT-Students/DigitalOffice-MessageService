@@ -2,10 +2,13 @@ using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
+using LT.DigitalOffice.MessageService.Business;
+using LT.DigitalOffice.MessageService.Business.Interfaces;
 using LT.DigitalOffice.MessageService.Data;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
+using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations;
 using LT.DigitalOffice.MessageService.Mappers;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -40,8 +43,10 @@ namespace LT.DigitalOffice.MessageService
             {
                 options.UseSqlServer(Configuration.GetConnectionString("SQLConnectionString"));
             });
+
             services.AddControllers();
 
+            ConfigureCommands(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
             ConfigureMassTransit(services);
@@ -80,11 +85,22 @@ namespace LT.DigitalOffice.MessageService
             services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
         }
 
+        private void ConfigureCommands(IServiceCollection services)
+        {
+            services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
+        }
+
+        private void ConfigureMappers(IServiceCollection services)
+        {
+            services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
+        }
+
         private void ConfigureRepositories(IServiceCollection services)
         {
             services.AddTransient<IDataProvider, MessageServiceDbContext>();
 
             services.AddTransient<IEmailRepository, EmailRepository>();
+            services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
