@@ -15,5 +15,17 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
         /// <param name="emailTemplate">Email template to add.</param>
         /// <returns>Guid of added email template.</returns>
         Guid AddEmailTemplate(DbEmailTemplate emailTemplate);
+
+        /// <summary>
+        /// Edit email template to the database.
+        /// </summary>
+        /// <param name="dbEmailTemplateToEdit">Email template data to update.</param>
+        void EditEmailTemplateById(DbEmailTemplate dbEmailTemplateToEdit);
+
+        /// <summary>
+        /// Get email template by id from the database.
+        /// </summary>
+        /// <param name="id">Email template id.</param>
+        DbEmailTemplate GetEmailTemplateById(Guid id);
     }
 }

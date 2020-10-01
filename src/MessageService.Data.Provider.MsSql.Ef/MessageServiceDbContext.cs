@@ -20,17 +20,17 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef
 
         void IDataProvider.Save()
         {
-            this.SaveChanges();
+            SaveChanges();
         }
 
         public void EnsureDeleted()
         {
-            this.Database.EnsureDeleted();
+            Database.EnsureDeleted();
         }
 
         public bool IsInMemory()
         {
-            return this.Database.IsInMemory();
+            return Database.IsInMemory();
         }
 
         // Fluent API is written here.
