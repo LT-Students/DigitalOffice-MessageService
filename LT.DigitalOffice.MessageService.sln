@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Mappers.Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Broker.UnitTests", "test\MessageService.Broker.UnitTests\MessageService.Broker.UnitTests.csproj", "{CAC01F27-B5D2-49A7-97D3-E65F7DD5C148}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Models.BrokerRequests", "src\MessageService.Models.BrokerRequests\MessageService.Models.BrokerRequests.csproj", "{C1AF819C-BF30-4CEF-A6C3-C0977CB1728B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService.Models.BrokerRequest", "src\MessageService.Models.BrokerRequests\MessageService.Models.BrokerRequest.csproj", "{C1AF819C-BF30-4CEF-A6C3-C0977CB1728B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageService", "src\MessageService\MessageService.csproj", "{910A54ED-0B33-4858-9BAB-692660F0E2B9}"
 EndProject

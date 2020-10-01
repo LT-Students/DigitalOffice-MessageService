@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MessageService.Data\MessageService.Data.csproj" />
     <ProjectReference Include="..\MessageService.Mappers\MessageService.Mappers.csproj" />
-    <ProjectReference Include="..\MessageService.Models.BrokerRequests\MessageService.Models.BrokerRequests.csproj" />
+    <ProjectReference Include="..\MessageService.Models.BrokerRequests\MessageService.Models.BrokerRequest.csproj" />
     <ProjectReference Include="..\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />
   </ItemGroup>
 
