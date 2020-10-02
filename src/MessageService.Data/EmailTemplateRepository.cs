@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.MessageService.Data
             this.provider = provider;
         }
 
-        public void RemoveEmailTemplate(Guid emailTemplateId)
+        public void DisableEmailTemplate(Guid emailTemplateId)
         {
             var dbEmailTemplate = provider.EmailTemplates.Find(emailTemplateId);
 
@@ -28,7 +28,7 @@ namespace LT.DigitalOffice.MessageService.Data
             provider.EmailTemplates.Update(dbEmailTemplate);
             provider.Save();
         }
-        
+
         public Guid AddEmailTemplate(DbEmailTemplate emailTemplate)
         {
             provider.EmailTemplates.Add(emailTemplate);

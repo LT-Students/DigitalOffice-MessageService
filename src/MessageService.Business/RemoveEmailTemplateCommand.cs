@@ -10,6 +10,7 @@ namespace LT.DigitalOffice.MessageService.Business
     {
         private readonly IEmailTemplateRepository repository;
         private readonly IAccessValidator accessValidator;
+        private readonly int numberRight = 3;
 
         public RemoveEmailTemplateCommand(
             [FromServices] IEmailTemplateRepository repository,
@@ -22,18 +23,17 @@ namespace LT.DigitalOffice.MessageService.Business
         public void Execute(Guid emailTemplateId, Guid requestingUserId)
         {
             var isAcces = GetResultCheckingUserRights(requestingUserId);
+
             if (!isAcces)
             {
                 throw new Exception("Not enough rights.");
             }
 
-            repository.RemoveEmailTemplate(emailTemplateId);
+            repository.DisableEmailTemplate(emailTemplateId);
         }
 
         private bool GetResultCheckingUserRights(Guid userId)
         {
-            int numberRight = 3;
-
             return accessValidator.IsAdmin() || accessValidator.HasRights(numberRight);
         }
     }

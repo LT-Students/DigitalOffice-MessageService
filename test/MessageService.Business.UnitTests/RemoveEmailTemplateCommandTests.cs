@@ -22,17 +22,13 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            requestingUserId = Guid.NewGuid();
-            emailTemplateId = Guid.NewGuid();
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
             repositoryMock = new Mock<IEmailTemplateRepository>();
             accessValidatorMock = new Mock<IAccessValidator>();
 
             command = new RemoveEmailTemplateCommand(repositoryMock.Object, accessValidatorMock.Object);
+
+            requestingUserId = Guid.NewGuid();
+            emailTemplateId = Guid.NewGuid();
         }
 
         [Test]
@@ -43,7 +39,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Returns(true);
 
             repositoryMock
-                .Setup(x => x.RemoveEmailTemplate(It.IsAny<Guid>()));
+                .Setup(x => x.DisableEmailTemplate(It.IsAny<Guid>()));
 
             command.Execute(emailTemplateId, requestingUserId);
 
@@ -51,9 +47,9 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         }
 
         [Test]
-        public void ShouldThrowExceptionIfRepositoryThrowsIt()
+        public void ShouldThrowExceptionWhenRepositoryThrowsIt()
         {
-            repositoryMock.Setup(x => x.RemoveEmailTemplate(It.IsAny<Guid>())).Throws(new Exception());
+            repositoryMock.Setup(x => x.DisableEmailTemplate(It.IsAny<Guid>())).Throws(new Exception());
 
             Assert.Throws<Exception>(() => command.Execute(emailTemplateId, requestingUserId));
             repositoryMock.Verify();

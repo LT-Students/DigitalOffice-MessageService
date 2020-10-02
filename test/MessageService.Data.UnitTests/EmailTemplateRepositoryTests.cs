@@ -67,25 +67,25 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 
         #region RemoveEmailTemplate
         [Test]
-        public void ShouldThrowExceptionIfEmailTemplateDoesNotExist()
+        public void ShouldThrowExceptionWhenEmailTemplateDoesNotExist()
         {
-            Assert.Throws<Exception>(() => repository.RemoveEmailTemplate(Guid.NewGuid()));
+            Assert.Throws<Exception>(() => repository.DisableEmailTemplate(Guid.NewGuid()));
             Assert.AreEqual(provider.EmailTemplates, new List<DbEmailTemplate> { dbEmailTemplate });
         }
 
         [Test]
         public void ShouldRemoveEmailTemplateSuccessfully()
         {
-            repository.RemoveEmailTemplate(emailTemplateId);
+            repository.DisableEmailTemplate(emailTemplateId);
 
             Assert.IsTrue(provider.EmailTemplates.Find(emailTemplateId).IsActive == false);
             Assert.AreEqual(provider.EmailTemplates, new List<DbEmailTemplate> { dbEmailTemplate });
         }
 
         [Test]
-        public void ShouldThrowExceptionIfEmailTemplateIdNull()
+        public void ShouldThrowExceptionWhenEmailTemplateIdNull()
         {
-            Assert.Throws<Exception>(() => repository.RemoveEmailTemplate(Guid.Empty));
+            Assert.Throws<Exception>(() => repository.DisableEmailTemplate(Guid.Empty));
             Assert.AreEqual(provider.EmailTemplates, new List<DbEmailTemplate> { dbEmailTemplate });
         }
         #endregion

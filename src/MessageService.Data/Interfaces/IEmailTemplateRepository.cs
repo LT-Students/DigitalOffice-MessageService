@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
         /// Disable an email template by its Id.
         /// </summary>
         /// <param name="emailTemplateId">Email template Id.</param>
-        void RemoveEmailTemplate(Guid emailTemplateId);
+        void DisableEmailTemplate(Guid emailTemplateId);
 
         /// Adds new email template to the database.
         /// </summary>
