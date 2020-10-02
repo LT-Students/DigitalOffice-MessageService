@@ -10,7 +10,7 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests
 {
-    public class RemoveEmailTemplateCommandTests
+    public class DisableEmailTemplateCommandTests
     {
         private Mock<IEmailTemplateRepository> repositoryMock;
         private IDisableEmailTemplateCommand command;
