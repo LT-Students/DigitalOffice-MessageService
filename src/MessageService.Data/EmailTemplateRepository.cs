@@ -2,6 +2,7 @@
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
 using System;
+using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
@@ -16,7 +17,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public void DisableEmailTemplate(Guid emailTemplateId)
         {
-            var dbEmailTemplate = provider.EmailTemplates.Find(emailTemplateId);
+            var dbEmailTemplate = provider.EmailTemplates.FirstOrDefault(emailTemplate => emailTemplate.Id == emailTemplateId);
 
             if (dbEmailTemplate == null)
             {

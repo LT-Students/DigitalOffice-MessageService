@@ -42,12 +42,12 @@ namespace LT.DigitalOffice.MessageService
 
             services.AddControllers();
 
-            services.AddKernelExtensions(Configuration);
-
             ConfigureMassTransit(services);
             ConfigureCommands(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
+
+            services.AddKernelExtensions();
         }
 
         private void ConfigureMassTransit(IServiceCollection services)

@@ -6,10 +6,4 @@
     <RootNamespace>LT.DigitalOffice.MessageService.Broker</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Consumers\" />
-    <Folder Include="Responses\" />
-    <Folder Include="Requests\" />
-  </ItemGroup>
-
 </Project>

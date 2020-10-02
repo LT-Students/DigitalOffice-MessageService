@@ -1,9 +1,6 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
 using LT.DigitalOffice.MessageService.Business.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto;
 using Moq;
 using NUnit.Framework;
 using System;
