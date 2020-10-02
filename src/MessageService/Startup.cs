@@ -6,11 +6,11 @@ using LT.DigitalOffice.MessageService.Data;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
-using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations;
 using LT.DigitalOffice.MessageService.Mappers;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -42,9 +42,33 @@ namespace LT.DigitalOffice.MessageService
 
             services.AddControllers();
 
+            services.AddKernelExtensions(Configuration);
+
+            ConfigureMassTransit(services);
             ConfigureCommands(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
+        }
+
+        private void ConfigureMassTransit(IServiceCollection services)
+        {
+            const string serviceSection = "RabbitMQ";
+            string serviceName = Configuration.GetSection(serviceSection)["Username"];
+            string servicePassword = Configuration.GetSection(serviceSection)["Password"];
+
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", host =>
+                    {
+                        host.Username($"{serviceName}_{servicePassword}");
+                        host.Password(servicePassword);
+                    });
+                });
+            });
+
+            services.AddMassTransitHostedService();
         }
 
         private void ConfigureCommands(IServiceCollection services)
