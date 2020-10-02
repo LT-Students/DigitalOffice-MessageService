@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
     public class RemoveEmailTemplateCommandTests
     {
         private Mock<IEmailTemplateRepository> repositoryMock;
-        private IRemoveEmailTemplateCommand command;
+        private IDisableEmailTemplateCommand command;
         private Mock<IAccessValidator> accessValidatorMock;
 
         private Guid requestingUserId;
@@ -25,7 +25,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             repositoryMock = new Mock<IEmailTemplateRepository>();
             accessValidatorMock = new Mock<IAccessValidator>();
 
-            command = new RemoveEmailTemplateCommand(repositoryMock.Object, accessValidatorMock.Object);
+            command = new DisableEmailTemplateCommand(repositoryMock.Object, accessValidatorMock.Object);
 
             requestingUserId = Guid.NewGuid();
             emailTemplateId = Guid.NewGuid();

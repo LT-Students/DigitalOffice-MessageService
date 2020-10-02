@@ -6,13 +6,13 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Business
 {
-    public class RemoveEmailTemplateCommand : IRemoveEmailTemplateCommand
+    public class DisableEmailTemplateCommand : IDisableEmailTemplateCommand
     {
         private readonly IEmailTemplateRepository repository;
         private readonly IAccessValidator accessValidator;
         private readonly int numberRight = 3;
 
-        public RemoveEmailTemplateCommand(
+        public DisableEmailTemplateCommand(
             [FromServices] IEmailTemplateRepository repository,
             [FromServices] IAccessValidator accessValidator)
         {

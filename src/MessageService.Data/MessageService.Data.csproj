@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Interfaces\IEmailTemplateRepository.cs~RF285e04ba.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MessageService.Data.Provider\MessageService.Data.Provider.csproj" />
   </ItemGroup>
 

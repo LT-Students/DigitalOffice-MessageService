@@ -6,7 +6,7 @@ namespace LT.DigitalOffice.MessageService.Business.Interfaces
     /// Represents interface for a command in command pattern.
     /// Provides method for adding an email template.
     /// </summary>
-    public interface IRemoveEmailTemplateCommand
+    public interface IDisableEmailTemplateCommand
     {
         /// <summary>
         ///  Disable an email template.

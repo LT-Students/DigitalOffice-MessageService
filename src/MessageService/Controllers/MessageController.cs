@@ -11,7 +11,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
     {
         [HttpGet("removeEmailTemplate")]
         public void removeEmailTemplate(
-            [FromServices] IRemoveEmailTemplateCommand command,
+            [FromServices] IDisableEmailTemplateCommand command,
             [FromQuery] Guid emailTemplateId,
             [FromHeader] Guid requestingUser)
         {

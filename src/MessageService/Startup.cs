@@ -49,7 +49,7 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureCommands(IServiceCollection services)
         {
-            services.AddTransient<IRemoveEmailTemplateCommand, RemoveEmailTemplateCommand>();
+            services.AddTransient<IDisableEmailTemplateCommand, DisableEmailTemplateCommand>();
             services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
         }
 
