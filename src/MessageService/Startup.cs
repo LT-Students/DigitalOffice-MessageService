@@ -52,20 +52,20 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            const string serviceSection = "RabbitMQ";
-            string serviceName = Configuration.GetSection(serviceSection)["Username"];
-            string servicePassword = Configuration.GetSection(serviceSection)["Password"];
+            var rabbitMQOptions = Configuration.GetSection(RabbitMQOptions.RabbitMQ).Get<RabbitMQOptions>();
 
             services.AddMassTransit(x =>
             {
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host("localhost", "/", host =>
+                    cfg.Host(rabbitMQOptions.Host, "/", host =>
                     {
-                        host.Username($"{serviceName}_{servicePassword}");
-                        host.Password(servicePassword);
+                        host.Username($"{rabbitMQOptions.Username}_{rabbitMQOptions.Password}");
+                        host.Password(rabbitMQOptions.Password);
                     });
                 });
+
+                x.ConfigureKernelMassTransit(rabbitMQOptions);
             });
 
             services.AddMassTransitHostedService();
