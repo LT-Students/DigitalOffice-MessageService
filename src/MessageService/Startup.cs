@@ -50,13 +50,13 @@ namespace LT.DigitalOffice.MessageService
             ConfigureMappers(services);
             ConfigureRepositories(services);
             ConfigureMassTransit(services);
+
+            services.AddKernelExtensions();
         }
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            const string serviceSection = "RabbitMQ";
-            string serviceName = Configuration.GetSection(serviceSection)["Username"];
-            string servicePassword = Configuration.GetSection(serviceSection)["Password"];
+            var rabbitMQOptions = Configuration.GetSection(RabbitMQOptions.RabbitMQ).Get<RabbitMQOptions>();
 
             services.AddMassTransit(x =>
             {
@@ -64,17 +64,19 @@ namespace LT.DigitalOffice.MessageService
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host("localhost", "/", host =>
+                    cfg.Host(rabbitMQOptions.Host, "/", host =>
                     {
-                        host.Username($"{serviceName}_{servicePassword}");
-                        host.Password(servicePassword);
+                        host.Username($"{rabbitMQOptions.Username}_{rabbitMQOptions.Password}");
+                        host.Password(rabbitMQOptions.Password);
                     });
 
-                    cfg.ReceiveEndpoint(serviceName, ep =>
+                    cfg.ReceiveEndpoint(rabbitMQOptions.Username, ep =>
                     {
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
                 });
+
+                x.ConfigureKernelMassTransit(rabbitMQOptions);
             });
 
             services.AddMassTransitHostedService();
