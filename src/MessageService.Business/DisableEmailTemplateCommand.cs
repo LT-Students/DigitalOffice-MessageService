@@ -22,9 +22,9 @@ namespace LT.DigitalOffice.MessageService.Business
 
         public void Execute(Guid emailTemplateId, Guid requestingUserId)
         {
-            var isAcces = GetResultCheckingUserRights(requestingUserId);
+            var isAccess = GetResultCheckingUserRights(requestingUserId);
 
-            if (!isAcces)
+            if (!isAccess)
             {
                 throw new Exception("Not enough rights.");
             }

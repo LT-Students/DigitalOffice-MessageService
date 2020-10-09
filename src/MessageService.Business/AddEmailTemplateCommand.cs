@@ -29,9 +29,9 @@ namespace LT.DigitalOffice.MessageService.Business
 
         public Guid Execute(EmailTemplate emailTemplate, Guid requestingUserId)
         {
-            var isAcces = GetResultCheckingUserRights(requestingUserId);
+            var isAccess = GetResultCheckingUserRights(requestingUserId);
 
-            if (!isAcces)
+            if (!isAccess)
             {
                 throw new Exception("Not enough rights.");
             }
