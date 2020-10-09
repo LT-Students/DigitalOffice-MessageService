@@ -24,7 +24,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         private Mock<IEmailRepository> repository;
         private Mock<IMapper<ISendEmailRequest, DbEmail>> mapper;
         private IRequestClient<ISendEmailRequest> requestClient;
-        private IOptions<NetworkCredentialsOptions> options;
+        private IOptions<SmtpCredentialsOptions> options;
 
         private string Subject;
         private string Body;
@@ -37,7 +37,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             repository = new Mock<IEmailRepository>();
             mapper = new Mock<IMapper<ISendEmailRequest, DbEmail>>();
 
-            options = Options.Create(new NetworkCredentialsOptions());
+            options = Options.Create(new SmtpCredentialsOptions());
 
             options.Value.Host = "smtp.gmail.com";
             options.Value.Port = 587;

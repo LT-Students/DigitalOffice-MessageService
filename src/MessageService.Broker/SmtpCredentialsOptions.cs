@@ -1,8 +1,8 @@
 ﻿namespace LT.DigitalOffice.MessageService
 {
-    public class NetworkCredentialsOptions
+    public class SmtpCredentialsOptions
     {
-        public const string NetworkCredentials = "NetworkCredentials";
+        public const string SmtpCredentials = "SmtpCredentials";
         public string Host { get; set; }
         public int Port { get; set; }
         public string Email { get; set; }

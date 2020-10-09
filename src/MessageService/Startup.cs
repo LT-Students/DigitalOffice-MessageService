@@ -35,7 +35,7 @@ namespace LT.DigitalOffice.MessageService
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<RabbitMQOptions>(Configuration);
-            services.Configure<NetworkCredentialsOptions>(Configuration);
+            services.Configure<SmtpCredentialsOptions>(Configuration);
 
             services.AddHealthChecks();
 
@@ -101,7 +101,7 @@ namespace LT.DigitalOffice.MessageService
             services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseHealthChecks("/api/healthcheck");
 

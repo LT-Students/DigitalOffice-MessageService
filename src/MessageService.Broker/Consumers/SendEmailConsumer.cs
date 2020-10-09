@@ -16,12 +16,12 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
     {
         private readonly IEmailRepository repository;
         private readonly IMapper<ISendEmailRequest, DbEmail> mapper;
-        private readonly IOptions<NetworkCredentialsOptions> options;
+        private readonly IOptions<SmtpCredentialsOptions> options;
 
         public SendEmailConsumer(
             [FromServices] IEmailRepository repository,
             [FromServices] IMapper<ISendEmailRequest, DbEmail> mapper,
-            [FromServices] IOptions<NetworkCredentialsOptions> options)
+            [FromServices] IOptions<SmtpCredentialsOptions> options)
         {
             this.repository = repository;
             this.mapper = mapper;
