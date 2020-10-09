@@ -6,4 +6,17 @@
     <RootNamespace>LT.DigitalOffice.MessageService.Broker</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="LT.DigitalOffice.Kernel" Version="1.0.6" />
+    <PackageReference Include="MassTransit" Version="7.0.4" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MessageService.Data\MessageService.Data.csproj" />
+    <ProjectReference Include="..\MessageService.Mappers\MessageService.Mappers.csproj" />
+    <ProjectReference Include="..\MessageService.Models.BrokerRequests\MessageService.Models.BrokerRequest.csproj" />
+    <ProjectReference Include="..\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />
+  </ItemGroup>
+
 </Project>
