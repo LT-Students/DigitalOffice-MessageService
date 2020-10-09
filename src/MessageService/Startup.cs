@@ -8,7 +8,6 @@ using LT.DigitalOffice.MessageService.Data;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
-using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations;
 using LT.DigitalOffice.MessageService.Mappers;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -90,6 +89,7 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureCommands(IServiceCollection services)
         {
+            services.AddTransient<IDisableEmailTemplateCommand, DisableEmailTemplateCommand>();
             services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
         }
 

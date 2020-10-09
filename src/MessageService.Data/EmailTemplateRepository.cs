@@ -2,6 +2,7 @@
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
 using System;
+using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
@@ -12,6 +13,21 @@ namespace LT.DigitalOffice.MessageService.Data
         public EmailTemplateRepository(IDataProvider provider)
         {
             this.provider = provider;
+        }
+
+        public void DisableEmailTemplate(Guid emailTemplateId)
+        {
+            var dbEmailTemplate = provider.EmailTemplates.FirstOrDefault(emailTemplate => emailTemplate.Id == emailTemplateId);
+
+            if (dbEmailTemplate == null)
+            {
+                throw new Exception("Email template with this Id does not exist.");
+            }
+
+            dbEmailTemplate.IsActive = false;
+
+            provider.EmailTemplates.Update(dbEmailTemplate);
+            provider.Save();
         }
 
         public Guid AddEmailTemplate(DbEmailTemplate emailTemplate)
