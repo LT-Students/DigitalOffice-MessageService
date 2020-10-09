@@ -1,5 +1,7 @@
+using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Business;
 using LT.DigitalOffice.MessageService.Business.Interfaces;
 using LT.DigitalOffice.MessageService.Data;
@@ -11,6 +13,7 @@ using LT.DigitalOffice.MessageService.Mappers;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +35,7 @@ namespace LT.DigitalOffice.MessageService
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<RabbitMQOptions>(Configuration);
+            services.Configure<SmtpCredentialsOptions>(Configuration);
 
             services.AddHealthChecks();
 
@@ -45,6 +49,43 @@ namespace LT.DigitalOffice.MessageService
             ConfigureCommands(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
+            ConfigureMassTransit(services);
+
+            services.AddKernelExtensions();
+        }
+
+        private void ConfigureMassTransit(IServiceCollection services)
+        {
+            var rabbitMQOptions = Configuration.GetSection(RabbitMQOptions.RabbitMQ).Get<RabbitMQOptions>();
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<SendEmailConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(rabbitMQOptions.Host, "/", host =>
+                    {
+                        host.Username($"{rabbitMQOptions.Username}_{rabbitMQOptions.Password}");
+                        host.Password(rabbitMQOptions.Password);
+                    });
+
+                    cfg.ReceiveEndpoint(rabbitMQOptions.Username, ep =>
+                    {
+                        ep.ConfigureConsumer<SendEmailConsumer>(context);
+                    });
+                });
+
+                x.ConfigureKernelMassTransit(rabbitMQOptions);
+            });
+
+            services.AddMassTransitHostedService();
+        }
+
+        private void ConfigureMappers(IServiceCollection services)
+        {
+            services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
+            services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
         }
 
         private void ConfigureCommands(IServiceCollection services)
@@ -52,19 +93,15 @@ namespace LT.DigitalOffice.MessageService
             services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
         }
 
-        private void ConfigureMappers(IServiceCollection services)
-        {
-            services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
-        }
-
         private void ConfigureRepositories(IServiceCollection services)
         {
             services.AddTransient<IDataProvider, MessageServiceDbContext>();
 
+            services.AddTransient<IEmailRepository, EmailRepository>();
             services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseHealthChecks("/api/healthcheck");
 
