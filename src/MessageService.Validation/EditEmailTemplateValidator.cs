@@ -17,9 +17,7 @@ namespace LT.DigitalOffice.MessageService.Validation
                 .WithMessage("Subject too long");
 
             RuleFor(et => et.Body)
-                .NotEmpty()
-                .MaximumLength(1000)
-                .WithMessage("Subject too long");
+                .NotEmpty();
         }
     }
 }

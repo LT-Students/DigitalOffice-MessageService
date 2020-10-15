@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
+using LT.DigitalOffice.Kernel.Exceptions;
+using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.MessageService.Business.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
@@ -7,7 +9,6 @@ using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Text;
 
 namespace LT.DigitalOffice.MessageService.Business
 {
@@ -36,13 +37,7 @@ namespace LT.DigitalOffice.MessageService.Business
         {
             CheckUserRights();
 
-            var validationResult = validator.Validate(editEmailTemplate);
-
-            if (!validationResult.IsValid)
-            {
-                throw new ValidationException(
-                    new StringBuilder().AppendJoin(",", validationResult.Errors).ToString());
-            }
+            validator.ValidateAndThrowCustom(editEmailTemplate);
 
             var dbEmailTemplate = repository.GetEmailTemplateById(editEmailTemplate.Id);
 
@@ -57,7 +52,7 @@ namespace LT.DigitalOffice.MessageService.Business
 
             if (!isAccess)
             {
-                throw new Exception("Not enough rights.");
+                throw new ForbiddenException("Not enough rights.");
             }
         }
     }
