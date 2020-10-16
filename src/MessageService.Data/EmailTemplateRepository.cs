@@ -16,6 +16,21 @@ namespace LT.DigitalOffice.MessageService.Data
             this.provider = provider;
         }
 
+        public void DisableEmailTemplate(Guid emailTemplateId)
+        {
+            var dbEmailTemplate = provider.EmailTemplates.FirstOrDefault(emailTemplate => emailTemplate.Id == emailTemplateId);
+
+            if (dbEmailTemplate == null)
+            {
+                throw new Exception("Email template with this Id does not exist.");
+            }
+
+            dbEmailTemplate.IsActive = false;
+
+            provider.EmailTemplates.Update(dbEmailTemplate);
+            provider.Save();
+        }
+
         public Guid AddEmailTemplate(DbEmailTemplate emailTemplate)
         {
             provider.EmailTemplates.Add(emailTemplate);

@@ -10,6 +10,11 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     public interface IEmailTemplateRepository
     {
         /// <summary>
+        /// Disable an email template by its Id.
+        /// </summary>
+        /// <param name="emailTemplateId">Email template Id.</param>
+        void DisableEmailTemplate(Guid emailTemplateId);
+
         /// Adds new email template to the database.
         /// </summary>
         /// <param name="emailTemplate">Email template to add.</param>

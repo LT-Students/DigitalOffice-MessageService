@@ -1,6 +1,8 @@
 using FluentValidation;
+using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Business;
 using LT.DigitalOffice.MessageService.Business.Interfaces;
 using LT.DigitalOffice.MessageService.Data;
@@ -33,6 +35,9 @@ namespace LT.DigitalOffice.MessageService
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<RabbitMQOptions>(Configuration);
+            services.Configure<SmtpCredentialsOptions>(Configuration);
+
             services.AddHealthChecks();
 
             services.AddDbContext<MessageServiceDbContext>(options =>
@@ -45,8 +50,8 @@ namespace LT.DigitalOffice.MessageService
             ConfigureCommands(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
-            ConfigureMassTransit(services);
             ConfigureValidators(services);
+            ConfigureMassTransit(services);
 
             services.AddKernelExtensions();
         }
@@ -57,12 +62,19 @@ namespace LT.DigitalOffice.MessageService
 
             services.AddMassTransit(x =>
             {
+                x.AddConsumer<SendEmailConsumer>();
+
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.Host(rabbitMQOptions.Host, "/", host =>
                     {
                         host.Username($"{rabbitMQOptions.Username}_{rabbitMQOptions.Password}");
                         host.Password(rabbitMQOptions.Password);
+                    });
+
+                    cfg.ReceiveEndpoint(rabbitMQOptions.Username, ep =>
+                    {
+                        ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
                 });
 
@@ -74,12 +86,14 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMappers(IServiceCollection services)
         {
+            services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
             services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
             services.AddTransient<IMapper<EditEmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
         }
 
         private void ConfigureCommands(IServiceCollection services)
         {
+            services.AddTransient<IDisableEmailTemplateCommand, DisableEmailTemplateCommand>();
             services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
         }
 
@@ -87,6 +101,7 @@ namespace LT.DigitalOffice.MessageService
         {
             services.AddTransient<IDataProvider, MessageServiceDbContext>();
 
+            services.AddTransient<IEmailRepository, EmailRepository>();
             services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
         }
 
