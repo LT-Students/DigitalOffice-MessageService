@@ -13,7 +13,6 @@ namespace LT.DigitalOffice.MessageService.Business.Interfaces
         /// Edit email template data with check right user.
         /// </summary>
         /// <param name="editEmailTemplate">Edit email template data.</param>
-        /// <param name="requestingUser">Edit email template data.</param>
-        void Execute(EditEmailTemplateRequest editEmailTemplate, Guid requestingUser);
+        void Execute(EditEmailTemplateRequest editEmailTemplate);
     }
 }

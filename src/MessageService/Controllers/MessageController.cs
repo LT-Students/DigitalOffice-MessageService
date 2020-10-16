@@ -21,10 +21,9 @@ namespace LT.DigitalOffice.MessageService.Controllers
         [HttpPost("editEmailTemplate")]
         public void EditEmailtemplate(
             [FromServices] IEditEmailTemplateCommand command,
-            [FromBody] EditEmailTemplateRequest emailTemplate,
-            [FromHeader] Guid requestingUser)
+            [FromBody] EditEmailTemplateRequest emailTemplate)
         {
-            command.Execute(emailTemplate, requestingUser);
+            command.Execute(emailTemplate);
         }
     }
 }

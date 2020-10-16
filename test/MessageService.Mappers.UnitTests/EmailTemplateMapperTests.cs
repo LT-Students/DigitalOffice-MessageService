@@ -10,14 +10,17 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
     public class EmailTemplateMapperTests
     {
         private IMapper<EmailTemplate, DbEmailTemplate> mapper;
+        private IMapper<EditEmailTemplateRequest, DbEmailTemplate> editMapper;
 
         private EmailTemplate emailTemplate;
         private DbEmailTemplate dbEmailTemplate;
+        private EditEmailTemplateRequest editEmailTemplateRequest;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
             mapper = new EmailTemplateMapper();
+            editMapper = new EmailTemplateMapper();
 
             emailTemplate = new EmailTemplate
             {
@@ -32,6 +35,13 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
                 Body = emailTemplate.Body,
                 AuthorId = emailTemplate.AuthorId,
                 IsActive = true
+            };
+
+            editEmailTemplateRequest = new EditEmailTemplateRequest
+            {
+                Id = Guid.NewGuid(),
+                Subject = "Subject_1",
+                Body = "Body_1"
             };
         }
 
@@ -52,6 +62,26 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 
             Assert.IsInstanceOf<Guid>(resultDbEmailTemplate.Id);
             SerializerAssert.AreEqual(dbEmailTemplate, resultDbEmailTemplate);
+        }
+
+        [Test]
+        public void ShouldThrowArgumentNullExceptionWhenEditEmailTemplateRequestIsNull()
+        {
+            EditEmailTemplateRequest newEditEmailTemplateRequest = null;
+
+            Assert.Throws<ArgumentNullException>(() => editMapper.Map(newEditEmailTemplateRequest));
+        }
+
+        [Test]
+        public void ShouldReturnRightModelSuccessful()
+        {
+            var expectedDbEmailTemplate = new DbEmailTemplate
+            {
+                Subject = editEmailTemplateRequest.Subject,
+                Body = editEmailTemplateRequest.Body,
+            };
+
+            SerializerAssert.AreEqual(expectedDbEmailTemplate, editMapper.Map(editEmailTemplateRequest));
         }
     }
 }

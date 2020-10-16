@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
         /// Edit email template to the database.
         /// </summary>
         /// <param name="dbEmailTemplateToEdit">Email template data to update.</param>
-        void EditEmailTemplateById(DbEmailTemplate dbEmailTemplateToEdit);
+        void EditEmailTemplate(DbEmailTemplate dbEmailTemplateToEdit);
 
         /// <summary>
         /// Get email template by id from the database.

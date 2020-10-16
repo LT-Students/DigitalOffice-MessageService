@@ -6,7 +6,7 @@ using System;
 namespace LT.DigitalOffice.MessageService.Mappers
 {
     public class EmailTemplateMapper : IMapper<EmailTemplate, DbEmailTemplate>,
-        IMapper<EditEmailTemplateRequest, DbEmailTemplate, DbEmailTemplate>
+        IMapper<EditEmailTemplateRequest, DbEmailTemplate>
     {
         public DbEmailTemplate Map(EmailTemplate emailTemplate)
         {
@@ -26,7 +26,7 @@ namespace LT.DigitalOffice.MessageService.Mappers
             };
         }
 
-        public DbEmailTemplate Map(EditEmailTemplateRequest emailTemplate, DbEmailTemplate dbEmailTemplate)
+        public DbEmailTemplate Map(EditEmailTemplateRequest emailTemplate)
         {
             if (emailTemplate == null)
             {
@@ -35,12 +35,8 @@ namespace LT.DigitalOffice.MessageService.Mappers
 
             return new DbEmailTemplate
             {
-                Id = Guid.NewGuid(),
                 Subject = emailTemplate.Subject,
-                Body = emailTemplate.Body,
-                CreatedAt = dbEmailTemplate.CreatedAt,
-                IsActive = dbEmailTemplate.IsActive,
-                AuthorId = dbEmailTemplate.AuthorId
+                Body = emailTemplate.Body
             };
         }
     }

@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.MessageService.Business
         private readonly IAccessValidator accessValidator;
         private readonly IEmailTemplateRepository repository;
         private readonly IValidator<EditEmailTemplateRequest> validator;
-        private readonly IMapper<EditEmailTemplateRequest, DbEmailTemplate, DbEmailTemplate> mapper;
+        private readonly IMapper<EditEmailTemplateRequest, DbEmailTemplate> mapper;
 
         private readonly int numberRight = 3;
 
@@ -25,7 +25,7 @@ namespace LT.DigitalOffice.MessageService.Business
             [FromServices] IAccessValidator accessValidator,
             [FromServices] IEmailTemplateRepository repository,
             [FromServices] IValidator<EditEmailTemplateRequest> validator,
-            [FromServices] IMapper<EditEmailTemplateRequest, DbEmailTemplate, DbEmailTemplate> mapper)
+            [FromServices] IMapper<EditEmailTemplateRequest, DbEmailTemplate> mapper)
         {
             this.mapper = mapper;
             this.validator = validator;
@@ -33,7 +33,7 @@ namespace LT.DigitalOffice.MessageService.Business
             this.accessValidator = accessValidator;
         }
 
-        public void Execute(EditEmailTemplateRequest editEmailTemplate, Guid requestingUser)
+        public void Execute(EditEmailTemplateRequest editEmailTemplate)
         {
             CheckUserRights();
 
@@ -41,9 +41,13 @@ namespace LT.DigitalOffice.MessageService.Business
 
             var dbEmailTemplate = repository.GetEmailTemplateById(editEmailTemplate.Id);
 
-            dbEmailTemplate = mapper.Map(editEmailTemplate, dbEmailTemplate);
+            var editDbEmailTemplate = mapper.Map(editEmailTemplate);
 
-            repository.EditEmailTemplateById(dbEmailTemplate);
+            editDbEmailTemplate.CreatedAt = dbEmailTemplate.CreatedAt;
+            editDbEmailTemplate.IsActive = dbEmailTemplate.IsActive;
+            editDbEmailTemplate.AuthorId = dbEmailTemplate.AuthorId;
+
+            repository.EditEmailTemplate(dbEmailTemplate);
         }
 
         private void CheckUserRights()

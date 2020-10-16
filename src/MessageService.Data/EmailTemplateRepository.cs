@@ -1,6 +1,7 @@
 ﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -36,8 +37,17 @@ namespace LT.DigitalOffice.MessageService.Data
             return dbEmailTemplate;
         }
 
-        public void EditEmailTemplateById(DbEmailTemplate dbEmailTemplateToEdit)
+        public void EditEmailTemplate(DbEmailTemplate dbEmailTemplateToEdit)
         {
+            var dbTemplate = provider.EmailTemplates
+                .AsNoTracking()
+                .FirstOrDefault(et => et.Id == dbEmailTemplateToEdit.Id);
+
+            if (dbTemplate == null)
+            {
+                throw new NullReferenceException("Email templates was not found.");
+            }
+
             provider.EmailTemplates.Update(dbEmailTemplateToEdit);
             provider.Save();
         }

@@ -28,6 +28,12 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef
             Database.EnsureDeleted();
         }
 
+        public object MakeEntityDetached(object obj)
+        {
+            Entry(obj).State = EntityState.Detached;
+            return Entry(obj).State;
+        }
+
         public bool IsInMemory()
         {
             return Database.IsInMemory();
