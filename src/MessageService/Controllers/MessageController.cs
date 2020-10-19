@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
         {
             command.Execute(emailTemplateId, requestingUser);
         }
-        
+
         [HttpPost("addEmailTemplate")]
         public Guid AddEmailTemplate(
             [FromServices] IAddEmailTemplateCommand command,

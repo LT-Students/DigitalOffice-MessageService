@@ -54,6 +54,16 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 CreatedAt = DateTime.UtcNow
             };
 
+            editDbEmailTemplate = new DbEmailTemplate
+            {
+                Id = dbEmailTemplate.Id,
+                Subject = "Subject_1",
+                Body = "Body_1",
+                AuthorId = dbEmailTemplate.AuthorId,
+                IsActive = dbEmailTemplate.IsActive,
+                CreatedAt = dbEmailTemplate.CreatedAt
+            };
+
             provider.EmailTemplates.Add(dbEmailTemplate);
             provider.Save();
         }

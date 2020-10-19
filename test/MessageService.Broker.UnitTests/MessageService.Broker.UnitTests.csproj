@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\MessageService.Broker\MessageService.Broker.csproj" />
-    <ProjectReference Include="..\..\src\MessageService\MessageService.csproj" />
   </ItemGroup>
 
 </Project>
