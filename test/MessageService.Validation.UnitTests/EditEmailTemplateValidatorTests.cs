@@ -46,14 +46,6 @@ namespace MessageService.Validation.UnitTests
         }
 
         [Test]
-        public void ShouldThrowValidationExceptionWhenBodyIsEmpty()
-        {
-            var body = String.Empty;
-
-            validator.ShouldHaveValidationErrorFor(x => x.Body, body);
-        }
-
-        [Test]
         public void ShouldNotHaveAnyValidationErrorsWhenRequestIsValid()
         {
             validator.TestValidate(emailTemplate).ShouldNotHaveAnyValidationErrors();
