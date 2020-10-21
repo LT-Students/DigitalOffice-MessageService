@@ -1,3 +1,4 @@
+using FluentValidation;
 using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
@@ -12,6 +13,7 @@ using LT.DigitalOffice.MessageService.Mappers;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
+using LT.DigitalOffice.MessageService.Validation;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,6 +50,7 @@ namespace LT.DigitalOffice.MessageService
             ConfigureCommands(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
+            ConfigureValidators(services);
             ConfigureMassTransit(services);
 
             services.AddKernelExtensions();
@@ -85,6 +88,7 @@ namespace LT.DigitalOffice.MessageService
         {
             services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
             services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
+            services.AddTransient<IMapper<EditEmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
         }
 
         private void ConfigureCommands(IServiceCollection services)
@@ -99,6 +103,11 @@ namespace LT.DigitalOffice.MessageService
 
             services.AddTransient<IEmailRepository, EmailRepository>();
             services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
+        }
+
+        private void ConfigureValidators(IServiceCollection services)
+        {
+            services.AddTransient<IValidator<EditEmailTemplateRequest>, EditEmailTemplateValidator>();
         }
 
         public void Configure(IApplicationBuilder app)

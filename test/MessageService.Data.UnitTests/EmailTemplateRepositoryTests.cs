@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
+﻿using LT.DigitalOffice.Kernel.UnitTestLibrary;
+using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -17,6 +18,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         private DbEmailTemplate dbEmailTemplate;
         private Guid emailTemplateId;
         private DbEmailTemplate dbEmailTemplateToAdd;
+        private DbEmailTemplate editDbEmailTemplate;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -50,6 +52,16 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 AuthorId = Guid.NewGuid(),
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
+            };
+
+            editDbEmailTemplate = new DbEmailTemplate
+            {
+                Id = dbEmailTemplate.Id,
+                Subject = "Subject_1",
+                Body = "Body_1",
+                AuthorId = dbEmailTemplate.AuthorId,
+                IsActive = dbEmailTemplate.IsActive,
+                CreatedAt = dbEmailTemplate.CreatedAt
             };
 
             provider.EmailTemplates.Add(dbEmailTemplate);
@@ -95,6 +107,46 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         {
             Assert.AreEqual(dbEmailTemplateToAdd.Id, repository.AddEmailTemplate(dbEmailTemplateToAdd));
             Assert.AreEqual(dbEmailTemplateToAdd, provider.EmailTemplates.Find(dbEmailTemplateToAdd.Id));
+        }
+
+        [Test]
+        public void ShouldThrowNullReferenceExceptionWhenEmailTemplateIdNotFound()
+        {
+            var emailTemplaiId = Guid.NewGuid();
+
+            Assert.Throws<NullReferenceException>(() => repository.GetEmailTemplateById(emailTemplaiId));
+        }
+
+        [Test]
+        public void ShouldGetEmailTemplateByIdSuccessful()
+        {
+            SerializerAssert.AreEqual(dbEmailTemplate, repository.GetEmailTemplateById(dbEmailTemplate.Id));
+        }
+
+        [Test]
+        public void ShouldThrowNullReferenceExceptionWhenEditEmailTemplateIdNotFound()
+        {
+            var newdbEmailTemplate = new DbEmailTemplate
+            {
+                Id = Guid.NewGuid(),
+                Subject = editDbEmailTemplate.Subject,
+                Body = editDbEmailTemplate.Body,
+                AuthorId = editDbEmailTemplate.AuthorId,
+                IsActive = editDbEmailTemplate.IsActive,
+                CreatedAt = editDbEmailTemplate.CreatedAt
+            };
+
+            Assert.Throws<NullReferenceException>(() => repository.EditEmailTemplate(newdbEmailTemplate));
+        }
+
+        [Test]
+        public void ShouldEditEmailTemplateSuccessful()
+        {
+            provider.MakeEntityDetached(dbEmailTemplate);
+
+            repository.EditEmailTemplate(editDbEmailTemplate);
+
+            SerializerAssert.AreEqual(editDbEmailTemplate, repository.GetEmailTemplateById(editDbEmailTemplate.Id));
         }
     }
 }

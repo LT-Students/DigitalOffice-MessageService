@@ -10,6 +10,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider
         DbSet<DbEmailTemplate> EmailTemplates { get; set; }
 
         void Save();
+        object MakeEntityDetached(object obj);
         void EnsureDeleted();
         bool IsInMemory();
     }

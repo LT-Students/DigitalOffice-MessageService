@@ -1,25 +1,23 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>LT.DigitalOffice.MessageService.Data.UnitTests</AssemblyName>
-    <RootNamespace>LT.DigitalOffice.MessageService.Data.UnitTests</RootNamespace>
+    <AssemblyName>LT.DigitalOffice.MessageService.Validation.UnitTests</AssemblyName>
+    <RootNamespace>LT.DigitalOffice.MessageService.Validation.UnitTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LT.DigitalOffice.Kernel" Version="1.0.9" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MessageService.Data.Provider.MsSql.Ef\MessageService.Data.Provider.MsSql.Ef.csproj" />
-    <ProjectReference Include="..\..\src\MessageService.Data\MessageService.Data.csproj" />
     <ProjectReference Include="..\..\src\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />
+    <ProjectReference Include="..\..\src\MessageService.Validation\MessageService.Validation.csproj" />
   </ItemGroup>
 
 </Project>

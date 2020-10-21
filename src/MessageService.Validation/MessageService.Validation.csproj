@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>LT.DigitalOffice.MessageService.Validation</AssemblyName>
+    <RootNamespace>LT.DigitalOffice.MessageService.Validation</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="9.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />
+  </ItemGroup>
+
+</Project>
