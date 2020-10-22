@@ -6,6 +6,14 @@
     <RootNamespace>LT.DigitalOffice.MessageService</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;REALEASE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="LT.DigitalOffice.Kernel" Version="1.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
