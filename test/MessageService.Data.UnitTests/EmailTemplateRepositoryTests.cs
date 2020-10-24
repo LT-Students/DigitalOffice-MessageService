@@ -102,13 +102,16 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         }
         #endregion
 
+        #region AddEmailTemplate
         [Test]
         public void ShouldAddEmailTemplateCorrectly()
         {
             Assert.AreEqual(dbEmailTemplateToAdd.Id, repository.AddEmailTemplate(dbEmailTemplateToAdd));
             Assert.AreEqual(dbEmailTemplateToAdd, provider.EmailTemplates.Find(dbEmailTemplateToAdd.Id));
         }
+        #endregion
 
+        #region GetEmailTemplateById
         [Test]
         public void ShouldThrowNullReferenceExceptionWhenEmailTemplateIdNotFound()
         {
@@ -122,7 +125,9 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         {
             SerializerAssert.AreEqual(dbEmailTemplate, repository.GetEmailTemplateById(dbEmailTemplate.Id));
         }
+        #endregion
 
+        #region EditEmailTemplate
         [Test]
         public void ShouldThrowNullReferenceExceptionWhenEditEmailTemplateIdNotFound()
         {
@@ -140,7 +145,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         }
 
         [Test]
-        public void ShouldEditEmailTemplateSuccessful()
+        public void ShouldEditEmailTemplateSuccessfully()
         {
             provider.MakeEntityDetached(dbEmailTemplate);
 
@@ -148,6 +153,6 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 
             SerializerAssert.AreEqual(editDbEmailTemplate, repository.GetEmailTemplateById(editDbEmailTemplate.Id));
         }
+        #endregion
     }
 }
-
