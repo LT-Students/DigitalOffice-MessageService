@@ -123,7 +123,10 @@ namespace LT.DigitalOffice.MessageService
 
             UpdateDatabase(app);
 
+#if RELEASE
             app.UseHttpsRedirection();
+#endif
+
             app.UseRouting();
 
             string corsUrl = Configuration.GetSection("Settings")["CorsUrl"];
