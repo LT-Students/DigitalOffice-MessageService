@@ -8,8 +8,7 @@ namespace LT.DigitalOffice.MessageService.Validation
         public AddWorkspaceRequestValidator()
         {
             RuleFor(workspace => workspace.Name)
-                .NotEmpty().WithMessage("Workspace name can not be empty.")
-                .NotEqual("").WithMessage("Workspace name can not have no symbols.");
+                .NotEmpty().WithMessage("Workspace name can not be empty.");
         }
     }
 }
