@@ -1,8 +1,8 @@
-﻿using LT.DigitalOffice.Kernel.UnitTestLibrary;
-using LT.DigitalOffice.MessageService.Data.Interfaces;
+﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.UnitTestKernel;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System;

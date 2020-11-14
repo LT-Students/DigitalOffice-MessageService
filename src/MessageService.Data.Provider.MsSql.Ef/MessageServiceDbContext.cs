@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.MessageService.Models.Db;
+﻿using LT.DigitalOffice.Kernel.Database;
+using LT.DigitalOffice.MessageService.Models.Db;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -18,7 +19,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef
         public DbSet<DbEmail> Emails { get; set; }
         public DbSet<DbEmailTemplate> EmailTemplates { get; set; }
 
-        void IDataProvider.Save()
+        void IBaseDataProvider.Save()
         {
             SaveChanges();
         }
