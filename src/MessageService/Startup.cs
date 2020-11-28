@@ -35,7 +35,6 @@ namespace LT.DigitalOffice.MessageService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<RabbitMQOptions>(Configuration);
             services.Configure<SmtpCredentialsOptions>(Configuration);
 
             services.AddHealthChecks();
@@ -58,7 +57,7 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            var rabbitMQOptions = Configuration.GetSection(RabbitMQOptions.RabbitMQ).Get<RabbitMQOptions>();
+            var rabbitMqConfig = Configuration.GetSection(BaseRabbitMqOptions.RabbitMqSectionName).Get<BaseRabbitMqOptions>();
 
             services.AddMassTransit(x =>
             {
@@ -66,19 +65,19 @@ namespace LT.DigitalOffice.MessageService
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(rabbitMQOptions.Host, "/", host =>
+                    cfg.Host(rabbitMqConfig.Host, "/", host =>
                     {
-                        host.Username($"{rabbitMQOptions.Username}_{rabbitMQOptions.Password}");
-                        host.Password(rabbitMQOptions.Password);
+                        host.Username($"{rabbitMqConfig.Username}_{rabbitMqConfig.Password}");
+                        host.Password(rabbitMqConfig.Password);
                     });
 
-                    cfg.ReceiveEndpoint(rabbitMQOptions.Username, ep =>
+                    cfg.ReceiveEndpoint(rabbitMqConfig.Username, ep =>
                     {
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
                 });
 
-                x.ConfigureKernelMassTransit(rabbitMQOptions);
+                x.ConfigureKernelMassTransit(rabbitMqConfig);
             });
 
             services.AddMassTransitHostedService();
