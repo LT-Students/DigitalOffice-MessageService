@@ -1,4 +1,4 @@
-﻿using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
+﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.MessageService.Business.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using Microsoft.AspNetCore.Mvc;

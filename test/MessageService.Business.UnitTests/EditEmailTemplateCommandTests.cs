@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
-using LT.DigitalOffice.Kernel.AccessValidator.Interfaces;
+using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.MessageService.Business.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;

@@ -1,8 +1,8 @@
 ﻿using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.Kernel.UnitTestLibrary;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.UnitTests.Models;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.UnitTestKernel;
 using NUnit.Framework;
 using System;
 

@@ -1,23 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
+
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
-
-    <AssemblyName>LT.DigitalOffice.MessageService.Broker.UnitTests</AssemblyName>
-    <RootNamespace>LT.DigitalOffice.MessageService.Broker.UnitTests</RootNamespace>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="LT.DigitalOffice.Kernel" Version="1.0.11" />
-    <PackageReference Include="MassTransit" Version="7.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.9" />
-    <PackageReference Include="Moq" Version="4.14.7" />
-    <PackageReference Include="nunit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\MessageService.Broker\MessageService.Broker.csproj" />
