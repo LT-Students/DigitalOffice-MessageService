@@ -13,7 +13,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         private IDisableEmailTemplateCommand command;
         private Mock<IAccessValidator> accessValidatorMock;
 
-        private Guid requestingUserId;
         private Guid emailTemplateId;
 
         [OneTimeSetUp]
@@ -24,7 +23,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
             command = new DisableEmailTemplateCommand(repositoryMock.Object, accessValidatorMock.Object);
 
-            requestingUserId = Guid.NewGuid();
             emailTemplateId = Guid.NewGuid();
         }
 
@@ -38,7 +36,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             repositoryMock
                 .Setup(x => x.DisableEmailTemplate(It.IsAny<Guid>()));
 
-            command.Execute(emailTemplateId, requestingUserId);
+            command.Execute(emailTemplateId);
 
             repositoryMock.Verify();
         }
@@ -48,7 +46,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         {
             repositoryMock.Setup(x => x.DisableEmailTemplate(It.IsAny<Guid>())).Throws(new Exception());
 
-            Assert.Throws<Exception>(() => command.Execute(emailTemplateId, requestingUserId));
+            Assert.Throws<Exception>(() => command.Execute(emailTemplateId));
             repositoryMock.Verify();
         }
 
@@ -59,7 +57,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(x => x.HasRights(3))
                 .Returns(false);
 
-            Assert.Throws<Exception>(() => command.Execute(emailTemplateId, requestingUserId));
+            Assert.Throws<Exception>(() => command.Execute(emailTemplateId));
         }
     }
 }

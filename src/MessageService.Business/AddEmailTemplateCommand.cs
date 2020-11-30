@@ -26,23 +26,16 @@ namespace LT.DigitalOffice.MessageService.Business
             this.accessValidator = accessValidator;
         }
 
-        public Guid Execute(EmailTemplate emailTemplate, Guid requestingUserId)
+        public Guid Execute(EmailTemplate emailTemplate)
         {
-            var isAccess = GetResultCheckingUserRights(requestingUserId);
+            const int rightId = 3;
 
-            if (!isAccess)
+            if (!(accessValidator.IsAdmin() || accessValidator.HasRights(rightId)))
             {
                 throw new Exception("Not enough rights.");
             }
 
             return repository.AddEmailTemplate(mapper.Map(emailTemplate));
-        }
-
-        private bool GetResultCheckingUserRights(Guid userId)
-        {
-            int numberRight = 3;
-
-            return accessValidator.IsAdmin() || accessValidator.HasRights(numberRight);
         }
     }
 }

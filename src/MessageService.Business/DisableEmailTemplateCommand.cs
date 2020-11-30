@@ -20,21 +20,14 @@ namespace LT.DigitalOffice.MessageService.Business
             this.accessValidator = accessValidator;
         }
 
-        public void Execute(Guid emailTemplateId, Guid requestingUserId)
+        public void Execute(Guid emailTemplateId)
         {
-            var isAccess = GetResultCheckingUserRights(requestingUserId);
-
-            if (!isAccess)
+            if (!(accessValidator.IsAdmin() || accessValidator.HasRights(numberRight)))
             {
                 throw new Exception("Not enough rights.");
             }
 
             repository.DisableEmailTemplate(emailTemplateId);
-        }
-
-        private bool GetResultCheckingUserRights(Guid userId)
-        {
-            return accessValidator.IsAdmin() || accessValidator.HasRights(numberRight);
         }
     }
 }

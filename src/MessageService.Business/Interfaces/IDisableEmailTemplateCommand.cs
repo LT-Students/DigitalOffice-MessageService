@@ -12,7 +12,6 @@ namespace LT.DigitalOffice.MessageService.Business.Interfaces
         ///  Disable an email template.
         /// </summary>
         /// <param name="emailTemplateId">Email template Id.</param>
-        /// <param name="requestingUserId">Requesting user Id.</param>
-        void Execute(Guid emailTemplateId, Guid requestingUserId);
+        void Execute(Guid emailTemplateId);
     }
 }

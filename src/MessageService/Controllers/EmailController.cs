@@ -7,24 +7,22 @@ namespace LT.DigitalOffice.MessageService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MessageController : ControllerBase
+    public class EmailController : ControllerBase
     {
         [HttpGet("removeEmailTemplate")]
-        public void removeEmailTemplate(
+        public void RemoveEmailTemplate(
             [FromServices] IDisableEmailTemplateCommand command,
-            [FromQuery] Guid emailTemplateId,
-            [FromHeader] Guid requestingUser)
+            [FromQuery] Guid emailTemplateId)
         {
-            command.Execute(emailTemplateId, requestingUser);
+            command.Execute(emailTemplateId);
         }
 
         [HttpPost("addEmailTemplate")]
         public Guid AddEmailTemplate(
             [FromServices] IAddEmailTemplateCommand command,
-            [FromBody] EmailTemplate emailTemplate,
-            [FromHeader] Guid requestingUser)
+            [FromBody] EmailTemplate emailTemplate)
         {
-            return command.Execute(emailTemplate, requestingUser);
+            return command.Execute(emailTemplate);
         }
 
         [HttpPost("editEmailTemplate")]

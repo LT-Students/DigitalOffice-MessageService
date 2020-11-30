@@ -8,6 +8,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider
     {
         DbSet<DbMessage> Messages { get; set; }
         DbSet<DbEmail> Emails { get; set; }
+        DbSet<DbWorkspace> Workspaces { get; set; }
         DbSet<DbEmailTemplate> EmailTemplates { get; set; }
     }
 }

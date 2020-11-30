@@ -85,6 +85,7 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMappers(IServiceCollection services)
         {
+            services.AddTransient<IMapper<AddWorkspaceRequest, DbWorkspace>, WorkspaceMapper>();
             services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
             services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
             services.AddTransient<IMapper<EditEmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
@@ -94,12 +95,15 @@ namespace LT.DigitalOffice.MessageService
         {
             services.AddTransient<IDisableEmailTemplateCommand, DisableEmailTemplateCommand>();
             services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
+            services.AddTransient<IEditEmailTemplateCommand, EditEmailTemplateCommand>();
+            services.AddTransient<IAddWorkspaceCommand, AddWorkspaceCommand>();
         }
 
         private void ConfigureRepositories(IServiceCollection services)
         {
             services.AddTransient<IDataProvider, MessageServiceDbContext>();
 
+            services.AddTransient<IWorkspaceRepository, WorkspaceRepository>();
             services.AddTransient<IEmailRepository, EmailRepository>();
             services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
         }
@@ -107,6 +111,7 @@ namespace LT.DigitalOffice.MessageService
         private void ConfigureValidators(IServiceCollection services)
         {
             services.AddTransient<IValidator<EditEmailTemplateRequest>, EditEmailTemplateValidator>();
+            services.AddTransient<IValidator<AddWorkspaceRequest>, AddWorkspaceRequestValidator>();
         }
 
         public void Configure(IApplicationBuilder app)
