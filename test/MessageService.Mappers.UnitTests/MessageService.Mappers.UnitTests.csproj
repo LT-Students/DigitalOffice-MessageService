@@ -2,10 +2,6 @@
 
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
-  <PropertyGroup>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\MessageService.Mappers\MessageService.Mappers.csproj" />
     <ProjectReference Include="..\..\src\MessageService.Models.Db\MessageService.Models.Db.csproj" />
