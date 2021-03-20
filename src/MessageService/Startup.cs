@@ -14,6 +14,7 @@ using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using LT.DigitalOffice.MessageService.Validation;
+using LT.DigitalOffice.UserService.Configuration;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -57,7 +58,7 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            var rabbitMqConfig = Configuration.GetSection(BaseRabbitMqOptions.RabbitMqSectionName).Get<BaseRabbitMqOptions>();
+            var rabbitMqConfig = Configuration.GetSection(BaseRabbitMqOptions.RabbitMqSectionName).Get<RabbitMqConfig>();
 
             services.AddMassTransit(x =>
             {
@@ -71,7 +72,7 @@ namespace LT.DigitalOffice.MessageService
                         host.Password(rabbitMqConfig.Password);
                     });
 
-                    cfg.ReceiveEndpoint(rabbitMqConfig.Username, ep =>
+                    cfg.ReceiveEndpoint(rabbitMqConfig.SendEmailEndpoint, ep =>
                     {
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
