@@ -2,10 +2,6 @@
 
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MessageService.Broker\MessageService.Broker.csproj" />
     <ProjectReference Include="..\MessageService.Business\MessageService.Business.csproj" />

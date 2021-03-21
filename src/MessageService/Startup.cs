@@ -2,6 +2,7 @@ using FluentValidation;
 using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Business;
 using LT.DigitalOffice.MessageService.Business.Interfaces;
@@ -22,6 +23,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace LT.DigitalOffice.MessageService
 {
@@ -40,9 +42,15 @@ namespace LT.DigitalOffice.MessageService
 
             services.AddHealthChecks();
 
+            string connStr = Environment.GetEnvironmentVariable("ConnectionString");
+            if (string.IsNullOrEmpty(connStr))
+            {
+                connStr = Configuration.GetConnectionString("SQLConnectionString");
+            }
+
             services.AddDbContext<MessageServiceDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("SQLConnectionString"));
+                options.UseSqlServer(connStr);
             });
 
             services.AddControllers();
@@ -58,7 +66,9 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            var rabbitMqConfig = Configuration.GetSection(BaseRabbitMqOptions.RabbitMqSectionName).Get<RabbitMqConfig>();
+            var rabbitMqConfig = Configuration
+                .GetSection(BaseRabbitMqOptions.RabbitMqSectionName)
+                .Get<RabbitMqConfig>();
 
             services.AddMassTransit(x =>
             {
@@ -76,6 +86,11 @@ namespace LT.DigitalOffice.MessageService
                     {
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
+
+                    x.AddRequestClient<ICheckTokenRequest>(
+                        new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
+
+                    x.ConfigureKernelMassTransit(rabbitMqConfig);
                 });
 
                 x.ConfigureKernelMassTransit(rabbitMqConfig);
@@ -122,6 +137,8 @@ namespace LT.DigitalOffice.MessageService
             app.UseExceptionHandler(tempApp => tempApp.Run(CustomExceptionHandler.HandleCustomException));
 
             UpdateDatabase(app);
+
+            app.UseMiddleware<TokenMiddleware>();
 
 #if RELEASE
             app.UseHttpsRedirection();

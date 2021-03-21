@@ -2,10 +2,6 @@
 
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MessageService.Data\MessageService.Data.csproj" />
     <ProjectReference Include="..\MessageService.Mappers\MessageService.Mappers.csproj" />

@@ -2,8 +2,4 @@
 
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
-
 </Project>

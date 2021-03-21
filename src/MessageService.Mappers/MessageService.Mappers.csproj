@@ -2,10 +2,6 @@
 
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MessageService.Models.Broker\MessageService.Models.Broker.csproj" />
     <ProjectReference Include="..\MessageService.Models.Db\MessageService.Models.Db.csproj" />
