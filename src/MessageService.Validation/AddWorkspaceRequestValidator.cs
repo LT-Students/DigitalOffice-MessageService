@@ -3,7 +3,7 @@ using LT.DigitalOffice.MessageService.Models.Dto;
 
 namespace LT.DigitalOffice.MessageService.Validation
 {
-    public class AddWorkspaceRequestValidator : AbstractValidator<AddWorkspaceRequest>
+    public class AddWorkspaceRequestValidator : AbstractValidator<Workspace>
     {
         public AddWorkspaceRequestValidator()
         {

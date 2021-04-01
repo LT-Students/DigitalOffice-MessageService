@@ -15,12 +15,12 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
     public class AddWorkspaceCommandTests
     {
         private Mock<IWorkspaceRepository> repositoryMock;
-        private Mock<IValidator<AddWorkspaceRequest>> validatorMock;
-        private Mock<IMapper<AddWorkspaceRequest, DbWorkspace>> mapperMock;
-        private IAddWorkspaceCommand command;
+        private Mock<IValidator<Workspace>> validatorMock;
+        private Mock<IMapper<Workspace, DbWorkspace>> mapperMock;
+        private ICreateWorkspaceCommand command;
 
         private Guid workspaceId;
-        private AddWorkspaceRequest workspace;
+        private Workspace workspace;
         private DbWorkspace dbWorkspace;
         private ValidationResult validationResultError;
         private Mock<ValidationResult> validationResultIsValidMock;
@@ -29,7 +29,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         public void OneTimeSetUp()
         {
             workspaceId = Guid.NewGuid();
-            workspace = new AddWorkspaceRequest
+            workspace = new Workspace
             {
                 Name = "Name",
                 Description = "Description",
@@ -60,10 +60,10 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         public void SetUp()
         {
             repositoryMock = new Mock<IWorkspaceRepository>();
-            mapperMock = new Mock<IMapper<AddWorkspaceRequest, DbWorkspace>>();
-            validatorMock = new Mock<IValidator<AddWorkspaceRequest>>();
+            mapperMock = new Mock<IMapper<Workspace, DbWorkspace>>();
+            validatorMock = new Mock<IValidator<Workspace>>();
 
-            command = new AddWorkspaceCommand(repositoryMock.Object, validatorMock.Object, mapperMock.Object);
+            command = new CreateWorkspaceCommand(repositoryMock.Object, validatorMock.Object, mapperMock.Object);
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Returns(validationResultIsValidMock.Object);
 
             mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<AddWorkspaceRequest>()))
+                .Setup(mapper => mapper.Map(It.IsAny<Workspace>()))
                 .Returns(dbWorkspace);
 
             repositoryMock
@@ -93,7 +93,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Verifiable();
 
             mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<AddWorkspaceRequest>()))
+                .Setup(mapper => mapper.Map(It.IsAny<Workspace>()))
                 .Throws<Exception>();
 
             Assert.Throws<Exception>(() => command.Execute(workspace));

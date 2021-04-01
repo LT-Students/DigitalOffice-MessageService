@@ -9,10 +9,10 @@ namespace LT.DigitalOffice.MessageService.Controllers
     [ApiController]
     public class WorkspaceController : ControllerBase
     {
-        [HttpPost("addWorkspace")]
-        public Guid AddWorkspace(
-            [FromServices] IAddWorkspaceCommand command,
-            [FromBody] AddWorkspaceRequest request)
+        [HttpPost("create")]
+        public Guid CreateWorkspace(
+            [FromServices] ICreateWorkspaceCommand command,
+            [FromBody] Workspace request)
         {
             return command.Execute(request);
         }

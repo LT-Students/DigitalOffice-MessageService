@@ -10,9 +10,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 {
     public class WorkspaceMappertests
     {
-        private IMapper<AddWorkspaceRequest, DbWorkspace> mapper;
+        private IMapper<Workspace, DbWorkspace> mapper;
 
-        private AddWorkspaceRequest workspaceRequest;
+        private Workspace workspaceRequest;
         private DbWorkspace dbWorkspace;
 
         [OneTimeSetUp]
@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
         {
             mapper = new WorkspaceMapper();
 
-            workspaceRequest = new AddWorkspaceRequest
+            workspaceRequest = new Workspace
             {
                 Name = "Name",
                 Description = "Description",
