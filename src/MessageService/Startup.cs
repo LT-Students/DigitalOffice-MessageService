@@ -90,7 +90,7 @@ namespace LT.DigitalOffice.MessageService
                     x.AddRequestClient<ICheckTokenRequest>(
                         new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
                     x.AddRequestClient<ICreateImageRequest>(
-                        new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.SendEmailEndpoint}"));
+                        new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.CreateImageEndpoint}"));
 
                     x.ConfigureKernelMassTransit(rabbitMqConfig);
                 });
@@ -129,7 +129,7 @@ namespace LT.DigitalOffice.MessageService
         private void ConfigureValidators(IServiceCollection services)
         {
             services.AddTransient<IValidator<EditEmailTemplateRequest>, EditEmailTemplateValidator>();
-            services.AddTransient<IValidator<Workspace>, AddWorkspaceRequestValidator>();
+            services.AddTransient<IValidator<Workspace>, WorkspaceValidator>();
         }
 
         public void Configure(IApplicationBuilder app)

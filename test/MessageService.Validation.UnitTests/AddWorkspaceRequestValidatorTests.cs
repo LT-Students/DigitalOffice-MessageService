@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         [SetUp]
         public void SetUp()
         {
-            validator = new AddWorkspaceRequestValidator();
+            validator = new WorkspaceValidator();
 
             workspace = new Workspace
             {
