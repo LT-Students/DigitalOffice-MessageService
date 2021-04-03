@@ -1,4 +1,4 @@
-﻿using LT.DigitalOffice.MessageService.Business.Interfaces;
+﻿using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,7 +11,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
     {
         [HttpPost("create")]
         public Guid CreateWorkspace(
-            [FromServices] ICreateWorkspaceCommand command,
+            [FromServices] ICreateCommand command,
             [FromBody] Workspace request)
         {
             return command.Execute(request);

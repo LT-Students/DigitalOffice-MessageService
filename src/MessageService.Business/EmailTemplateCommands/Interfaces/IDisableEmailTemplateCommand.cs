@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LT.DigitalOffice.MessageService.Business.Interfaces
+namespace LT.DigitalOffice.MessageService.Business.EmailTemplates.Interfaces
 {
     /// <summary>
     /// Represents interface for a command in command pattern.

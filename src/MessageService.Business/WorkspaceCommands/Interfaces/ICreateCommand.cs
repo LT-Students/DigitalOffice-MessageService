@@ -1,13 +1,13 @@
 ﻿using LT.DigitalOffice.MessageService.Models.Dto;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Business.Interfaces
+namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces
 {
     /// <summary>
     /// Represents interface for a command in command pattern.
     /// Provides method for adding a workspace.
     /// </summary>
-    public interface ICreateWorkspaceCommand
+    public interface ICreateCommand
     {
         /// <summary>
         ///  Adding a new workspace.

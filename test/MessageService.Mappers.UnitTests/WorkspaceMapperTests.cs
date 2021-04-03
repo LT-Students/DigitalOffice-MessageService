@@ -5,53 +5,74 @@ using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using NUnit.Framework;
 using System;
+using MassTransit;
+using LT.DigitalOffice.Broker.Requests;
+using Moq;
+using Microsoft.Extensions.Logging;
+using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Broker.Responses;
 
 namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 {
-    public class WorkspaceMappertests
+    public class WorkspaceMapperTests
     {
-        private IMapper<Workspace, DbWorkspace> mapper;
+        private IMapper<Workspace, DbWorkspace> _mapper;
+        private Mock<IRequestClient<ICreateImageRequest>> _moqRequestClient;
+        private Mock<ILogger<DbWorkspaceMapper>> _moqLogger;
 
-        private Workspace workspaceRequest;
-        private DbWorkspace dbWorkspace;
+        private Workspace _workspace;
+        private DbWorkspace _dbWorkspace;
+
+        private const string _existingImage = "img.jpg";
+        private const string _doesNotExistingImage = "smthwrong.jpg";
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            mapper = new WorkspaceMapper();
+            _moqLogger = new Mock<ILogger<DbWorkspaceMapper>>();
 
-            workspaceRequest = new Workspace
+            _moqRequestClient = new Mock<IRequestClient<ICreateImageRequest>>();
+
+            _mapper = new WorkspaceMapper(
+                _moqRequestClient.Object,
+                _moqLogger.Object);
+
+            _workspace = new Workspace
             {
                 Name = "Name",
                 Description = "Description",
-                Image = "img.jpg"
+                Image = _existingImage
             };
 
-            dbWorkspace = new DbWorkspace
+            _dbWorkspace = new DbWorkspace
             {
-                Name = workspaceRequest.Name,
-                Description = workspaceRequest.Description,
-                Image = workspaceRequest.Image,
+                Name = _workspace.Name,
+                Description = _workspace.Description,
+                ImageId = Guid.NewGuid(),
                 IsActive = true
             };
+
+            //_moqRequestClient
+            //    .Setup(x => x.GetResponse<IOperationResult<ICreateImageResponse>>(It.IsAny<object>()).Result)
+            //    .Returns(new IOperationResult<ICreateImageResponse> { Body = ICreateImageResponse.CreateObj(_dbWorkspace.ImageId)})
         }
 
         [Test]
         public void ShouldThrowArgumentNullExceptionWhenWorkspaceRequestIsNull()
         {
-            workspaceRequest = null;
+            _workspace = null;
 
-            Assert.Throws<BadRequestException>(() => mapper.Map(workspaceRequest));
+            Assert.Throws<BadRequestException>(() => _mapper.Map(_workspace));
         }
 
         [Test]
         public void ShouldReturnRightModelWhenWorkspaceRequestIsMapped()
         {
-            var result = mapper.Map(workspaceRequest);
-            dbWorkspace.Id = result.Id;
+            var result = _mapper.Map(_workspace);
+            _dbWorkspace.Id = result.Id;
 
             Assert.IsInstanceOf<Guid>(result.Id);
-            SerializerAssert.AreEqual(dbWorkspace, result);
+            SerializerAssert.AreEqual(_dbWorkspace, result);
         }
     }
 }

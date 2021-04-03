@@ -78,7 +78,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Returns(dbWorkspace);
 
             repositoryMock
-                .Setup(x => x.AddWorkspace(It.IsAny<DbWorkspace>()))
+                .Setup(x => x.CreateWorkspace(It.IsAny<DbWorkspace>()))
                 .Returns(workspaceId);
 
             Assert.That(command.Execute(workspace), Is.EqualTo(workspaceId));
@@ -100,7 +100,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
             validatorMock.Verify();
             mapperMock.Verify();
-            repositoryMock.Verify(repository => repository.AddWorkspace(It.IsAny<DbWorkspace>()), Times.Never());
+            repositoryMock.Verify(repository => repository.CreateWorkspace(It.IsAny<DbWorkspace>()), Times.Never());
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             Assert.Throws<ValidationException>(() => command.Execute(workspace));
 
             validatorMock.Verify();
-            repositoryMock.Verify(repository => repository.AddWorkspace(It.IsAny<DbWorkspace>()), Times.Never());
+            repositoryMock.Verify(repository => repository.CreateWorkspace(It.IsAny<DbWorkspace>()), Times.Never());
         }
     }
 }

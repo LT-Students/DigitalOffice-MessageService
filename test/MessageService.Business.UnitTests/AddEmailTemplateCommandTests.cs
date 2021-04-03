@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
     public class AddEmailTemplateCommandTests
     {
         private Mock<IEmailTemplateRepository> repositoryMock;
-        private IAddEmailTemplateCommand command;
+        private ICreateCommand command;
         private Mock<IMapper<EmailTemplate, DbEmailTemplate>> mapperMock;
         private Mock<IAccessValidator> accessValidatorMock;
 

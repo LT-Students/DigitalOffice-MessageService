@@ -16,11 +16,13 @@ namespace LT.DigitalOffice.MessageService.Data
             _provider = provider;
         }
 
-        public Guid AddWorkspace(DbWorkspace workspace)
+        public Guid CreateWorkspace(DbWorkspace workspace)
         {
             if (_provider.Workspaces.Any(w => w.Id == workspace.Id))
             {
                 throw new BadRequestException("Workspace already exists");
+
+                //return _provider.Workspaces.FirstOrDefault(w => w.Id == workspace.Id).Id;
             }
 
             _provider.Workspaces.Add(workspace);

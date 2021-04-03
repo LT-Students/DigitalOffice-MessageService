@@ -1,13 +1,13 @@
 ﻿using LT.DigitalOffice.MessageService.Models.Dto;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Business.Interfaces
+namespace LT.DigitalOffice.MessageService.Business.EmailTemplates.Interfaces
 {
     /// <summary>
     /// Represents interface for a command in command pattern.
     /// Provides method for adding an email template.
     /// </summary>
-    public interface IAddEmailTemplateCommand
+    public interface ICreateEmailTemplateCommand
     {
         /// <summary>
         ///  Adding a new email template.

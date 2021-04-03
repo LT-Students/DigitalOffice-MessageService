@@ -2,15 +2,14 @@
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
-using LT.DigitalOffice.MessageService.Business.Interfaces;
+using LT.DigitalOffice.MessageService.Business.EmailTemplates.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
-namespace LT.DigitalOffice.MessageService.Business
+namespace LT.DigitalOffice.MessageService.Business.EmailTemplates
 {
     public class EditEmailTemplateCommand : IEditEmailTemplateCommand
     {

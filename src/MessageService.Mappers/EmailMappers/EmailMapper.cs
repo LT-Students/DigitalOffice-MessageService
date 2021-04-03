@@ -3,7 +3,7 @@ using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Mappers
+namespace LT.DigitalOffice.MessageService.Mappers.EmailMappers
 {
     public class EmailMapper : IMapper<ISendEmailRequest, DbEmail>
     {

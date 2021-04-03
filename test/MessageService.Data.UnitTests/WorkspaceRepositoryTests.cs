@@ -67,7 +67,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         {
             _dbWorkspaceToAdd.Id = _dbWorkspaceInDb.Id;
 
-            Assert.Throws<BadRequestException>(() => _repository.AddWorkspace(_dbWorkspaceToAdd));
+            Assert.Throws<BadRequestException>(() => _repository.CreateWorkspace(_dbWorkspaceToAdd));
         }
 
         #region AddWorkspace
@@ -76,7 +76,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         {
             _dbWorkspaceToAdd.Id = Guid.NewGuid();
 
-            var result = _repository.AddWorkspace(_dbWorkspaceToAdd);
+            var result = _repository.CreateWorkspace(_dbWorkspaceToAdd);
 
             Assert.AreEqual(_dbWorkspaceToAdd.Id, result);
             Assert.AreEqual(_dbWorkspaceToAdd, _provider.Workspaces.Find(_dbWorkspaceToAdd.Id));
