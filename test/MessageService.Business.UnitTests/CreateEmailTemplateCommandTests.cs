@@ -1,5 +1,7 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.MessageService.Business.Interfaces;
+using LT.DigitalOffice.MessageService.Business.EmailTemplates;
+using LT.DigitalOffice.MessageService.Business.EmailTemplates.Interfaces;
+using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -10,10 +12,10 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests
 {
-    public class AddEmailTemplateCommandTests
+    public class CreateEmailTemplateCommandTests
     {
         private Mock<IEmailTemplateRepository> repositoryMock;
-        private ICreateCommand command;
+        private ICreateEmailTemplateCommand command;
         private Mock<IMapper<EmailTemplate, DbEmailTemplate>> mapperMock;
         private Mock<IAccessValidator> accessValidatorMock;
 
@@ -49,7 +51,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             mapperMock = new Mock<IMapper<EmailTemplate, DbEmailTemplate>>();
             accessValidatorMock = new Mock<IAccessValidator>();
 
-            command = new AddEmailTemplateCommand(mapperMock.Object, repositoryMock.Object, accessValidatorMock.Object);
+            command = new CreateEmailTemplateCommand(mapperMock.Object, repositoryMock.Object, accessValidatorMock.Object);
         }
 
         [Test]

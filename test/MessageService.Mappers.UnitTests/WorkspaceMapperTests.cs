@@ -1,41 +1,32 @@
 ﻿using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.UnitTestKernel;
-using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using NUnit.Framework;
 using System;
-using MassTransit;
-using LT.DigitalOffice.Broker.Requests;
-using Moq;
-using Microsoft.Extensions.Logging;
-using LT.DigitalOffice.Kernel.Broker;
-using LT.DigitalOffice.Broker.Responses;
+using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers;
+using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 
 namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 {
     public class WorkspaceMapperTests
     {
-        private IMapper<Workspace, DbWorkspace> _mapper;
-        private Mock<IRequestClient<ICreateImageRequest>> _moqRequestClient;
-        private Mock<ILogger<DbWorkspaceMapper>> _moqLogger;
+        private IDbWorkspaceMapper _mapper;
 
         private Workspace _workspace;
         private DbWorkspace _dbWorkspace;
+        private Guid _ownerId;
+        private Guid? _imageId;
 
         private const string _existingImage = "img.jpg";
-        private const string _doesNotExistingImage = "smthwrong.jpg";
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _moqLogger = new Mock<ILogger<DbWorkspaceMapper>>();
+            _mapper = new DbWorkspaceMapper();
 
-            _moqRequestClient = new Mock<IRequestClient<ICreateImageRequest>>();
-
-            _mapper = new WorkspaceMapper(
-                _moqRequestClient.Object,
-                _moqLogger.Object);
+            _imageId = Guid.NewGuid();
+            _ownerId = Guid.NewGuid();
 
             _workspace = new Workspace
             {
@@ -47,14 +38,11 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
             _dbWorkspace = new DbWorkspace
             {
                 Name = _workspace.Name,
+                OwnerId = _ownerId,
                 Description = _workspace.Description,
-                ImageId = Guid.NewGuid(),
+                ImageId = _imageId,
                 IsActive = true
             };
-
-            //_moqRequestClient
-            //    .Setup(x => x.GetResponse<IOperationResult<ICreateImageResponse>>(It.IsAny<object>()).Result)
-            //    .Returns(new IOperationResult<ICreateImageResponse> { Body = ICreateImageResponse.CreateObj(_dbWorkspace.ImageId)})
         }
 
         [Test]
@@ -62,16 +50,15 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
         {
             _workspace = null;
 
-            Assert.Throws<BadRequestException>(() => _mapper.Map(_workspace));
+            Assert.Throws<BadRequestException>(() => _mapper.Map(_workspace, _ownerId, _imageId));
         }
 
         [Test]
         public void ShouldReturnRightModelWhenWorkspaceRequestIsMapped()
         {
-            var result = _mapper.Map(_workspace);
+            var result = _mapper.Map(_workspace, _ownerId, _imageId);
             _dbWorkspace.Id = result.Id;
 
-            Assert.IsInstanceOf<Guid>(result.Id);
             SerializerAssert.AreEqual(_dbWorkspace, result);
         }
     }
