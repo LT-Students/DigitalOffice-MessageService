@@ -143,7 +143,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 _httpContextAccessorMock.Object);
 
             BrokerSetUp();
-            ClientRequestUp();
+            //ClientRequestUp();
         }
 
         [Test]

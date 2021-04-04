@@ -63,11 +63,11 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         }
 
         [Test]
-        public void ShouldThrowBadRequestWhenWorkspaceAlreadyExists()
+        public void ShouldReturnIdOfAlreadyExistsWorkspace()
         {
             _dbWorkspaceToAdd.Id = _dbWorkspaceInDb.Id;
 
-            Assert.Throws<BadRequestException>(() => _repository.CreateWorkspace(_dbWorkspaceToAdd));
+            Assert.AreEqual(_repository.CreateWorkspace(_dbWorkspaceToAdd), _dbWorkspaceToAdd.Id);
         }
 
         #region AddWorkspace

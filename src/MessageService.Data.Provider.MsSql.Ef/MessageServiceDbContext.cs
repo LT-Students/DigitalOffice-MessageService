@@ -20,6 +20,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef
         public DbSet<DbWorkspace> Workspaces { get; set; }
         public DbSet<DbEmailTemplate> EmailTemplates { get; set; }
         public DbSet<DbWorkspaceAdmin> Admins { get; set; }
+        public DbSet<DbWorkspaceAdmin> WorkspacesAdmins { get; set; }
 
         void IBaseDataProvider.Save()
         {
