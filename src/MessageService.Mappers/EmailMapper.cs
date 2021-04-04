@@ -5,6 +5,7 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers
 {
+    // TODO fix
     public class EmailMapper : IMapper<ISendEmailRequest, DbEmail>
     {
         public DbEmail Map(ISendEmailRequest email)
@@ -16,12 +17,12 @@ namespace LT.DigitalOffice.MessageService.Mappers
 
             return new DbEmail
             {
-                Id = Guid.NewGuid(),
-                SenderId = email.SenderId,
-                Receiver = email.Receiver,
-                Time = DateTime.UtcNow,
-                Subject = email.Subject,
-                Body = email.Body
+                //Id = Guid.NewGuid(),
+                //SenderId = email.SenderId,
+                //Receiver = email.Receiver,
+                //Time = DateTime.UtcNow,
+                //Subject = email.Subject,
+                //Body = email.Body
             };
         }
     }

@@ -3,6 +3,7 @@ using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using System;
+using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 
 namespace LT.DigitalOffice.MessageService.Mappers
 {

@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.MessageService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<SmtpCredentialsOptions>(Configuration);
+            services.Configure<SmtpCredentialsOptions>(Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials));
 
             services.AddHealthChecks();
 
@@ -55,11 +55,12 @@ namespace LT.DigitalOffice.MessageService
 
             services.AddControllers();
 
+            ConfigureMassTransit(services);
+
             ConfigureCommands(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
             ConfigureValidators(services);
-            ConfigureMassTransit(services);
 
             services.AddKernelExtensions();
         }
@@ -86,12 +87,10 @@ namespace LT.DigitalOffice.MessageService
                     {
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
-
-                    x.AddRequestClient<ICheckTokenRequest>(
-                        new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
-
-                    x.ConfigureKernelMassTransit(rabbitMqConfig);
                 });
+
+                x.AddRequestClient<ICheckTokenRequest>(
+                        new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
 
                 x.ConfigureKernelMassTransit(rabbitMqConfig);
             });
@@ -165,7 +164,9 @@ namespace LT.DigitalOffice.MessageService
             using var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
                 .CreateScope();
+
             using var context = serviceScope.ServiceProvider.GetService<MessageServiceDbContext>();
+
             context.Database.Migrate();
         }
     }

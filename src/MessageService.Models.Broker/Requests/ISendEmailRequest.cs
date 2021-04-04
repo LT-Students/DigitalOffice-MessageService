@@ -1,15 +1,22 @@
-﻿using System;
-
-namespace LT.DigitalOffice.Broker.Requests
+﻿namespace LT.DigitalOffice.Broker.Requests
 {
     /// <summary>
-    /// Represents request for SendEmail in MassTransit logic.
+    /// Send email broker request.
     /// </summary>
     public interface ISendEmailRequest
     {
-        Guid? SenderId { get; }
-        string Receiver { get; }
-        string Subject { get; }
-        string Body { get; }
+        string Email { get; }
+        string Subject { get; set; }
+        string Text { get; }
+
+        static object CreateObj(string email, string subject, string text)
+        {
+            return new
+            {
+                Email = email,
+                Subject = subject,
+                Text = text
+            };
+        }
     }
 }
