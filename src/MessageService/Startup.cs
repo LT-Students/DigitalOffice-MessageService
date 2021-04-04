@@ -44,7 +44,7 @@ namespace LT.DigitalOffice.MessageService
         {
             services.AddKernelExtensions();
 
-            services.Configure<SmtpCredentialsOptions>(Configuration);
+            services.Configure<SmtpCredentialsOptions>(Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials));
 
             services.AddHealthChecks();
 
@@ -61,11 +61,12 @@ namespace LT.DigitalOffice.MessageService
 
             services.AddControllers();
 
+            ConfigureMassTransit(services);
+
             ConfigureCommands(services);
             ConfigureMappers(services);
             ConfigureRepositories(services);
             ConfigureValidators(services);
-            ConfigureMassTransit(services);
 
 
         }
@@ -171,7 +172,9 @@ namespace LT.DigitalOffice.MessageService
             using var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
                 .CreateScope();
+
             using var context = serviceScope.ServiceProvider.GetService<MessageServiceDbContext>();
+
             context.Database.Migrate();
         }
     }

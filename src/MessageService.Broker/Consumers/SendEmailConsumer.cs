@@ -4,7 +4,6 @@ using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using MassTransit;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
@@ -14,18 +13,18 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 {
     public class SendEmailConsumer : IConsumer<ISendEmailRequest>
     {
-        private readonly IEmailRepository repository;
-        private readonly IMapper<ISendEmailRequest, DbEmail> mapper;
-        private readonly IOptions<SmtpCredentialsOptions> options;
+        private readonly IEmailRepository _repository;
+        private readonly IMapper<ISendEmailRequest, DbEmail> _mapper;
+        private readonly IOptions<SmtpCredentialsOptions> _options;
 
         public SendEmailConsumer(
-            [FromServices] IEmailRepository repository,
-            [FromServices] IMapper<ISendEmailRequest, DbEmail> mapper,
-            [FromServices] IOptions<SmtpCredentialsOptions> options)
+            IEmailRepository repository,
+            IMapper<ISendEmailRequest, DbEmail> mapper,
+            IOptions<SmtpCredentialsOptions> options)
         {
-            this.repository = repository;
-            this.mapper = mapper;
-            this.options = options;
+            _repository = repository;
+            _mapper = mapper;
+            _options = options;
         }
 
         public async Task Consume(ConsumeContext<ISendEmailRequest> context)
@@ -37,18 +36,18 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
         private bool SendEmail(ISendEmailRequest request)
         {
-            MailAddress from = new MailAddress(options.Value.Email);
-            MailAddress to = new MailAddress(request.Receiver);
+            MailAddress from = new MailAddress(_options.Value.Email);
+            MailAddress to = new MailAddress(request.Email);
 
             var m = new MailMessage(from, to)
             {
                 Subject = request.Subject,
-                Body = request.Body
+                Body = request.Text
             };
 
-            SmtpClient smtp = new SmtpClient(options.Value.Host, options.Value.Port)
+            SmtpClient smtp = new SmtpClient(_options.Value.Host, _options.Value.Port)
             {
-                Credentials = new NetworkCredential(options.Value.Email, options.Value.Password),
+                Credentials = new NetworkCredential(_options.Value.Email, _options.Value.Password),
                 EnableSsl = true
             };
 
@@ -61,7 +60,8 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
         private void SaveEmail(ISendEmailRequest request)
         {
-            repository.SaveEmail(mapper.Map(request));
+            // TODO fix
+            //_repository.SaveEmail(_mapper.Map(request));
         }
     }
 }
