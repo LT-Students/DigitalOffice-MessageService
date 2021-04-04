@@ -67,8 +67,6 @@ namespace LT.DigitalOffice.MessageService
             ConfigureMappers(services);
             ConfigureRepositories(services);
             ConfigureValidators(services);
-
-
         }
 
         private void ConfigureMassTransit(IServiceCollection services)

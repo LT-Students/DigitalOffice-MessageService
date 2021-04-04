@@ -66,7 +66,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             //_operationResultMock.Setup(x => x.IsSuccess).Returns(true);
             //_operationResultMock.Setup(x => x.Errors).Returns(new List<string>());
 
-
             //_operationResultMock
             //    .Setup(x => x.Body.Id)
             //    .Returns(_imageId);
@@ -78,9 +77,15 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
         private void ClientRequestUp()
         {
-            _httpContextAccessorMock
-                .Setup(x => x.HttpContext.GetUserId())
+            var mockHttpContext = new Mock<HttpContext>();
+
+            mockHttpContext
+                .Setup(x => x.GetUserId())
                 .Returns(_userId);
+
+            _httpContextAccessorMock
+                .Setup(x => x.HttpContext)
+                .Returns(mockHttpContext.Object);
         }
 
         [OneTimeSetUp]
@@ -93,6 +98,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             _workspace = new Workspace
             {
                 Name = "Name",
+                Image = "Img.jpg",
                 Description = "Description",
             };
 
