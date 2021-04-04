@@ -7,7 +7,7 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplates.Interfaces
     /// Represents interface for a command in command pattern.
     /// Provides method for adding an email template.
     /// </summary>
-    public interface ICreateEmailTemplateCommand
+    public interface IAddEmailTemplateCommand
     {
         /// <summary>
         ///  Adding a new email template.

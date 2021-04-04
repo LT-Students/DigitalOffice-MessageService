@@ -9,13 +9,13 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Business.EmailTemplates
 {
-    public class CreateEmailTemplateCommand : ICreateEmailTemplateCommand
+    public class AddEmailTemplateCommand : IAddEmailTemplateCommand
     {
         private readonly IMapper<EmailTemplate, DbEmailTemplate> mapper;
         private readonly IEmailTemplateRepository repository;
         private readonly IAccessValidator accessValidator;
 
-        public CreateEmailTemplateCommand(
+        public AddEmailTemplateCommand(
             [FromServices] IMapper<EmailTemplate, DbEmailTemplate> mapper,
             [FromServices] IEmailTemplateRepository repository,
             [FromServices] IAccessValidator accessValidator)

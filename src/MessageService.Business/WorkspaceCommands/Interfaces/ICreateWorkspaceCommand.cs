@@ -7,7 +7,7 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces
     /// Represents interface for a command in command pattern.
     /// Provides method for adding a workspace.
     /// </summary>
-    public interface ICreateCommand
+    public interface ICreateWorkspaceCommand
     {
         /// <summary>
         ///  Adding a new workspace.

@@ -12,10 +12,10 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests
 {
-    public class CreateEmailTemplateCommandTests
+    public class AddEmailTemplateCommandTests
     {
         private Mock<IEmailTemplateRepository> repositoryMock;
-        private ICreateEmailTemplateCommand command;
+        private IAddEmailTemplateCommand command;
         private Mock<IMapper<EmailTemplate, DbEmailTemplate>> mapperMock;
         private Mock<IAccessValidator> accessValidatorMock;
 
@@ -51,7 +51,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             mapperMock = new Mock<IMapper<EmailTemplate, DbEmailTemplate>>();
             accessValidatorMock = new Mock<IAccessValidator>();
 
-            command = new CreateEmailTemplateCommand(mapperMock.Object, repositoryMock.Object, accessValidatorMock.Object);
+            command = new AddEmailTemplateCommand(mapperMock.Object, repositoryMock.Object, accessValidatorMock.Object);
         }
 
         [Test]

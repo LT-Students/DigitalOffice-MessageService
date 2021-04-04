@@ -37,10 +37,10 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         private Mock<IValidator<Workspace>> _validatorMock;
         private Mock<IDbWorkspaceMapper> _mapperMock;
         private Mock<IRequestClient<ICreateImageRequest>> _requestBrokerMock;
-        private Mock<ILogger<CreateCommand>> _loggerMock;
+        private Mock<ILogger<CreateWorkspaceCommand>> _loggerMock;
         private Mock<IHttpContextAccessor> _httpContextAccessorMock;
         private Mock<OperationResult<ICreateImageResponse>> _operationResultMock;
-        private ICreateCommand _command;
+        private ICreateWorkspaceCommand _command;
 
         private Guid _workspaceId;
         private Guid _userId;
@@ -126,9 +126,9 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             _mapperMock = new Mock<IDbWorkspaceMapper>();
             _validatorMock = new Mock<IValidator<Workspace>>();
             _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
-            _loggerMock = new Mock<ILogger<CreateCommand>>();
+            _loggerMock = new Mock<ILogger<CreateWorkspaceCommand>>();
             _requestBrokerMock = new Mock<IRequestClient<ICreateImageRequest>>();
-            _command = new CreateCommand(
+            _command = new CreateWorkspaceCommand(
                 _repositoryMock.Object,
                 _validatorMock.Object,
                 _mapperMock.Object,

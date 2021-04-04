@@ -19,7 +19,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
 
         [HttpPost("addEmailTemplate")]
         public Guid AddEmailTemplate(
-            [FromServices] ICreateEmailTemplateCommand command,
+            [FromServices] IAddEmailTemplateCommand command,
             [FromBody] EmailTemplate emailTemplate)
         {
             return command.Execute(emailTemplate);

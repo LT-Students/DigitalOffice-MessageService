@@ -117,9 +117,9 @@ namespace LT.DigitalOffice.MessageService
         private void ConfigureCommands(IServiceCollection services)
         {
             services.AddTransient<IDisableEmailTemplateCommand, DisableEmailTemplateCommand>();
-            services.AddTransient<ICreateEmailTemplateCommand, CreateEmailTemplateCommand>();
+            services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
             services.AddTransient<IEditEmailTemplateCommand, EditEmailTemplateCommand>();
-            services.AddTransient<ICreateCommand, CreateCommand>();
+            services.AddTransient<ICreateWorkspaceCommand, CreateWorkspaceCommand>();
         }
 
         private void ConfigureRepositories(IServiceCollection services)

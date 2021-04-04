@@ -15,13 +15,13 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
 {
-    public class CreateCommand : ICreateCommand
+    public class CreateWorkspaceCommand : ICreateWorkspaceCommand
     {
         private readonly IWorkspaceRepository _repository;
         private readonly IValidator<Workspace> _validator;
         private readonly IDbWorkspaceMapper _mapper;
         private readonly IRequestClient<ICreateImageRequest> _requestClient;
-        private readonly ILogger<CreateCommand> _logger;
+        private readonly ILogger<CreateWorkspaceCommand> _logger;
         private readonly HttpContext _httpContext;
 
         private Guid? CreateImageRequest(string image)
@@ -42,12 +42,12 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
             return imageId;
         }
 
-        public CreateCommand(
+        public CreateWorkspaceCommand(
             IWorkspaceRepository repository,
             IValidator<Workspace> validator,
             IDbWorkspaceMapper mapper,
             IRequestClient<ICreateImageRequest> requestClient,
-            ILogger<CreateCommand> logger,
+            ILogger<CreateWorkspaceCommand> logger,
             IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;

@@ -11,7 +11,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
     {
         [HttpPost("create")]
         public Guid CreateWorkspace(
-            [FromServices] ICreateCommand command,
+            [FromServices] ICreateWorkspaceCommand command,
             [FromBody] Workspace request)
         {
             return command.Execute(request);
