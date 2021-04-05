@@ -4,7 +4,6 @@ using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Broker.Responses;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Exceptions;
-using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
@@ -18,11 +17,12 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests
 {
-    public class OperationResult<T> : IOperationResult<T>
+    class OperationResult<T> : IOperationResult<T>
     {
         public bool IsSuccess { get; set; }
 
@@ -31,15 +31,19 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         public T Body { get; set; }
     }
 
+    class CreateImageResponse : IAddImageResponse
+    {
+        public Guid? Id { get; set; }
+    }
+
     public class CreateWorkspaceCommandTests
     {
         private Mock<IWorkspaceRepository> _repositoryMock;
         private Mock<IValidator<Workspace>> _validatorMock;
         private Mock<IDbWorkspaceMapper> _mapperMock;
-        private Mock<IRequestClient<ICreateImageRequest>> _requestBrokerMock;
+        private Mock<IRequestClient<IAddImageRequest>> _requestBrokerMock;
         private Mock<ILogger<CreateWorkspaceCommand>> _loggerMock;
         private Mock<IHttpContextAccessor> _httpContextAccessorMock;
-        private Mock<OperationResult<ICreateImageResponse>> _operationResultMock;
         private ICreateWorkspaceCommand _command;
 
         private Guid _workspaceId;
@@ -52,40 +56,30 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
         private void BrokerSetUp()
         {
-            var brokerResponseMock = new Mock<Response<IOperationResult<ICreateImageResponse>>>();
-            _requestBrokerMock = new Mock<IRequestClient<ICreateImageRequest>>();
+            var responseClientMock = new Mock<Response<IOperationResult<IAddImageRequest>>>();
+            _requestBrokerMock = new Mock<IRequestClient<IAddImageRequest>>();
 
-            _operationResultMock = new Mock<OperationResult<ICreateImageResponse>>();
+            var operationResult = new OperationResult<IAddImageRequest>();
 
-            _requestBrokerMock
-                .Setup(x => x.GetResponse<IOperationResult<ICreateImageResponse>>(
-                    It.IsAny<object>(), default, default))
-                .Returns(Task.FromResult(brokerResponseMock.Object));
+            responseClientMock
+                .SetupGet(x => x.Message)
+                .Returns(operationResult);
 
-            //_operationResultMock.Setup(x => x.Body).Returns((ICreateImageResponse)brokerResponseMock.Object);
-            //_operationResultMock.Setup(x => x.IsSuccess).Returns(true);
-            //_operationResultMock.Setup(x => x.Errors).Returns(new List<string>());
-
-            //_operationResultMock
-            //    .Setup(x => x.Body.Id)
-            //    .Returns(_imageId);
-
-            brokerResponseMock
-                .Setup(x => x.Message)
-                .Returns(_operationResultMock.Object);
+            _requestBrokerMock.Setup(
+                x => x.GetResponse<IOperationResult<IAddImageRequest>>(
+                    It.IsAny<object>(), It.IsAny<CancellationToken>(), It.IsAny<RequestTimeout>()).Result)
+                .Returns(responseClientMock.Object);
         }
 
         private void ClientRequestUp()
         {
-            var mockHttpContext = new Mock<HttpContext>();
+            IDictionary<object, object> httpContextItems = new Dictionary<object, object>();
 
-            mockHttpContext
-                .Setup(x => x.GetUserId())
-                .Returns(_userId);
+            httpContextItems.Add("UserId", _userId);
 
             _httpContextAccessorMock
-                .Setup(x => x.HttpContext)
-                .Returns(mockHttpContext.Object);
+                .Setup(x => x.HttpContext.Items)
+                .Returns(httpContextItems);
         }
 
         [OneTimeSetUp]
@@ -133,7 +127,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             _validatorMock = new Mock<IValidator<Workspace>>();
             _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             _loggerMock = new Mock<ILogger<CreateWorkspaceCommand>>();
-            _requestBrokerMock = new Mock<IRequestClient<ICreateImageRequest>>();
+            _requestBrokerMock = new Mock<IRequestClient<IAddImageRequest>>();
             _command = new CreateWorkspaceCommand(
                 _repositoryMock.Object,
                 _validatorMock.Object,
@@ -143,7 +137,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 _httpContextAccessorMock.Object);
 
             BrokerSetUp();
-            //ClientRequestUp();
+            ClientRequestUp();
         }
 
         [Test]

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.Broker.Responses
 {
-    public interface ICreateImageResponse
+    public interface IAddImageResponse
     {
         public Guid? Id { get; }
 

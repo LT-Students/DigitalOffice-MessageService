@@ -20,9 +20,9 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         private readonly IWorkspaceRepository _repository;
         private readonly IValidator<Workspace> _validator;
         private readonly IDbWorkspaceMapper _mapper;
-        private readonly IRequestClient<ICreateImageRequest> _requestClient;
+        private readonly IRequestClient<IAddImageRequest> _requestClient;
         private readonly ILogger<CreateWorkspaceCommand> _logger;
-        private readonly HttpContext _httpContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private Guid? CreateImageRequest(string image)
         {
@@ -30,9 +30,16 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
 
             try
             {
-                var imageRequest = ICreateImageRequest.CreateObj(image);
-                var imageResponse = _requestClient.GetResponse<IOperationResult<ICreateImageResponse>>(imageRequest).Result;
-                imageId = imageResponse.Message.Body.Id;
+                var imageRequest = IAddImageRequest.CreateObj(image);
+                var imageResponse = _requestClient.GetResponse<IOperationResult<IAddImageResponse>>(imageRequest).Result;
+                if (imageResponse.Message.IsSuccess)
+                {
+                    imageId = imageResponse.Message.Body.Id;
+                }
+                else
+                {
+                    _logger.LogError(string.Join(", ", imageResponse.Message.Errors));
+                }
             }
             catch (Exception exception)
             {
@@ -46,7 +53,7 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
             IWorkspaceRepository repository,
             IValidator<Workspace> validator,
             IDbWorkspaceMapper mapper,
-            IRequestClient<ICreateImageRequest> requestClient,
+            IRequestClient<IAddImageRequest> requestClient,
             ILogger<CreateWorkspaceCommand> logger,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -55,7 +62,7 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
             _mapper = mapper;
             _requestClient = requestClient;
             _logger = logger;
-            _httpContext = httpContextAccessor.HttpContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Guid Execute(Workspace workspace)
@@ -63,7 +70,7 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
             _validator.ValidateAndThrowCustom(workspace);
 
             var imageId = CreateImageRequest(workspace.Image);
-            var ownerId = _httpContext.GetUserId();
+            var ownerId = _httpContextAccessor.HttpContext.GetUserId();
 
             return _repository.CreateWorkspace(_mapper.Map(workspace, ownerId, imageId));
         }
