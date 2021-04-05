@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
                 }
                 else
                 {
-                    _logger.LogError(string.Join(", ", imageResponse.Message.Errors));
+                    _logger.LogWarning(string.Join(", ", imageResponse.Message.Errors));
                 }
             }
             catch (Exception exception)

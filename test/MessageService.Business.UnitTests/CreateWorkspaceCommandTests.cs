@@ -22,15 +22,6 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests
 {
-    class OperationResult<T> : IOperationResult<T>
-    {
-        public bool IsSuccess { get; set; }
-
-        public List<string> Errors { get; set; }
-
-        public T Body { get; set; }
-    }
-
     class CreateImageResponse : IAddImageResponse
     {
         public Guid? Id { get; set; }
@@ -41,9 +32,16 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         private Mock<IWorkspaceRepository> _repositoryMock;
         private Mock<IValidator<Workspace>> _validatorMock;
         private Mock<IDbWorkspaceMapper> _mapperMock;
-        private Mock<IRequestClient<IAddImageRequest>> _requestBrokerMock;
         private Mock<ILogger<CreateWorkspaceCommand>> _loggerMock;
         private Mock<IHttpContextAccessor> _httpContextAccessorMock;
+
+        private Mock<IRequestClient<IAddImageRequest>> _requestBrokerMock;
+        private Mock<Request<IRequestClient<IAddImageRequest>>> _requestMock;
+
+        private Mock<IAddImageResponse> _responseMock;
+        private Mock<IOperationResult<IAddImageResponse>> _operationResultMock;
+        private Mock<Response<IOperationResult<IAddImageResponse>>> _brokerResponseMock;
+
         private ICreateWorkspaceCommand _command;
 
         private Guid _workspaceId;
@@ -54,21 +52,41 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         private ValidationResult _validationResultError;
         private Mock<ValidationResult> _validationResultIsValidMock;
 
+        private const string _image = "Img.jpg";
+
         private void BrokerSetUp()
         {
-            var responseClientMock = new Mock<Response<IOperationResult<IAddImageRequest>>>();
+            _responseMock = new Mock<IAddImageResponse>();
+            _responseMock
+                .Setup(x => x.Id)
+                .Returns(_imageId);
+
+            _operationResultMock = new Mock<IOperationResult<IAddImageResponse>>();
+            _operationResultMock
+                .Setup(x => x.IsSuccess)
+                .Returns(true);
+            _operationResultMock
+                .Setup(x => x.Errors)
+                .Returns(new List<string>());
+            _operationResultMock
+                .Setup(x => x.Body)
+                .Returns(_responseMock.Object);
+
+            _brokerResponseMock = new Mock<Response<IOperationResult<IAddImageResponse>>>();
+            _brokerResponseMock
+                .Setup(x => x.Message)
+                .Returns(_operationResultMock.Object);
+
             _requestBrokerMock = new Mock<IRequestClient<IAddImageRequest>>();
-
-            var operationResult = new OperationResult<IAddImageRequest>();
-
-            responseClientMock
-                .SetupGet(x => x.Message)
-                .Returns(operationResult);
-
-            _requestBrokerMock.Setup(
-                x => x.GetResponse<IOperationResult<IAddImageRequest>>(
+            _requestBrokerMock
+                .Setup(x => x.GetResponse<IOperationResult<IAddImageResponse>>(
                     It.IsAny<object>(), default, default))
-                .Returns(Task.FromResult(responseClientMock.Object));
+                .Returns(Task.FromResult(_brokerResponseMock.Object));
+
+            _requestMock = new Mock<Request<IRequestClient<IAddImageRequest>>>();
+            _requestMock
+                .Setup(x => x.Task)
+                .Returns(Task.FromResult(_requestBrokerMock.Object));
         }
 
         private void ClientRequestUp()
