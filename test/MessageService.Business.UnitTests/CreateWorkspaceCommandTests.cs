@@ -67,8 +67,8 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
             _requestBrokerMock.Setup(
                 x => x.GetResponse<IOperationResult<IAddImageRequest>>(
-                    It.IsAny<object>(), It.IsAny<CancellationToken>(), It.IsAny<RequestTimeout>()).Result)
-                .Returns(responseClientMock.Object);
+                    It.IsAny<object>(), default, default))
+                .Returns(Task.FromResult(responseClientMock.Object));
         }
 
         private void ClientRequestUp()
