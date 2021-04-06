@@ -22,11 +22,6 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests
 {
-    class CreateImageResponse : IAddImageResponse
-    {
-        public Guid? Id { get; set; }
-    }
-
     public class CreateWorkspaceCommandTests
     {
         private Mock<IWorkspaceRepository> _repositoryMock;
@@ -51,8 +46,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         private DbWorkspace _dbWorkspace;
         private ValidationResult _validationResultError;
         private Mock<ValidationResult> _validationResultIsValidMock;
-
-        private const string _image = "Img.jpg";
 
         private void BrokerSetUp()
         {
@@ -141,11 +134,27 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         public void SetUp()
         {
             _repositoryMock = new Mock<IWorkspaceRepository>();
+            _repositoryMock
+                .Setup(x => x.CreateWorkspace(It.IsAny<DbWorkspace>()))
+                .Returns(_workspaceId);
+
             _mapperMock = new Mock<IDbWorkspaceMapper>();
+            _mapperMock
+                .Setup(mapper => mapper.Map(It.IsAny<Workspace>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+                .Returns(_dbWorkspace);
+
             _validatorMock = new Mock<IValidator<Workspace>>();
+            _validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
+                .Returns(_validationResultIsValidMock.Object);
+
             _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             _loggerMock = new Mock<ILogger<CreateWorkspaceCommand>>();
             _requestBrokerMock = new Mock<IRequestClient<IAddImageRequest>>();
+
+            BrokerSetUp();
+            ClientRequestUp();
+
             _command = new CreateWorkspaceCommand(
                 _repositoryMock.Object,
                 _validatorMock.Object,
@@ -153,25 +162,34 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 _requestBrokerMock.Object,
                 _loggerMock.Object,
                 _httpContextAccessorMock.Object);
-
-            BrokerSetUp();
-            ClientRequestUp();
         }
 
         [Test]
         public void ShouldCreateWorkspaceCorrectly()
         {
-            _validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
-                .Returns(_validationResultIsValidMock.Object);
+            Assert.That(_command.Execute(_workspace), Is.EqualTo(_workspaceId));
+        }
 
-            _mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<Workspace>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
-                .Returns(_dbWorkspace);
+        [Test]
+        public void ShouldCreateWorkspaceCorrectlyWhenAddImageRequestUnsuccessful()
+        {
+            _operationResultMock
+                .Setup(x => x.IsSuccess)
+                .Returns(false);
+            _operationResultMock
+                .Setup(x => x.Errors)
+                .Returns(new List<string>() { "some error" });
 
-            _repositoryMock
-                .Setup(x => x.CreateWorkspace(It.IsAny<DbWorkspace>()))
-                .Returns(_workspaceId);
+            Assert.That(_command.Execute(_workspace), Is.EqualTo(_workspaceId));
+        }
+
+        [Test]
+        public void ShouldCreateWorkspaceCorrectlyWhenAddImageRequestFailed()
+        {
+            _requestBrokerMock
+                .Setup(x => x.GetResponse<IOperationResult<IAddImageResponse>>(
+                    It.IsAny<object>(), default, default))
+                .Throws(new Exception());
 
             Assert.That(_command.Execute(_workspace), Is.EqualTo(_workspaceId));
         }
