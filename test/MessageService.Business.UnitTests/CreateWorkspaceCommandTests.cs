@@ -10,6 +10,7 @@ using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
+using LT.DigitalOffice.UnitTestKernel;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -167,7 +168,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         [Test]
         public void ShouldCreateWorkspaceCorrectly()
         {
-            Assert.That(_command.Execute(_workspace), Is.EqualTo(_workspaceId));
+            SerializerAssert.AreEqual(_command.Execute(_workspace), _workspaceId);
         }
 
         [Test]
@@ -180,7 +181,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(x => x.Errors)
                 .Returns(new List<string>() { "some error" });
 
-            Assert.That(_command.Execute(_workspace), Is.EqualTo(_workspaceId));
+            SerializerAssert.AreEqual(_command.Execute(_workspace), _workspaceId);
         }
 
         [Test]
@@ -191,7 +192,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                     It.IsAny<object>(), default, default))
                 .Throws(new Exception());
 
-            Assert.That(_command.Execute(_workspace), Is.EqualTo(_workspaceId));
+            SerializerAssert.AreEqual(_command.Execute(_workspace), _workspaceId);
         }
 
         [Test]
