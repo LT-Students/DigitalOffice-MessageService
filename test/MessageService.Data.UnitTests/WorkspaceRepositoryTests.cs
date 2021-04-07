@@ -62,14 +62,6 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             }
         }
 
-        [Test]
-        public void ShouldReturnIdOfAlreadyExistsWorkspace()
-        {
-            _dbWorkspaceToAdd.Id = _dbWorkspaceInDb.Id;
-
-            Assert.AreEqual(_repository.CreateWorkspace(_dbWorkspaceToAdd), _dbWorkspaceToAdd.Id);
-        }
-
         #region AddWorkspace
         [Test]
         public void ShouldAddEmailTemplateCorrectly()
