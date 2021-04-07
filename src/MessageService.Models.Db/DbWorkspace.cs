@@ -30,15 +30,7 @@ namespace LT.DigitalOffice.MessageService.Models.Db
                 .HasKey(w => w.Id);
 
             builder
-                .Property(w => w.OwnerId)
-                .IsRequired();
-
-            builder
                 .Property(w => w.Name)
-                .IsRequired();
-
-            builder
-                .Property(w => w.IsActive)
                 .IsRequired();
 
             builder

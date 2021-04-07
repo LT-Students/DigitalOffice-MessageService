@@ -1,5 +1,4 @@
-﻿using LT.DigitalOffice.Kernel.Exceptions;
-using LT.DigitalOffice.UnitTestKernel;
+﻿using LT.DigitalOffice.UnitTestKernel;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using NUnit.Framework;
@@ -50,9 +49,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
         {
             _workspace = null;
 
-            Assert.Throws<BadRequestException>(() => _mapper.Map(_workspace, _ownerId, _imageId));
+            Assert.Throws<ArgumentNullException>(() => _mapper.Map(_workspace, _ownerId, _imageId));
         }
-
 
         [Test]
         public void ShouldReturnRightModelWhenWorkspaceRequestIsMapped()

@@ -58,6 +58,19 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(DbWorkspaceAdmin.TableName);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Image",
+                table: DbWorkspace.TableName,
+                nullable: true);
+
+            migrationBuilder.DropColumn(
+                name: "ImageId",
+                table: DbWorkspace.TableName);
+
+            migrationBuilder.DropColumn(
+                name: "OwnerId",
+                table: DbWorkspace.TableName);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.Kernel.Exceptions;
 using System;
 using System.Linq;
 

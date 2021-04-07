@@ -24,13 +24,13 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         private readonly ILogger<CreateWorkspaceCommand> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private Guid? CreateImageRequest(string image)
+        private Guid? AddImageContent(string imageContext)
         {
             Guid? imageId = null;
 
             try
             {
-                var imageRequest = IAddImageRequest.CreateObj(image);
+                var imageRequest = IAddImageRequest.CreateObj(imageContext);
                 var imageResponse = _requestClient.GetResponse<IOperationResult<IAddImageResponse>>(imageRequest).Result;
                 if (imageResponse.Message.IsSuccess)
                 {
@@ -69,7 +69,7 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         {
             _validator.ValidateAndThrowCustom(workspace);
 
-            var imageId = CreateImageRequest(workspace.Image);
+            var imageId = AddImageContent(workspace.Image);
             var ownerId = _httpContextAccessor.HttpContext.GetUserId();
 
             return _repository.CreateWorkspace(_mapper.Map(workspace, ownerId, imageId));
