@@ -17,11 +17,6 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public Guid CreateWorkspace(DbWorkspace workspace)
         {
-            if (_provider.Workspaces.Any(w => w.Id == workspace.Id))
-            {
-                return _provider.Workspaces.FirstOrDefault(w => w.Id == workspace.Id).Id;
-            }
-
             _provider.Workspaces.Add(workspace);
             _provider.Save();
 
