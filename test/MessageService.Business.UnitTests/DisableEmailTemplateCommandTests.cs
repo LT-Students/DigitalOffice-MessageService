@@ -1,6 +1,6 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.MessageService.Business.EmailTemplates;
-using LT.DigitalOffice.MessageService.Business.EmailTemplates.Interfaces;
+using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands;
+using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using Moq;
 using NUnit.Framework;

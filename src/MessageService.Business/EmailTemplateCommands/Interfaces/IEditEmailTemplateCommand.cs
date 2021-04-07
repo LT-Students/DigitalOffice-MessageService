@@ -1,7 +1,7 @@
 ﻿using LT.DigitalOffice.MessageService.Models.Dto;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Business.EmailTemplates.Interfaces
+namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces
 {
     /// <summary>
     /// Represents interface for a command in command pattern.

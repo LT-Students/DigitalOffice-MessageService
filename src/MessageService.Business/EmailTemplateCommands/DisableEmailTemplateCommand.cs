@@ -1,10 +1,10 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.MessageService.Business.EmailTemplates.Interfaces;
+using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Business.EmailTemplates
+namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
 {
     public class DisableEmailTemplateCommand : IDisableEmailTemplateCommand
     {
