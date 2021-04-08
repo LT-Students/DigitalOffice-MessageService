@@ -4,14 +4,18 @@ using LT.DigitalOffice.Kernel;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
-using LT.DigitalOffice.MessageService.Business;
-using LT.DigitalOffice.MessageService.Business.Interfaces;
+using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands;
+using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
+using LT.DigitalOffice.MessageService.Business.WorkspaceCommands;
+using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
-using LT.DigitalOffice.MessageService.Mappers;
+using LT.DigitalOffice.MessageService.Mappers.EmailMappers;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers;
+using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using LT.DigitalOffice.MessageService.Validation;
@@ -38,6 +42,8 @@ namespace LT.DigitalOffice.MessageService
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddKernelExtensions();
+
             services.Configure<SmtpCredentialsOptions>(Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials));
 
             services.AddHealthChecks();
@@ -61,8 +67,6 @@ namespace LT.DigitalOffice.MessageService
             ConfigureMappers(services);
             ConfigureRepositories(services);
             ConfigureValidators(services);
-
-            services.AddKernelExtensions();
         }
 
         private void ConfigureMassTransit(IServiceCollection services)
@@ -90,7 +94,9 @@ namespace LT.DigitalOffice.MessageService
                 });
 
                 x.AddRequestClient<ICheckTokenRequest>(
-                        new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
+                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
+                x.AddRequestClient<IAddImageRequest>(
+                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.CreateImageEndpoint}"));
 
                 x.ConfigureKernelMassTransit(rabbitMqConfig);
             });
@@ -100,7 +106,7 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMappers(IServiceCollection services)
         {
-            services.AddTransient<IMapper<AddWorkspaceRequest, DbWorkspace>, WorkspaceMapper>();
+            services.AddTransient<IDbWorkspaceMapper, DbWorkspaceMapper>();
             services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
             services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
             services.AddTransient<IMapper<EditEmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
@@ -111,7 +117,7 @@ namespace LT.DigitalOffice.MessageService
             services.AddTransient<IDisableEmailTemplateCommand, DisableEmailTemplateCommand>();
             services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
             services.AddTransient<IEditEmailTemplateCommand, EditEmailTemplateCommand>();
-            services.AddTransient<IAddWorkspaceCommand, AddWorkspaceCommand>();
+            services.AddTransient<ICreateWorkspaceCommand, CreateWorkspaceCommand>();
         }
 
         private void ConfigureRepositories(IServiceCollection services)
@@ -126,7 +132,7 @@ namespace LT.DigitalOffice.MessageService
         private void ConfigureValidators(IServiceCollection services)
         {
             services.AddTransient<IValidator<EditEmailTemplateRequest>, EditEmailTemplateValidator>();
-            services.AddTransient<IValidator<AddWorkspaceRequest>, AddWorkspaceRequestValidator>();
+            services.AddTransient<IValidator<Workspace>, WorkspaceValidator>();
         }
 
         public void Configure(IApplicationBuilder app)

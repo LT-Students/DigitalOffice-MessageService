@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using FluentValidation.Internal;
 using FluentValidation.Results;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
-using LT.DigitalOffice.MessageService.Business.Interfaces;
+using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands;
+using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;

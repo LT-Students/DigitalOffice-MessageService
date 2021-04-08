@@ -1,4 +1,5 @@
 ﻿using LT.DigitalOffice.Broker.Requests;
+using LT.DigitalOffice.MessageService.Mappers.EmailMappers;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using NUnit.Framework;

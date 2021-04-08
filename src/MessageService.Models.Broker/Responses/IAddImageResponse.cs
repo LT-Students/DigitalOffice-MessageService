@@ -4,17 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LT.DigitalOffice.Broker.Requests
+namespace LT.DigitalOffice.Broker.Responses
 {
-    public interface ICreateImageRequest
+    public interface IAddImageResponse
     {
-        public string Image { get; }
+        Guid? Id { get; }
 
-        static object CreateObj(string image)
+        static object CreateObj(Guid? id)
         {
             return new
             {
-                Image = image
+                Id = id
             };
         }
     }

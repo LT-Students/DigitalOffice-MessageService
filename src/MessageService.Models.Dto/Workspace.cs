@@ -1,6 +1,6 @@
 ﻿namespace LT.DigitalOffice.MessageService.Models.Dto
 {
-    public class AddWorkspaceRequest
+    public class Workspace
     {
         public string Name { get; set; }
         public string Description { get; set; }

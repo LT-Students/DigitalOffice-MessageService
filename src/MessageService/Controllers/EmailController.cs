@@ -1,4 +1,4 @@
-﻿using LT.DigitalOffice.MessageService.Business.Interfaces;
+﻿using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System;

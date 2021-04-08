@@ -3,9 +3,9 @@ using LT.DigitalOffice.MessageService.Models.Dto;
 
 namespace LT.DigitalOffice.MessageService.Validation
 {
-    public class AddWorkspaceRequestValidator : AbstractValidator<AddWorkspaceRequest>
+    public class WorkspaceValidator : AbstractValidator<Workspace>
     {
-        public AddWorkspaceRequestValidator()
+        public WorkspaceValidator()
         {
             RuleFor(workspace => workspace.Name)
                 .NotEmpty().WithMessage("Workspace name can not be empty.");
