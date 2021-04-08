@@ -15,5 +15,9 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
         /// <param name="workspace">Workspace to add.</param>
         /// <returns>Guid of added workspace.</returns>
         Guid CreateWorkspace(DbWorkspace workspace);
+
+        DbWorkspace GetWorkspace(Guid workspaceId);
+
+        bool SwitchActiveStatus(Guid workspaceId, bool status);
     }
 }

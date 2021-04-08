@@ -1,6 +1,6 @@
 ﻿using LT.DigitalOffice.UnitTestKernel;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using NUnit.Framework;
 using System;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers;

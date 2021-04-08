@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.TestHelper;
-using LT.DigitalOffice.MessageService.Models.Dto;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Validation;
 using NUnit.Framework;
 using System;

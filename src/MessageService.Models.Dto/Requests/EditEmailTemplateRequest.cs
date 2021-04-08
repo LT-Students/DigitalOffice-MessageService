@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LT.DigitalOffice.MessageService.Models.Dto
+namespace LT.DigitalOffice.MessageService.Models.Dto.Requests
 {
     public class EditEmailTemplateRequest
     {
