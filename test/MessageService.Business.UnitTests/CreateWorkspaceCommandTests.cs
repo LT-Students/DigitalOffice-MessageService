@@ -89,6 +89,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
             httpContextItems.Add("UserId", _userId);
 
+            _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             _httpContextAccessorMock
                 .Setup(x => x.HttpContext.Items)
                 .Returns(httpContextItems);
@@ -149,9 +150,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
                 .Returns(_validationResultIsValidMock.Object);
 
-            _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
             _loggerMock = new Mock<ILogger<CreateWorkspaceCommand>>();
-            _requestBrokerMock = new Mock<IRequestClient<IAddImageRequest>>();
 
             BrokerSetUp();
             ClientRequestUp();

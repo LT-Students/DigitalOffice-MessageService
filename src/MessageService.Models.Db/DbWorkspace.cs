@@ -11,9 +11,9 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
         public Guid Id { get; set; }
         public Guid OwnerId { get; set; }
+        public Guid? ImageId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Guid? ImageId { get; set; }
         public bool IsActive { get; set; }
 
         public ICollection<DbWorkspaceAdmin> Admins { get; set; }
