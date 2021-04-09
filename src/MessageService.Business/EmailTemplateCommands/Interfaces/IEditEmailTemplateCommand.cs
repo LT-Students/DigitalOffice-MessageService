@@ -1,5 +1,4 @@
-﻿using LT.DigitalOffice.MessageService.Models.Dto;
-using System;
+﻿using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 
 namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces
 {

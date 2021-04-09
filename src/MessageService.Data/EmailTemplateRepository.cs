@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
+﻿using LT.DigitalOffice.Kernel.Exceptions;
+using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
 using Microsoft.EntityFrameworkCore;
@@ -16,18 +17,19 @@ namespace LT.DigitalOffice.MessageService.Data
             this.provider = provider;
         }
 
-        public void DisableEmailTemplate(Guid emailTemplateId)
+        public void DisableEmailTemplate(Guid templateId)
         {
-            var dbEmailTemplate = provider.EmailTemplates.FirstOrDefault(emailTemplate => emailTemplate.Id == emailTemplateId);
+            var dbEmailTemplateText = provider.EmailTemplates
+                .FirstOrDefault(templateText => templateText.Id == templateId);
 
-            if (dbEmailTemplate == null)
+            if (dbEmailTemplateText == null)
             {
-                throw new Exception("Email template with this Id does not exist.");
+                throw new BadRequestException("Email template with this Id does not exist.");
             }
 
-            dbEmailTemplate.IsActive = false;
+            dbEmailTemplateText.IsActive = false;
 
-            provider.EmailTemplates.Update(dbEmailTemplate);
+            provider.EmailTemplates.Update(dbEmailTemplateText);
             provider.Save();
         }
 
@@ -47,6 +49,19 @@ namespace LT.DigitalOffice.MessageService.Data
             if (dbEmailTemplate == null)
             {
                 throw new NullReferenceException("Email template with this Id does not exist");
+            }
+
+            return dbEmailTemplate;
+        }
+
+        public DbEmailTemplate GetEmailTemplateByType(int type)
+        {
+            var dbEmailTemplate = provider.EmailTemplates
+                .FirstOrDefault(et => et.Type == type);
+
+            if (dbEmailTemplate == null)
+            {
+                throw new NullReferenceException("Email template with this type does not exist");
             }
 
             return dbEmailTemplate;

@@ -18,6 +18,8 @@ using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.MessageService.Validation;
 using LT.DigitalOffice.UserService.Configuration;
 using MassTransit;
@@ -108,7 +110,7 @@ namespace LT.DigitalOffice.MessageService
         {
             services.AddTransient<IDbWorkspaceMapper, DbWorkspaceMapper>();
             services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
-            services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
+            services.AddTransient<IMapper<EmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
             services.AddTransient<IMapper<EditEmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
         }
 

@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands;
@@ -7,7 +6,9 @@ using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
+using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -17,51 +18,67 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 {
     class EditEmailTemplateCommandTests
     {
-        private Mock<IEmailTemplateRepository> repositoryMock;
         private IEditEmailTemplateCommand command;
-        private Mock<IMapper<EditEmailTemplateRequest, DbEmailTemplate>> mapperMock;
         private Mock<IAccessValidator> accessValidatorMock;
-        private Mock<ValidationResult> validationResultIsValidMock;
+        private Mock<IEmailTemplateRepository> repositoryMock;
         private Mock<IValidator<EditEmailTemplateRequest>> validatorMock;
+        private Mock<IMapper<EditEmailTemplateRequest, DbEmailTemplate>> mapperMock;
 
-        private Guid emailId;
-        private ValidationResult validationResultError;
-        private EditEmailTemplateRequest emailTemplate;
+        private Guid emailTemplateId;
         private DbEmailTemplate dbEmailTemplate;
+        private DbEmailTemplate newDbEmailTemplate;
+        private EditEmailTemplateRequest newEmailTemplate;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            emailId = Guid.NewGuid();
+            emailTemplateId = Guid.NewGuid();
 
-            emailTemplate = new EditEmailTemplateRequest
+            newEmailTemplate = new EditEmailTemplateRequest
             {
-                Id = emailId,
-                Subject = "Subject_1",
-                Body = "Body_1"
+                Id = emailTemplateId,
+                Name = "New pattern name",
+                Type = EmailTemplateType.Greeting,
+                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                {
+                    new EmailTemplateTextInfo
+                    {
+                        Subject = "New subject",
+                        Text = "New email text",
+                        Language = "ru"
+                    }
+                }
             };
 
             dbEmailTemplate = new DbEmailTemplate
             {
-                Id = emailId,
-                Subject = "Subject",
-                Body = "Body",
-                CreatedAt = DateTime.Now,
-                IsActive = true,
-                AuthorId = Guid.NewGuid()
+                Id = emailTemplateId,
+                CreatedAt = DateTime.UtcNow,
+                Name = "Other pattern name",
+                Type = 2,
+                AuthorId = Guid.NewGuid(),
+                IsActive = true
             };
 
-            validationResultError = new ValidationResult(
-                new List<ValidationFailure>
-                {
-                    new ValidationFailure("error", "something", null)
-                });
+            newDbEmailTemplate = new();
+            newDbEmailTemplate.Id = emailTemplateId;
+            newDbEmailTemplate.CreatedAt = dbEmailTemplate.CreatedAt;
+            newDbEmailTemplate.Name = newEmailTemplate.Name;
+            newDbEmailTemplate.Type = (int)newEmailTemplate.Type;
+            newDbEmailTemplate.AuthorId = dbEmailTemplate.AuthorId;
+            newDbEmailTemplate.IsActive = dbEmailTemplate.IsActive;
 
-            validationResultIsValidMock = new Mock<ValidationResult>();
 
-            validationResultIsValidMock
-                .Setup(x => x.IsValid)
-                .Returns(true);
+            foreach (var templateText in newEmailTemplate.EmailTemplateTexts)
+            {
+                var dbEmailTemplateText = new DbEmailTemplateText();
+
+                dbEmailTemplateText.Subject = templateText.Subject;
+                dbEmailTemplateText.Text = templateText.Text;
+                dbEmailTemplateText.Language = dbEmailTemplateText.Language;
+
+                newDbEmailTemplate.EmailTemplateTexts.Add(dbEmailTemplateText);
+            }
         }
 
         [SetUp]
@@ -86,7 +103,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(x => x.HasRights(3))
                 .Returns(false);
 
-            Assert.Throws<ForbiddenException>(() => command.Execute(emailTemplate));
+            Assert.Throws<ForbiddenException>(() => command.Execute(newEmailTemplate));
         }
 
         [Test]
@@ -97,10 +114,10 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Returns(true);
 
             validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
-                .Returns(validationResultError);
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(false);
 
-            Assert.Throws<ValidationException>(() => command.Execute(emailTemplate));
+            Assert.Throws<ValidationException>(() => command.Execute(newEmailTemplate));
         }
 
 
@@ -112,14 +129,14 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Returns(true);
 
             validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
-                .Returns(validationResultIsValidMock.Object);
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(true);
 
             repositoryMock
-                .Setup(x => x.GetEmailTemplateById(dbEmailTemplate.Id))
+                .Setup(x => x.GetEmailTemplateById(newEmailTemplate.Id))
                 .Throws(new NullReferenceException());
 
-            Assert.Throws<NullReferenceException>(() => command.Execute(emailTemplate));
+            Assert.Throws<NullReferenceException>(() => command.Execute(newEmailTemplate));
         }
 
         public void ShouldThrowArgumentNullExceptionWhenRequestIsNull()
@@ -129,18 +146,18 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Returns(true);
 
             validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
-                .Returns(validationResultIsValidMock.Object);
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(true);
 
             repositoryMock
-                .Setup(x => x.GetEmailTemplateById(dbEmailTemplate.Id))
-                .Returns(dbEmailTemplate);
+                .Setup(x => x.GetEmailTemplateById(newEmailTemplate.Id))
+                .Returns(newDbEmailTemplate);
 
             mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<EditEmailTemplateRequest>()))
+                .Setup(mapper => mapper.Map(newEmailTemplate))
                 .Throws(new ArgumentNullException());
 
-            Assert.Throws<ArgumentNullException>(() => command.Execute(emailTemplate));
+            Assert.Throws<ArgumentNullException>(() => command.Execute(newEmailTemplate));
         }
 
         public void ShouldThrowNullReferenceExceptionWhenEmailTemplateDoesNotUpdate()
@@ -150,53 +167,44 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Returns(true);
 
             validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
-                .Returns(validationResultIsValidMock.Object);
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(true);
 
             repositoryMock
-                .Setup(x => x.GetEmailTemplateById(dbEmailTemplate.Id))
+                .Setup(x => x.GetEmailTemplateById(newEmailTemplate.Id))
                 .Returns(dbEmailTemplate);
 
             mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<EditEmailTemplateRequest>()))
-                .Returns(dbEmailTemplate);
+                .Setup(mapper => mapper.Map(newEmailTemplate))
+                .Returns(newDbEmailTemplate);
 
             repositoryMock
-                .Setup(x => x.EditEmailTemplate(It.IsAny<DbEmailTemplate>()))
+                .Setup(x => x.EditEmailTemplate(newDbEmailTemplate))
                 .Throws(new NullReferenceException());
 
-            Assert.Throws<NullReferenceException>(() => command.Execute(emailTemplate));
+            Assert.Throws<NullReferenceException>(() => command.Execute(newEmailTemplate));
         }
 
         [Test]
         public void ShouldEditEmailTemplateSuccessful()
         {
-            var expectedEmailTemplate = new DbEmailTemplate
-            {
-                Id = emailId,
-                Subject = "Subject",
-                Body = "Body",
-                CreatedAt = new DateTime().Date,
-                AuthorId = Guid.NewGuid()
-            };
-
             accessValidatorMock
                 .Setup(x => x.HasRights(3))
                 .Returns(true);
 
             validatorMock
-                .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
-                .Returns(validationResultIsValidMock.Object);
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(true);
 
             repositoryMock
-                .Setup(x => x.GetEmailTemplateById(dbEmailTemplate.Id))
+                .Setup(x => x.GetEmailTemplateById(newEmailTemplate.Id))
                 .Returns(dbEmailTemplate);
 
             mapperMock
                 .Setup(mapper => mapper.Map(It.IsAny<EditEmailTemplateRequest>()))
-                .Returns(dbEmailTemplate);
+                .Returns(newDbEmailTemplate);
 
-            command.Execute(emailTemplate);
+            command.Execute(newEmailTemplate);
 
             mapperMock.Verify();
             repositoryMock.Verify(repository => repository.GetEmailTemplateById(dbEmailTemplate.Id), Times.Once);

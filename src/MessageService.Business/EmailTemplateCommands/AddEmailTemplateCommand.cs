@@ -11,12 +11,12 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
 {
     public class AddEmailTemplateCommand : IAddEmailTemplateCommand
     {
-        private readonly IMapper<EmailTemplate, DbEmailTemplate> mapper;
+        private readonly IMapper<EmailTemplateRequest, DbEmailTemplate> mapper;
         private readonly IEmailTemplateRepository repository;
         private readonly IAccessValidator accessValidator;
 
         public AddEmailTemplateCommand(
-            [FromServices] IMapper<EmailTemplate, DbEmailTemplate> mapper,
+            [FromServices] IMapper<EmailTemplateRequest, DbEmailTemplate> mapper,
             [FromServices] IEmailTemplateRepository repository,
             [FromServices] IAccessValidator accessValidator)
         {
@@ -25,7 +25,7 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
             this.accessValidator = accessValidator;
         }
 
-        public Guid Execute(EmailTemplate emailTemplate)
+        public Guid Execute(EmailTemplateRequest emailTemplate)
         {
             const int rightId = 3;
 

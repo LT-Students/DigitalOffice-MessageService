@@ -2,6 +2,8 @@
 using LT.DigitalOffice.MessageService.Mappers.EmailMappers;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.UnitTestKernel;
+using Moq;
 using NUnit.Framework;
 using System;
 
@@ -9,46 +11,51 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 {
     public class EmailMapperTests
     {
-        private IMapper<ISendEmailRequest, DbEmail> mapper;
-        private ISendEmailRequest email;
+        private IMapper<ISendEmailRequest, DbEmail> _mapper;
+        private Mock<ISendEmailRequest> _emailMock;
 
-        [SetUp]
-        public void SetUp()
+        private DbEmail _dbEmail;
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
-            mapper = new EmailMapper();
+            _emailMock = new Mock<ISendEmailRequest>();
+
+            var senderId = Guid.NewGuid();
+            var receiver = "lalagvana@gmail.com";
+
+            _dbEmail = new DbEmail
+            {
+                SenderId = senderId,
+                Receiver = "lalagvana@gmail.com"
+            };
+
+            _emailMock
+                .Setup(x => x.SenderId)
+                .Returns(senderId);
+            _emailMock
+                .Setup(x => x.Email)
+                .Returns(receiver);
+
+            _mapper = new EmailMapper();
         }
 
         #region ISendEmailRequestToDbEmail
-        //[Test]
-        //public void ShouldReturnDbEmailCorrectly()
-        //{
-        //    email = new SendEmailRequest
-        //    {
-        //        Receiver = "lalagvana@gmail.com",
-        //        Subject = "Subject",
-        //        Body = "Body"
-        //    };
+        [Test]
+        public void ShouldReturnDbEmailCorrectly()
+        {
+           var result = _mapper.Map(_emailMock.Object);
 
-        //    var result = mapper.Map(email);
+            _dbEmail.Id = result.Id;
+            _dbEmail.Time = result.Time;
 
-        //    var dbEmail = new DbEmail
-        //    {
-        //        Id = result.Id,
-        //        Receiver = email.Receiver,
-        //        Time = result.Time,
-        //        Subject = email.Subject,
-        //        Body = email.Body
-        //    };
-
-        //    SerializerAssert.AreEqual(dbEmail, result);
-        //}
+           SerializerAssert.AreEqual(_dbEmail, result);
+        }
 
         [Test]
         public void ShouldThrowExceptionIfEmailIsNull()
         {
-            email = null;
-
-            Assert.Throws<ArgumentNullException>(() => mapper.Map(null));
+            Assert.Throws<ArgumentNullException>(() => _mapper.Map(null));
         }
         #endregion
     }

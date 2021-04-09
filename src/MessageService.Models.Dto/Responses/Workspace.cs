@@ -1,4 +1,4 @@
-﻿namespace LT.DigitalOffice.MessageService.Models.Dto
+﻿namespace LT.DigitalOffice.MessageService.Models.Dto.Responses
 {
     public class Workspace
     {

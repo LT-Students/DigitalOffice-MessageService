@@ -14,6 +14,6 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interf
         /// </summary>
         /// <param name="emailTemplate">Email template data.</param>
         /// <returns>Guid of the added email template.</returns>
-        Guid Execute(EmailTemplate emailTemplate);
+        Guid Execute(EmailTemplateRequest emailTemplate);
     }
 }

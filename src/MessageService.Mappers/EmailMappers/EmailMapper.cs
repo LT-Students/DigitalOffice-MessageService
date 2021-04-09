@@ -5,24 +5,22 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers.EmailMappers
 {
-    // TODO fix
     public class EmailMapper : IMapper<ISendEmailRequest, DbEmail>
     {
-        public DbEmail Map(ISendEmailRequest email)
+        public DbEmail Map(
+            ISendEmailRequest request)
         {
-            if (email == null)
+            if (request == null)
             {
-                throw new ArgumentNullException(nameof(email));
+                throw new ArgumentNullException(nameof(request));
             }
 
             return new DbEmail
             {
-                //Id = Guid.NewGuid(),
-                //SenderId = email.SenderId,
-                //Receiver = email.Receiver,
-                //Time = DateTime.UtcNow,
-                //Subject = email.Subject,
-                //Body = email.Body
+                Id = Guid.NewGuid(),
+                SenderId = request.SenderId,
+                Receiver = request.Email,
+                Time = DateTime.UtcNow
             };
         }
     }

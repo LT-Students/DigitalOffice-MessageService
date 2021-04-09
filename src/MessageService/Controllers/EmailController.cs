@@ -1,5 +1,6 @@
 ﻿using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -20,7 +21,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
         [HttpPost("addEmailTemplate")]
         public Guid AddEmailTemplate(
             [FromServices] IAddEmailTemplateCommand command,
-            [FromBody] EmailTemplate emailTemplate)
+            [FromBody] EmailTemplateRequest emailTemplate)
         {
             return command.Execute(emailTemplate);
         }
