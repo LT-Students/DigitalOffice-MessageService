@@ -2,4 +2,8 @@
 
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
+  <ItemGroup>
+    <ProjectReference Include="..\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />
+  </ItemGroup>
+
 </Project>
