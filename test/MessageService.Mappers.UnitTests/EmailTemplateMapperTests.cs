@@ -127,18 +127,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
             {
                 Id = editEmailTemplateRequest.Id,
                 Name = editEmailTemplateRequest.Name,
-                Type = (int)editEmailTemplateRequest.Type,
-                EmailTemplateTexts = new List<DbEmailTemplateText>
-                {
-                    new DbEmailTemplateText
-                    {
-                        Id = dbEmailTemplate.EmailTemplateTexts.ElementAt(0).Id,
-                        EmailTemplateId = dbEmailTemplate.Id,
-                        Subject = emailTemplateTextInfo.Subject,
-                        Text = emailTemplateTextInfo.Text,
-                        Language = emailTemplateTextInfo.Language
-                    }
-                }
+                Type = (int)editEmailTemplateRequest.Type
             };
 
             SerializerAssert.AreEqual(expectedDbEmailTemplate, dbEmailTemplate);

@@ -22,10 +22,13 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         private Mock<IAccessValidator> accessValidatorMock;
         private Mock<IEmailTemplateRepository> repositoryMock;
         private Mock<IValidator<EditEmailTemplateRequest>> validatorMock;
-        private Mock<IMapper<EditEmailTemplateRequest, DbEmailTemplate>> mapperMock;
+        private Mock<IMapper<EditEmailTemplateRequest, DbEmailTemplate>> mapperEmailTemplateMock;
+        private Mock<IMapper<EmailTemplateTextInfo, DbEmailTemplateText>> mapperEmailTemplateTextMock;
 
         private Guid emailTemplateId;
         private DbEmailTemplate dbEmailTemplate;
+        private DbEmailTemplateText editDbEmailTemplateText;
+        private EmailTemplateTextInfo editEmailTemplateTextInfo;
         private DbEmailTemplate newDbEmailTemplate;
         private EditEmailTemplateRequest newEmailTemplate;
 
@@ -34,6 +37,13 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         {
             emailTemplateId = Guid.NewGuid();
 
+            editEmailTemplateTextInfo = new EmailTemplateTextInfo
+            {
+                Subject = "New subject",
+                Text = "New email text",
+                Language = "ru"
+            };
+
             newEmailTemplate = new EditEmailTemplateRequest
             {
                 Id = emailTemplateId,
@@ -41,12 +51,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 Type = EmailTemplateType.Greeting,
                 EmailTemplateTexts = new List<EmailTemplateTextInfo>
                 {
-                    new EmailTemplateTextInfo
-                    {
-                        Subject = "New subject",
-                        Text = "New email text",
-                        Language = "ru"
-                    }
+                    editEmailTemplateTextInfo
                 }
             };
 
@@ -57,7 +62,26 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 Name = "Other pattern name",
                 Type = 2,
                 AuthorId = Guid.NewGuid(),
-                IsActive = true
+                IsActive = true,
+                EmailTemplateTexts = new List<DbEmailTemplateText>
+                {
+                    new DbEmailTemplateText
+                    {
+                        Id = Guid.NewGuid(),
+                        EmailTemplateId = emailTemplateId,
+                        Subject = editEmailTemplateTextInfo.Subject,
+                        Text = editEmailTemplateTextInfo.Text,
+                        Language = "en"
+                    },
+                    new DbEmailTemplateText
+                    {
+                        Id = Guid.NewGuid(),
+                        EmailTemplateId = emailTemplateId,
+                        Subject = editEmailTemplateTextInfo.Subject,
+                        Text = editEmailTemplateTextInfo.Text,
+                        Language = editEmailTemplateTextInfo.Language
+                    }
+                }
             };
 
             newDbEmailTemplate = new();
@@ -67,6 +91,15 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             newDbEmailTemplate.Type = (int)newEmailTemplate.Type;
             newDbEmailTemplate.AuthorId = dbEmailTemplate.AuthorId;
             newDbEmailTemplate.IsActive = dbEmailTemplate.IsActive;
+
+            editDbEmailTemplateText = new DbEmailTemplateText
+            {
+                Id = Guid.NewGuid(),
+                EmailTemplateId = emailTemplateId,
+                Subject = editEmailTemplateTextInfo.Subject,
+                Text = editEmailTemplateTextInfo.Text,
+                Language = editEmailTemplateTextInfo.Language
+            };
 
 
             foreach (var templateText in newEmailTemplate.EmailTemplateTexts)
@@ -85,7 +118,8 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         public void SetUp()
         {
             repositoryMock = new Mock<IEmailTemplateRepository>();
-            mapperMock = new Mock<IMapper<EditEmailTemplateRequest, DbEmailTemplate>>();
+            mapperEmailTemplateMock = new Mock<IMapper<EditEmailTemplateRequest, DbEmailTemplate>>();
+            mapperEmailTemplateTextMock = new Mock<IMapper<EmailTemplateTextInfo, DbEmailTemplateText>>();
             accessValidatorMock = new Mock<IAccessValidator>();
             validatorMock = new Mock<IValidator<EditEmailTemplateRequest>>();
 
@@ -93,7 +127,8 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 accessValidatorMock.Object,
                 repositoryMock.Object,
                 validatorMock.Object,
-                mapperMock.Object);
+                mapperEmailTemplateTextMock.Object,
+                mapperEmailTemplateMock.Object);
         }
 
         [Test]
@@ -153,7 +188,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(x => x.GetEmailTemplateById(newEmailTemplate.Id))
                 .Returns(newDbEmailTemplate);
 
-            mapperMock
+            mapperEmailTemplateMock
                 .Setup(mapper => mapper.Map(newEmailTemplate))
                 .Throws(new ArgumentNullException());
 
@@ -162,6 +197,15 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
         public void ShouldThrowNullReferenceExceptionWhenEmailTemplateDoesNotUpdate()
         {
+            var dbEmailTemplateText = new DbEmailTemplateText
+            {
+                Id = Guid.NewGuid(),
+                EmailTemplateId = emailTemplateId,
+                Subject = editEmailTemplateTextInfo.Subject,
+                Text = editEmailTemplateTextInfo.Text,
+                Language = editEmailTemplateTextInfo.Language
+            };
+
             accessValidatorMock
                 .Setup(x => x.HasRights(3))
                 .Returns(true);
@@ -174,9 +218,13 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(x => x.GetEmailTemplateById(newEmailTemplate.Id))
                 .Returns(dbEmailTemplate);
 
-            mapperMock
+            mapperEmailTemplateMock
                 .Setup(mapper => mapper.Map(newEmailTemplate))
                 .Returns(newDbEmailTemplate);
+
+            mapperEmailTemplateTextMock
+                .Setup(x => x.Map(editEmailTemplateTextInfo))
+                .Returns(editDbEmailTemplateText);
 
             repositoryMock
                 .Setup(x => x.EditEmailTemplate(newDbEmailTemplate))
@@ -200,13 +248,17 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(x => x.GetEmailTemplateById(newEmailTemplate.Id))
                 .Returns(dbEmailTemplate);
 
-            mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<EditEmailTemplateRequest>()))
+            mapperEmailTemplateMock
+                .Setup(mapper => mapper.Map(newEmailTemplate))
                 .Returns(newDbEmailTemplate);
+
+            mapperEmailTemplateTextMock
+                .Setup(x => x.Map(editEmailTemplateTextInfo))
+                .Returns(editDbEmailTemplateText);
 
             command.Execute(newEmailTemplate);
 
-            mapperMock.Verify();
+            mapperEmailTemplateMock.Verify();
             repositoryMock.Verify(repository => repository.GetEmailTemplateById(dbEmailTemplate.Id), Times.Once);
             repositoryMock.Verify(repository => repository.EditEmailTemplate(It.IsAny<DbEmailTemplate>()), Times.Once);
         }
