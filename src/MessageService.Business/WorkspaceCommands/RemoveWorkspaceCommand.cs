@@ -26,7 +26,6 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
             _httpContextAccessor = httpContextAccessor;
         }
 
-
         public OperationResultResponse<bool> Execute(Guid workspaceId)
         {
             var requesterId = _httpContextAccessor.HttpContext.GetUserId();

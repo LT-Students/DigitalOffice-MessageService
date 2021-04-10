@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests
 {
-    class RemoveWorkspaceCommandTest
+    class RemoveWorkspaceCommandTests
     {
         private IRemoveWorkspaceCommand _command;
 
@@ -28,7 +28,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         private DbWorkspace _existWorkspace;
         private DbWorkspaceAdmin _dbWorkspaceAdmin;
 
-        private void ClientRequestUp(Guid id)
+        private void ClientRequestConfigure(Guid id)
         {
             IDictionary<object, object> httpContextItems = new Dictionary<object, object>();
 
@@ -80,7 +80,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(x => x.GetAdmins(_existWorkspace.Id))
                 .Returns(new List<DbWorkspaceAdmin>() { _dbWorkspaceAdmin });
 
-
             _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
 
             _command = new RemoveWorkspaceCommand(
@@ -98,7 +97,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 Body = true
             };
 
-            ClientRequestUp(_ownerId);
+            ClientRequestConfigure(_ownerId);
 
             SerializerAssert.AreEqual(expectedResult, _command.Execute(_existWorkspace.Id));
         }
@@ -112,7 +111,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 Body = true
             };
 
-            ClientRequestUp(_adminId);
+            ClientRequestConfigure(_adminId);
             var i = _dbWorkspaceAdmin.Id;
 
             SerializerAssert.AreEqual(expectedResult, _command.Execute(_existWorkspace.Id));
@@ -121,7 +120,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         [Test]
         public void ShouldThrowExcWhenUserHasNotRigth()
         {
-            ClientRequestUp(_userId);
+            ClientRequestConfigure(_userId);
 
             Assert.Throws<ForbiddenException>(() => _command.Execute(_existWorkspace.Id));
         }
