@@ -6,8 +6,11 @@ using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
 {
@@ -16,7 +19,8 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
         private readonly IAccessValidator accessValidator;
         private readonly IEmailTemplateRepository repository;
         private readonly IValidator<EditEmailTemplateRequest> validator;
-        private readonly IMapper<EditEmailTemplateRequest, DbEmailTemplate> mapper;
+        private readonly IMapper<EmailTemplateTextInfo, DbEmailTemplateText> mapperTemplateText;
+        private readonly IMapper<EditEmailTemplateRequest, DbEmailTemplate> mapperEmailTemplate;
 
         private readonly int numberRight = 3;
 
@@ -24,14 +28,17 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
             [FromServices] IAccessValidator accessValidator,
             [FromServices] IEmailTemplateRepository repository,
             [FromServices] IValidator<EditEmailTemplateRequest> validator,
-            [FromServices] IMapper<EditEmailTemplateRequest, DbEmailTemplate> mapper)
+            [FromServices] IMapper<EmailTemplateTextInfo, DbEmailTemplateText> mapperTemplateText,
+            [FromServices] IMapper<EditEmailTemplateRequest, DbEmailTemplate> mapperEmailTemplate)
         {
-            this.mapper = mapper;
             this.validator = validator;
             this.repository = repository;
             this.accessValidator = accessValidator;
+            this.mapperTemplateText = mapperTemplateText;
+            this.mapperEmailTemplate = mapperEmailTemplate;
         }
 
+        // TODO: rework edit method => patch
         public void Execute(EditEmailTemplateRequest editEmailTemplate)
         {
             CheckUserRights();
@@ -40,13 +47,32 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
 
             var dbEmailTemplate = repository.GetEmailTemplateById(editEmailTemplate.Id);
 
-            var editDbEmailTemplate = mapper.Map(editEmailTemplate);
+            var editDbEmailTemplate = mapperEmailTemplate.Map(editEmailTemplate);
 
             editDbEmailTemplate.CreatedAt = dbEmailTemplate.CreatedAt;
             editDbEmailTemplate.IsActive = dbEmailTemplate.IsActive;
             editDbEmailTemplate.AuthorId = dbEmailTemplate.AuthorId;
 
-            repository.EditEmailTemplate(dbEmailTemplate);
+            foreach (var emailTemplateText in editEmailTemplate.EmailTemplateTexts)
+            {
+                var dbEmailTemplateTexts = dbEmailTemplate.EmailTemplateTexts
+                    .FirstOrDefault(x => x.Language == emailTemplateText.Language);
+                var newDbEmailTemplateTexts = mapperTemplateText.Map(emailTemplateText);
+
+                if (dbEmailTemplateTexts != null)
+                {
+                    newDbEmailTemplateTexts.Id = dbEmailTemplateTexts.Id;
+                }
+                else
+                {
+                    newDbEmailTemplateTexts.Id = Guid.NewGuid();
+                }
+
+                newDbEmailTemplateTexts.EmailTemplateId = dbEmailTemplate.Id;
+                editDbEmailTemplate.EmailTemplateTexts.Add(newDbEmailTemplateTexts);
+            }
+
+            repository.EditEmailTemplate(editDbEmailTemplate);
         }
 
         private void CheckUserRights()

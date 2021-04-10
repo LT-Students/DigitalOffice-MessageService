@@ -52,18 +52,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.EmailMappers
             {
                 Id = emailTemplate.Id,
                 Name = emailTemplate.Name,
-                Type = (int)emailTemplate.Type,
-                EmailTemplateTexts = emailTemplate.EmailTemplateTexts.Select(x =>
-                    new DbEmailTemplateText
-                    {
-                        Id = Guid.NewGuid(),
-                        EmailTemplateId = emailTemplate.Id,
-                        Subject = x.Subject,
-                        Text = x.Text,
-                        Language = x.Language
-                    }
-                )
-                .ToList()
+                Type = (int)emailTemplate.Type
             };
         }
     }

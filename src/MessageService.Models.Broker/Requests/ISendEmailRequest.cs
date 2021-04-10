@@ -9,24 +9,21 @@ namespace LT.DigitalOffice.Broker.Requests
     /// </summary>
     public interface ISendEmailRequest
     {
-        Guid? TemplateId { get; }
+        Guid TemplateId { get; }
         Guid SenderId { get; }
         string Email { get; }
         string Language { get; }
-        EmailTemplateType Type { get; }
         IDictionary<string, string> TemplateValues { get; }
 
         static object CreateObj(
-            Guid? templateId,
+            Guid templateId,
             Guid senderId,
             string email,
             string language,
-            EmailTemplateType type,
             IDictionary<string, string>  templateValues)
         {
             return new
             {
-                Type = type,
                 Email = email,
                 Language = language,
                 SenderId = senderId,

@@ -7,5 +7,6 @@ namespace LT.DigitalOffice.UserService.Configuration
         public string SendEmailEndpoint { get; set; }
 
         public string CreateImageEndpoint { get; set; }
+        public string GetTempalateTagsEndpoint { get; set; }
     }
 }

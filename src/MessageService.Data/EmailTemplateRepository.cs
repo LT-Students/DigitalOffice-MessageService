@@ -24,7 +24,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
             if (dbEmailTemplateText == null)
             {
-                throw new BadRequestException("Email template with this Id does not exist.");
+                throw new NotFoundException($"Email template with this ID '{templateId}' does not exist.");
             }
 
             dbEmailTemplateText.IsActive = false;
@@ -35,20 +35,25 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public Guid AddEmailTemplate(DbEmailTemplate emailTemplate)
         {
+            if (emailTemplate == null)
+            {
+                throw new ArgumentNullException(nameof(emailTemplate));
+            }
+
             provider.EmailTemplates.Add(emailTemplate);
             provider.Save();
 
             return emailTemplate.Id;
         }
 
-        public DbEmailTemplate GetEmailTemplateById(Guid idEmailTemplate)
+        public DbEmailTemplate GetEmailTemplateById(Guid emailTemplateId)
         {
             var dbEmailTemplate = provider.EmailTemplates
-                .FirstOrDefault(et => et.Id == idEmailTemplate);
+                .FirstOrDefault(et => et.Id == emailTemplateId);
 
             if (dbEmailTemplate == null)
             {
-                throw new NullReferenceException("Email template with this Id does not exist");
+                throw new NotFoundException($"Email template with this ID '{emailTemplateId}' does not exist");
             }
 
             return dbEmailTemplate;
@@ -61,7 +66,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
             if (dbEmailTemplate == null)
             {
-                throw new NullReferenceException("Email template with this type does not exist");
+                throw new NotFoundException($"Email template with this type '{type}' does not exist");
             }
 
             return dbEmailTemplate;
@@ -75,7 +80,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
             if (dbTemplate == null)
             {
-                throw new NullReferenceException("Email templates was not found.");
+                throw new NotFoundException("Email template with this ID '{templateId}' does not exist.");
             }
 
             provider.EmailTemplates.Update(dbEmailTemplateToEdit);

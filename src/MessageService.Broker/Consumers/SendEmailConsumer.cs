@@ -68,17 +68,10 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
         private DbEmailTemplateText GetDbEmailTemplateText(ISendEmailRequest request)
         {
             DbEmailTemplate dbEmailTemplate;
-            if (request.TemplateId != null)
-            {
-                dbEmailTemplate = _templateRepository.GetEmailTemplateById((Guid)request.TemplateId);
-            }
-            else
-            {
-                dbEmailTemplate = _templateRepository.GetEmailTemplateByType((int)request.Type);
-            }
+            dbEmailTemplate = _templateRepository.GetEmailTemplateById(request.TemplateId);
 
             DbEmailTemplateText dbEmailTemplateText;
-            dbEmailTemplateText = dbEmailTemplate.EmailTemplateTexts.FirstOrDefault(ett => ett.Language == request.Language);
+            dbEmailTemplateText = dbEmailTemplate?.EmailTemplateTexts.FirstOrDefault(ett => ett.Language == request.Language);
 
             if (dbEmailTemplateText == null)
             {
