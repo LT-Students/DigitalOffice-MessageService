@@ -19,6 +19,32 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
         private readonly ILogger<EmailTemplateTagsConsumer> _logger;
         private readonly IEmailTemplateRepository _templateRepository;
 
+        private DbEmailTemplateText GetDbEmailTemplateText(IGetEmailTemplateTagsRequest request)
+        {
+            DbEmailTemplate dbEmailTemplate;
+            if (request.TemplateId != null)
+            {
+                dbEmailTemplate = _templateRepository.GetEmailTemplateById((Guid)request.TemplateId);
+            }
+            else
+            {
+                dbEmailTemplate = _templateRepository.GetEmailTemplateByType((int)request.Type);
+            }
+
+            DbEmailTemplateText dbEmailTemplateText;
+            dbEmailTemplateText = dbEmailTemplate?.EmailTemplateTexts.FirstOrDefault();
+
+            if (dbEmailTemplateText == null)
+            {
+                string messageTemp = "Email template text was not found.";
+                _logger.LogWarning(messageTemp);
+
+                throw new NotFoundException(messageTemp);
+            }
+
+            return dbEmailTemplateText;
+        }
+
         public EmailTemplateTagsConsumer(
             ILogger<EmailTemplateTagsConsumer> logger,
             IEmailTemplateRepository templateRepository)
@@ -46,32 +72,6 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
             }
 
             return IGetEmailTemplateTagsResponse.CreateObj(templateTags, dbEmailTemplateText.EmailTemplate.Id);
-        }
-
-        private DbEmailTemplateText GetDbEmailTemplateText(IGetEmailTemplateTagsRequest request)
-        {
-            DbEmailTemplate dbEmailTemplate;
-            if (request.TemplateId != null)
-            {
-                dbEmailTemplate = _templateRepository.GetEmailTemplateById((Guid)request.TemplateId);
-            }
-            else
-            {
-                dbEmailTemplate = _templateRepository.GetEmailTemplateByType((int)request.Type);
-            }
-
-            DbEmailTemplateText dbEmailTemplateText;
-            dbEmailTemplateText = dbEmailTemplate?.EmailTemplateTexts.FirstOrDefault();
-
-            if (dbEmailTemplateText == null)
-            {
-                string messageTemp = "Email template text was not found.";
-                _logger.LogWarning(messageTemp);
-
-                throw new NotFoundException(messageTemp);
-            }
-
-            return dbEmailTemplateText;
         }
     }
 }

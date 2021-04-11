@@ -54,6 +54,8 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
             catch (Exception ex)
             {
                 _logger.LogWarning($"Email was not send. Reason: {ex.Message}");
+
+                throw;
             }
 
             var dbEmail = _mapper.Map(request);
@@ -67,15 +69,13 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
         private DbEmailTemplateText GetDbEmailTemplateText(ISendEmailRequest request)
         {
-            DbEmailTemplate dbEmailTemplate;
-            dbEmailTemplate = _templateRepository.GetEmailTemplateById(request.TemplateId);
+            var dbEmailTemplate = _templateRepository.GetEmailTemplateById(request.TemplateId);
 
-            DbEmailTemplateText dbEmailTemplateText;
-            dbEmailTemplateText = dbEmailTemplate?.EmailTemplateTexts.FirstOrDefault(ett => ett.Language == request.Language);
+            var dbEmailTemplateText = dbEmailTemplate?.EmailTemplateTexts.FirstOrDefault(ett => ett.Language == request.Language);
 
             if (dbEmailTemplateText == null)
             {
-                string messageTemp = "Email template text was not found.";
+                string messageTemp = "Email template text was not found. {password}";
                 _logger.LogWarning(messageTemp);
 
                 throw new NotFoundException(messageTemp);
