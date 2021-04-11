@@ -30,7 +30,8 @@ namespace LT.DigitalOffice.MessageService.Validation
                         .NotEmpty();
 
                     ett.RuleFor(ett => ett.Language)
-                        .NotEmpty();
+                        .NotEmpty()
+                        .MaximumLength(2);
                 });
         }
     }
