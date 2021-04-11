@@ -45,10 +45,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
                 templateTags.Add(tag, "");
             }
 
-            return new
-            {
-                TemplateTags = templateTags
-            };
+            return IGetEmailTemplateTagsResponse.CreateObj(templateTags, dbEmailTemplateText.EmailTemplate.Id);
         }
 
         private DbEmailTemplateText GetDbEmailTemplateText(IGetEmailTemplateTagsRequest request)

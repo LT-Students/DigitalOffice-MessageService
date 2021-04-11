@@ -3,6 +3,7 @@ using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.UnitTestKernel;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
@@ -64,6 +65,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 Id = emailTemplateId,
                 AuthorId = Guid.NewGuid(),
                 IsActive = true,
+                Type = (int)EmailTemplateType.Greeting,
                 CreatedAt = DateTime.UtcNow,
                 EmailTemplateTexts = new List<DbEmailTemplateText>
                 {
@@ -126,7 +128,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         }
         #endregion
 
-        #region GetEmailTemplateById
+        #region GetEmail
         [Test]
         public void ShouldThrowExceptionWhenEmailTemplateIdNotFound()
         {
@@ -139,6 +141,24 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         public void ShouldGetEmailTemplateByIdSuccessful()
         {
             var newDbEmailTemplate = repository.GetEmailTemplateById(dbEmailTemplate.Id);
+
+            provider.MakeEntityDetached(dbEmailTemplate);
+            newDbEmailTemplate.EmailTemplateTexts.ElementAt(0).EmailTemplate = null;
+
+            SerializerAssert.AreEqual(dbEmailTemplate, newDbEmailTemplate);
+        }
+
+        [Test]
+        public void ShouldThrowExceptionWhenEmailTemplateTypeNotFound()
+        {
+            Assert.Throws<NotFoundException>(() => repository.GetEmailTemplateByType((int)EmailTemplateType.Warning));
+        }
+
+        [Test]
+        public void ShouldGetEmailTemplateByTypeSuccessful()
+        {
+            var newDbEmailTemplate = repository.GetEmailTemplateByType((int)EmailTemplateType.Greeting);
+
             provider.MakeEntityDetached(dbEmailTemplate);
             newDbEmailTemplate.EmailTemplateTexts.ElementAt(0).EmailTemplate = null;
 

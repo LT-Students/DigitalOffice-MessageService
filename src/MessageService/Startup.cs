@@ -17,7 +17,6 @@ using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses;
@@ -145,6 +144,7 @@ namespace LT.DigitalOffice.MessageService
         {
             services.AddTransient<IValidator<EditEmailTemplateRequest>, EditEmailTemplateValidator>();
             services.AddTransient<IValidator<Workspace>, WorkspaceValidator>();
+            services.AddTransient<IValidator<EmailTemplateRequest>, AddEmailTemplateValidator>();
         }
 
         public void Configure(IApplicationBuilder app)

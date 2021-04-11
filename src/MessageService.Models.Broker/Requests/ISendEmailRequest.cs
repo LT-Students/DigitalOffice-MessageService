@@ -1,5 +1,4 @@
-﻿using LT.DigitalOffice.MessageService.Models.Dto.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace LT.DigitalOffice.Broker.Requests

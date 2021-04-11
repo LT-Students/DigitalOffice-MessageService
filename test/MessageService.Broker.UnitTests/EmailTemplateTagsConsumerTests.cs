@@ -64,6 +64,8 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                     dbEmailTemplateText
                 }
             };
+
+            dbEmailTemplateText.EmailTemplate = _dbEmailTemplate;
         }
 
         [SetUp]
@@ -89,8 +91,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             var expected = new
             {
                 IsSuccess = false,
-                Errors = new List<string> { "Email template text was not found." },
-                Body = false
+                Errors = new List<string> { "Email template text was not found." }
             };
 
             await _harness.Start();
@@ -129,7 +130,11 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             {
                 IsSuccess = true,
                 Errors = null as List<string>,
-                Body = new { TemplateTags = _templateTags }
+                Body = new
+                {
+                    TemplateId = _dbEmailTemplate.Id,
+                    TemplateTags = _templateTags
+                }
             };
 
             await _harness.Start();

@@ -5,17 +5,24 @@ namespace LT.DigitalOffice.Broker.Responses
 {
     public interface IGetEmailTemplateTagsResponse
     {
+        Guid TemplateId { get; }
         IDictionary<string, string> TemplateTags { get; }
 
-        static object CreateObj(IDictionary<string, string> templateTags)
+        static object CreateObj(IDictionary<string, string> templateTags, Guid templateId)
         {
             return new
             {
+                TemplateId = templateId,
                 TemplateTags = templateTags
             };
         }
 
-        public IDictionary<string, string> CreateDictionaryTemplate(string userFirstName, string userEmail, string userId, string link)
+        public IDictionary<string, string> CreateDictionaryTemplate(
+            string userFirstName,
+            string userEmail,
+            string userId,
+            string userPassword,
+            string secret)
         {
             Func<string, bool> isKey = arg => !string.IsNullOrEmpty(arg) && TemplateTags.ContainsKey(nameof(arg));
 
@@ -34,9 +41,14 @@ namespace LT.DigitalOffice.Broker.Responses
                 TemplateTags[nameof(userId)] = userId;
             }
 
-            if (isKey(link))
+            if (isKey(userPassword))
             {
-                TemplateTags[nameof(link)] = link;
+                TemplateTags[nameof(userPassword)] = userPassword;
+            }
+
+            if (isKey(secret))
+            {
+                TemplateTags[nameof(secret)] = secret;
             }
 
             return TemplateTags;
