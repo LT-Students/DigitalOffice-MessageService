@@ -75,7 +75,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
             if (dbEmailTemplateText == null)
             {
-                string messageTemp = "Email template text was not found";
+                string messageTemp = "Email template text was not found.";
                 _logger.LogWarning(messageTemp);
 
                 throw new NotFoundException(messageTemp);
