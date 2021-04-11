@@ -44,18 +44,6 @@ namespace MessageService.Validation.UnitTests
         }
 
         [Test]
-        public void ShouldThrowValidationExceptionWhenTemplateNameIsEmpty()
-        {
-            validator.ShouldHaveValidationErrorFor(x => x.Name, "");
-        }
-
-        [Test]
-        public void ShouldThrowValidationExceptionWhenTemplateTypeIsEmpty()
-        {
-            validator.ShouldHaveValidationErrorFor(x => x.Type, (EmailTemplateType)7);
-        }
-
-        [Test]
         public void ShouldNotHaveAnyValidationErrorsWhenRequestIsValid()
         {
             validator.TestValidate(emailTemplate).ShouldNotHaveAnyValidationErrors();
