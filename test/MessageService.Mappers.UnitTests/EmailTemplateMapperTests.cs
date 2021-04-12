@@ -77,11 +77,12 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 
             foreach (var templateText in emailTemplate.EmailTemplateTexts)
             {
-                var dbEmailTemplateText = new DbEmailTemplateText();
-
-                dbEmailTemplateText.Subject = templateText.Subject;
-                dbEmailTemplateText.Text = templateText.Text;
-                dbEmailTemplateText.Language = templateText.Language;
+                var dbEmailTemplateText = new DbEmailTemplateText()
+                {
+                    Subject = templateText.Subject,
+                    Text = templateText.Text,
+                    Language = templateText.Language
+                };
 
                 expectedDbEmailTemplate.EmailTemplateTexts.Add(dbEmailTemplateText);
             }
