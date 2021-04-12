@@ -19,7 +19,6 @@ using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
-using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.MessageService.Validation;
 using LT.DigitalOffice.UserService.Configuration;
 using MassTransit;

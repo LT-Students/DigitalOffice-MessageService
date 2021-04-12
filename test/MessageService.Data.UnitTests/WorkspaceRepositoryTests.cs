@@ -7,6 +7,7 @@ using NUnit.Framework;
 using System;
 using LT.DigitalOffice.UnitTestKernel;
 using System.Linq;
+using LT.DigitalOffice.Kernel.Exceptions;
 
 namespace LT.DigitalOffice.MessageService.Data.UnitTests
 {

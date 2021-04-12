@@ -3,6 +3,7 @@ using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
 using System;
+using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Data
 {

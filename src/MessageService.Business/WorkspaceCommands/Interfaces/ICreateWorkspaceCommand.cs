@@ -1,4 +1,4 @@
-﻿using LT.DigitalOffice.MessageService.Models.Dto.Responses;
+﻿using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces
