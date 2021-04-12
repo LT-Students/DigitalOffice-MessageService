@@ -112,7 +112,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             };
 
             ClientRequestConfigure(_adminId);
-            var i = _dbWorkspaceAdmin.Id;
 
             SerializerAssert.AreEqual(expectedResult, _command.Execute(_existWorkspace.Id));
         }
