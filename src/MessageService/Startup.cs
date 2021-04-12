@@ -17,7 +17,7 @@ using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Validation;
 using LT.DigitalOffice.UserService.Configuration;
 using MassTransit;
@@ -118,6 +118,7 @@ namespace LT.DigitalOffice.MessageService
             services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
             services.AddTransient<IEditEmailTemplateCommand, EditEmailTemplateCommand>();
             services.AddTransient<ICreateWorkspaceCommand, CreateWorkspaceCommand>();
+            services.AddTransient<IRemoveWorkspaceCommand, RemoveWorkspaceCommand>();
         }
 
         private void ConfigureRepositories(IServiceCollection services)
@@ -127,6 +128,7 @@ namespace LT.DigitalOffice.MessageService
             services.AddTransient<IWorkspaceRepository, WorkspaceRepository>();
             services.AddTransient<IEmailRepository, EmailRepository>();
             services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
         }
 
         private void ConfigureValidators(IServiceCollection services)

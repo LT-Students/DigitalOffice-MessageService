@@ -7,7 +7,7 @@ using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using Moq;
 using NUnit.Framework;
 using System;
