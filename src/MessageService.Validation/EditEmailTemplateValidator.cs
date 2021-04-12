@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.MessageService.Models.Dto;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 
 namespace LT.DigitalOffice.MessageService.Validation
@@ -15,10 +16,10 @@ namespace LT.DigitalOffice.MessageService.Validation
                 .NotEmpty();
 
             RuleFor(et => et.Type)
-                    .NotEmpty();
+                .IsInEnum();
 
             RuleFor(et => et.EmailTemplateTexts)
-                    .NotNull();
+                .NotNull();
 
             RuleForEach(et => et.EmailTemplateTexts)
                 .Must(ett => ett != null)

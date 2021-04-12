@@ -11,13 +11,13 @@ namespace LT.DigitalOffice.MessageService.Validation
                 .NotEmpty();
 
             RuleFor(et => et.Type)
-                    .NotEmpty();
+                .IsInEnum();
 
             RuleFor(et => et.AuthorId)
-                    .NotEmpty();
+                .NotEmpty();
 
             RuleFor(et => et.EmailTemplateTexts)
-                    .NotNull();
+                .NotNull();
 
             RuleForEach(et => et.EmailTemplateTexts)
                 .Must(ett => ett != null)

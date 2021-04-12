@@ -58,11 +58,12 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
             foreach (var templateText in emailTemplate.EmailTemplateTexts)
             {
-                var dbEmailTemplateText = new DbEmailTemplateText();
-
-                dbEmailTemplateText.Subject = templateText.Subject;
-                dbEmailTemplateText.Text = templateText.Text;
-                dbEmailTemplateText.Language = dbEmailTemplateText.Language;
+                var dbEmailTemplateText = new DbEmailTemplateText()
+                {
+                    Subject = templateText.Subject,
+                    Text = templateText.Text,
+                    Language = templateText.Language
+                };
 
                 dbEmailTemplate.EmailTemplateTexts.Add(dbEmailTemplateText);
             }

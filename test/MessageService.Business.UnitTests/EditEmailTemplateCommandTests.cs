@@ -84,13 +84,15 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 }
             };
 
-            newDbEmailTemplate = new();
-            newDbEmailTemplate.Id = emailTemplateId;
-            newDbEmailTemplate.CreatedAt = dbEmailTemplate.CreatedAt;
-            newDbEmailTemplate.Name = newEmailTemplate.Name;
-            newDbEmailTemplate.Type = (int)newEmailTemplate.Type;
-            newDbEmailTemplate.AuthorId = dbEmailTemplate.AuthorId;
-            newDbEmailTemplate.IsActive = dbEmailTemplate.IsActive;
+            newDbEmailTemplate = new()
+            {
+                Id = emailTemplateId,
+                CreatedAt = dbEmailTemplate.CreatedAt,
+                Name = newEmailTemplate.Name,
+                Type = (int)newEmailTemplate.Type,
+                AuthorId = dbEmailTemplate.AuthorId,
+                IsActive = dbEmailTemplate.IsActive
+            };
 
             editDbEmailTemplateText = new DbEmailTemplateText
             {
@@ -104,11 +106,12 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
             foreach (var templateText in newEmailTemplate.EmailTemplateTexts)
             {
-                var dbEmailTemplateText = new DbEmailTemplateText();
-
-                dbEmailTemplateText.Subject = templateText.Subject;
-                dbEmailTemplateText.Text = templateText.Text;
-                dbEmailTemplateText.Language = dbEmailTemplateText.Language;
+                var dbEmailTemplateText = new DbEmailTemplateText
+                {
+                    Subject = templateText.Subject,
+                    Text = templateText.Text,
+                    Language = templateText.Language
+                };
 
                 newDbEmailTemplate.EmailTemplateTexts.Add(dbEmailTemplateText);
             }
