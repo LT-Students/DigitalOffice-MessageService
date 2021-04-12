@@ -9,7 +9,7 @@ using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Responses;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.UnitTestKernel;
 using MassTransit;
 using Microsoft.AspNetCore.Http;

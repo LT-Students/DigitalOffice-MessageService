@@ -5,6 +5,8 @@ using LT.DigitalOffice.MessageService.Models.Db;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System;
+using LT.DigitalOffice.UnitTestKernel;
+using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Data.UnitTests
 {
@@ -29,7 +31,8 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             _dbWorkspaceInDb = new DbWorkspace
             {
                 Id = Guid.NewGuid(),
-                Name = "Name"
+                Name = "Name",
+                IsActive = true
             };
 
             CreateMemoryDb();
@@ -71,6 +74,43 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 
             Assert.AreEqual(_dbWorkspaceToAdd.Id, result);
             Assert.AreEqual(_dbWorkspaceToAdd, _provider.Workspaces.Find(_dbWorkspaceToAdd.Id));
+        }
+        #endregion
+
+        #region GetWorkspace
+        [Test]
+        public void ShouldReturnExistsWorkspace()
+        {
+            SerializerAssert.AreEqual(_repository.GetWorkspace(_dbWorkspaceInDb.Id), _dbWorkspaceInDb);
+        }
+
+        [Test]
+        public void ShouldThrowNotFountExcWhenDoesNotExistWorkspaceWithThisId()
+        {
+            var incorrectId = Guid.NewGuid();
+
+            Assert.Throws<NotFoundException>(() => _repository.GetWorkspace(incorrectId));
+        }
+        #endregion
+
+        #region SwitchActiveStatus
+        [Test]
+        public void ShouldSwitchActiveStatusSuccessfully()
+        {
+            _dbWorkspaceInDb.IsActive = true;
+
+            var id = _dbWorkspaceInDb.Id;
+
+            Assert.IsTrue(_repository.SwitchActiveStatus(id, false));
+            Assert.IsFalse(_provider.Workspaces.FirstOrDefault(w => w.Id == id).IsActive);
+        }
+
+        [Test]
+        public void ShouldThrowNotFountExcWhenTryingSwitchStatusOfNonExistsWorkspace()
+        {
+            var id = Guid.NewGuid();
+
+            Assert.Throws<NotFoundException>(() => _repository.SwitchActiveStatus(id, false));
         }
         #endregion
     }

@@ -129,6 +129,7 @@ namespace LT.DigitalOffice.MessageService
             services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
             services.AddTransient<IEditEmailTemplateCommand, EditEmailTemplateCommand>();
             services.AddTransient<ICreateWorkspaceCommand, CreateWorkspaceCommand>();
+            services.AddTransient<IRemoveWorkspaceCommand, RemoveWorkspaceCommand>();
         }
 
         private void ConfigureRepositories(IServiceCollection services)
@@ -138,6 +139,7 @@ namespace LT.DigitalOffice.MessageService
             services.AddTransient<IWorkspaceRepository, WorkspaceRepository>();
             services.AddTransient<IEmailRepository, EmailRepository>();
             services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
         }
 
         private void ConfigureValidators(IServiceCollection services)

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using LT.DigitalOffice.MessageService.Models.Dto.Responses;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 
 namespace LT.DigitalOffice.MessageService.Validation
 {
