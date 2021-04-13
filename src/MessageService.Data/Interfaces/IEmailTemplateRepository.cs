@@ -33,5 +33,11 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
         /// </summary>
         /// <param name="id">Email template id.</param>
         DbEmailTemplate GetEmailTemplateById(Guid id);
+
+        /// <summary>
+        /// Get first email template by type from the database.
+        /// </summary>
+        /// <param name="type">Email template type.</param>
+        DbEmailTemplate GetEmailTemplateByType(int type);
     }
 }

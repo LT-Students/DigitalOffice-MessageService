@@ -1,28 +1,43 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using System;
+using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Mappers.EmailMappers
 {
-    public class EmailTemplateMapper : IMapper<EmailTemplate, DbEmailTemplate>,
+    public class EmailTemplateMapper : IMapper<EmailTemplateRequest, DbEmailTemplate>,
         IMapper<EditEmailTemplateRequest, DbEmailTemplate>
     {
-        public DbEmailTemplate Map(EmailTemplate emailTemplate)
+        public DbEmailTemplate Map(EmailTemplateRequest emailTemplate)
         {
             if (emailTemplate == null)
             {
                 throw new ArgumentNullException(nameof(emailTemplate));
             }
 
+            var templateId = Guid.NewGuid();
+
             return new DbEmailTemplate
             {
-                Id = Guid.NewGuid(),
-                Subject = emailTemplate.Subject,
-                Body = emailTemplate.Body,
+                Id = templateId,
+                Name = emailTemplate.Name,
+                Type = (int)emailTemplate.Type,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true,
-                AuthorId = emailTemplate.AuthorId
+                AuthorId = emailTemplate.AuthorId,
+                EmailTemplateTexts = emailTemplate.EmailTemplateTexts.Select(x =>
+                    new DbEmailTemplateText
+                    {
+                        Id = Guid.NewGuid(),
+                        EmailTemplateId = templateId,
+                        Subject = x.Subject,
+                        Text = x.Text,
+                        Language = x.Language
+                    }
+                )
+                .ToList()
             };
         }
 
@@ -35,8 +50,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.EmailMappers
 
             return new DbEmailTemplate
             {
-                Subject = emailTemplate.Subject,
-                Body = emailTemplate.Body
+                Id = emailTemplate.Id,
+                Name = emailTemplate.Name,
+                Type = (int)emailTemplate.Type
             };
         }
     }

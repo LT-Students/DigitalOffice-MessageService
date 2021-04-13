@@ -2,7 +2,6 @@
 using FluentValidation.TestHelper;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using NUnit.Framework;
-using System;
 
 namespace LT.DigitalOffice.MessageService.Validation.UnitTests
 {

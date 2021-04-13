@@ -1,20 +1,25 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.EmailMappers;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
+using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.UnitTestKernel;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 {
     public class EmailTemplateMapperTests
     {
-        private IMapper<EmailTemplate, DbEmailTemplate> mapper;
+        private IMapper<EmailTemplateRequest, DbEmailTemplate> mapper;
         private IMapper<EditEmailTemplateRequest, DbEmailTemplate> editMapper;
 
-        private EmailTemplate emailTemplate;
-        private DbEmailTemplate dbEmailTemplate;
+        private EmailTemplateRequest emailTemplate;
+        private DbEmailTemplate expectedDbEmailTemplate;
+        private EmailTemplateTextInfo emailTemplateTextInfo;
         private EditEmailTemplateRequest editEmailTemplateRequest;
 
         [OneTimeSetUp]
@@ -23,27 +28,64 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
             mapper = new EmailTemplateMapper();
             editMapper = new EmailTemplateMapper();
 
-            emailTemplate = new EmailTemplate
+            emailTemplate = new EmailTemplateRequest
             {
-                Subject = "Subject",
-                Body = "Body",
-                AuthorId = Guid.NewGuid()
+                Name = "Pattern name",
+                Type = EmailTemplateType.Greeting,
+                AuthorId = Guid.NewGuid(),
+                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                {
+                    new EmailTemplateTextInfo
+                    {
+                        Subject = "Subject",
+                        Text = "Email text",
+                        Language = "en"
+                    }
+                }
             };
 
-            dbEmailTemplate = new DbEmailTemplate
+            emailTemplateTextInfo = new EmailTemplateTextInfo()
             {
-                Subject = emailTemplate.Subject,
-                Body = emailTemplate.Body,
+                Subject = "New subject",
+                Text = "New email text",
+                Language = "ru"
+            };
+
+            editEmailTemplateRequest = new EditEmailTemplateRequest()
+            {
+                Name = "New pattern name",
+                Type = EmailTemplateType.Greeting,
+                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                {
+                    new EmailTemplateTextInfo
+                    {
+                        Subject = emailTemplateTextInfo.Subject,
+                        Text = emailTemplateTextInfo.Text,
+                        Language = emailTemplateTextInfo.Language
+                    }
+                }
+            };
+
+            expectedDbEmailTemplate = new DbEmailTemplate
+            {
+                Name = emailTemplate.Name,
+                CreatedAt = DateTime.UtcNow,
                 AuthorId = emailTemplate.AuthorId,
+                Type = (int)emailTemplate.Type,
                 IsActive = true
             };
 
-            editEmailTemplateRequest = new EditEmailTemplateRequest
+            foreach (var templateText in emailTemplate.EmailTemplateTexts)
             {
-                Id = Guid.NewGuid(),
-                Subject = "Subject_1",
-                Body = "Body_1"
-            };
+                var dbEmailTemplateText = new DbEmailTemplateText()
+                {
+                    Subject = templateText.Subject,
+                    Text = templateText.Text,
+                    Language = templateText.Language
+                };
+
+                expectedDbEmailTemplate.EmailTemplateTexts.Add(dbEmailTemplateText);
+            }
         }
 
         [Test]
@@ -58,11 +100,14 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
         public void ShouldReturnRightModelWhenEmailTemplateIsMapped()
         {
             var resultDbEmailTemplate = mapper.Map(emailTemplate);
-            dbEmailTemplate.Id = resultDbEmailTemplate.Id;
-            dbEmailTemplate.CreatedAt = resultDbEmailTemplate.CreatedAt;
+            expectedDbEmailTemplate.Id = resultDbEmailTemplate.Id;
+            expectedDbEmailTemplate.CreatedAt = resultDbEmailTemplate.CreatedAt;
+            expectedDbEmailTemplate.EmailTemplateTexts.ElementAt(0).Id =
+                resultDbEmailTemplate.EmailTemplateTexts.ElementAt(0).Id;
+            expectedDbEmailTemplate.EmailTemplateTexts.ElementAt(0).EmailTemplateId =
+                resultDbEmailTemplate.Id;
 
-            Assert.IsInstanceOf<Guid>(resultDbEmailTemplate.Id);
-            SerializerAssert.AreEqual(dbEmailTemplate, resultDbEmailTemplate);
+            SerializerAssert.AreEqual(expectedDbEmailTemplate, resultDbEmailTemplate);
         }
 
         [Test]
@@ -76,13 +121,16 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
         [Test]
         public void ShouldReturnRightModelSuccessful()
         {
+            var dbEmailTemplate = editMapper.Map(editEmailTemplateRequest);
+
             var expectedDbEmailTemplate = new DbEmailTemplate
             {
-                Subject = editEmailTemplateRequest.Subject,
-                Body = editEmailTemplateRequest.Body,
+                Id = editEmailTemplateRequest.Id,
+                Name = editEmailTemplateRequest.Name,
+                Type = (int)editEmailTemplateRequest.Type
             };
 
-            SerializerAssert.AreEqual(expectedDbEmailTemplate, editMapper.Map(editEmailTemplateRequest));
+            SerializerAssert.AreEqual(expectedDbEmailTemplate, dbEmailTemplate);
         }
     }
 }

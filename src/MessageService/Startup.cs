@@ -17,6 +17,7 @@ using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Validation;
 using LT.DigitalOffice.UserService.Configuration;
@@ -78,6 +79,7 @@ namespace LT.DigitalOffice.MessageService
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<SendEmailConsumer>();
+                x.AddConsumer<EmailTemplateTagsConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -91,12 +93,19 @@ namespace LT.DigitalOffice.MessageService
                     {
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
+
+                    cfg.ReceiveEndpoint(rabbitMqConfig.GetTempalateTagsEndpoint, ep =>
+                    {
+                        ep.ConfigureConsumer<EmailTemplateTagsConsumer>(context);
+                    });
                 });
 
                 x.AddRequestClient<ICheckTokenRequest>(
                     new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
                 x.AddRequestClient<IAddImageRequest>(
                     new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.CreateImageEndpoint}"));
+                x.AddRequestClient<IAddImageRequest>(
+                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.GetTempalateTagsEndpoint}"));
 
                 x.ConfigureKernelMassTransit(rabbitMqConfig);
             });
@@ -108,7 +117,8 @@ namespace LT.DigitalOffice.MessageService
         {
             services.AddTransient<IDbWorkspaceMapper, DbWorkspaceMapper>();
             services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
-            services.AddTransient<IMapper<EmailTemplate, DbEmailTemplate>, EmailTemplateMapper>();
+            services.AddTransient<IMapper<EmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
+            services.AddTransient<IMapper<EmailTemplateTextInfo, DbEmailTemplateText>, EmailTemplateTextMapper>();
             services.AddTransient<IMapper<EditEmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
         }
 
@@ -135,6 +145,7 @@ namespace LT.DigitalOffice.MessageService
         {
             services.AddTransient<IValidator<EditEmailTemplateRequest>, EditEmailTemplateValidator>();
             services.AddTransient<IValidator<Workspace>, WorkspaceValidator>();
+            services.AddTransient<IValidator<EmailTemplateRequest>, AddEmailTemplateValidator>();
         }
 
         public void Configure(IApplicationBuilder app)

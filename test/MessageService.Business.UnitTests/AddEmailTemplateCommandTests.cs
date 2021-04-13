@@ -1,14 +1,17 @@
-﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+﻿using FluentValidation;
+using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
-using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
+using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests
 {
@@ -16,42 +19,69 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
     {
         private Mock<IEmailTemplateRepository> repositoryMock;
         private IAddEmailTemplateCommand command;
-        private Mock<IMapper<EmailTemplate, DbEmailTemplate>> mapperMock;
+        private Mock<IValidator<EmailTemplateRequest>> validatorMock;
+        private Mock<IMapper<EmailTemplateRequest, DbEmailTemplate>> mapperMock;
         private Mock<IAccessValidator> accessValidatorMock;
 
         private Guid emailId;
-        private EmailTemplate emailTemplate;
+        private EmailTemplateRequest emailTemplate;
         private DbEmailTemplate dbEmailTemplate;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
             emailId = Guid.NewGuid();
-            emailTemplate = new EmailTemplate
+            emailTemplate = new EmailTemplateRequest
             {
-                Subject = "Subject",
-                Body = "Body",
-                AuthorId = Guid.NewGuid()
+                Name = "Pattern name",
+                Type = EmailTemplateType.Greeting,
+                AuthorId = Guid.NewGuid(),
+                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                {
+                    new EmailTemplateTextInfo
+                    {
+                        Subject = "Subject",
+                        Text = "Email text",
+                        Language = "en"
+                    }
+                }
             };
 
             dbEmailTemplate = new DbEmailTemplate
             {
                 Id = emailId,
-                Subject = emailTemplate.Subject,
-                Body = emailTemplate.Body,
+                Name = emailTemplate.Name,
+                CreatedAt = DateTime.UtcNow,
                 AuthorId = emailTemplate.AuthorId,
                 IsActive = true
             };
+
+            foreach (var templateText in emailTemplate.EmailTemplateTexts)
+            {
+                var dbEmailTemplateText = new DbEmailTemplateText()
+                {
+                    Subject = templateText.Subject,
+                    Text = templateText.Text,
+                    Language = templateText.Language
+                };
+
+                dbEmailTemplate.EmailTemplateTexts.Add(dbEmailTemplateText);
+            }
         }
 
         [SetUp]
         public void SetUp()
         {
             repositoryMock = new Mock<IEmailTemplateRepository>();
-            mapperMock = new Mock<IMapper<EmailTemplate, DbEmailTemplate>>();
+            mapperMock = new Mock<IMapper<EmailTemplateRequest, DbEmailTemplate>>();
             accessValidatorMock = new Mock<IAccessValidator>();
+            validatorMock = new Mock<IValidator<EmailTemplateRequest>>();
 
-            command = new AddEmailTemplateCommand(mapperMock.Object, repositoryMock.Object, accessValidatorMock.Object);
+            command = new AddEmailTemplateCommand(
+                mapperMock.Object,
+                validatorMock.Object,
+                repositoryMock.Object,
+                accessValidatorMock.Object);
         }
 
         [Test]
@@ -61,12 +91,16 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(x => x.HasRights(3))
                 .Returns(true);
 
+            validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(true);
+
             repositoryMock
                 .Setup(x => x.AddEmailTemplate(It.IsAny<DbEmailTemplate>()))
                 .Returns(emailId);
 
             mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<EmailTemplate>()))
+                .Setup(mapper => mapper.Map(It.IsAny<EmailTemplateRequest>()))
                 .Returns(dbEmailTemplate);
 
             Assert.That(command.Execute(emailTemplate), Is.EqualTo(emailId));
@@ -82,14 +116,32 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Setup(x => x.HasRights(3))
                 .Returns(true);
 
+            validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(true);
+
             mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<EmailTemplate>()))
+                .Setup(mapper => mapper.Map(It.IsAny<EmailTemplateRequest>()))
                 .Throws<Exception>();
 
             Assert.Throws<Exception>(() => command.Execute(emailTemplate));
 
             mapperMock.Verify();
             repositoryMock.Verify(repository => repository.AddEmailTemplate(It.IsAny<DbEmailTemplate>()), Times.Never());
+        }
+
+        [Test]
+        public void ShouldThrowExceptionWhenRequestIsNotValid()
+        {
+            accessValidatorMock
+                .Setup(x => x.HasRights(3))
+                .Returns(true);
+
+            validatorMock
+                .Setup(x => x.Validate(It.IsAny<IValidationContext>()).IsValid)
+                .Returns(false);
+
+            Assert.Throws<ValidationException>(() => command.Execute(emailTemplate));
         }
 
         [Test]

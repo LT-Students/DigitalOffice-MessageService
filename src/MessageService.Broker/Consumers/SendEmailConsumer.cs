@@ -1,30 +1,119 @@
 ﻿using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Broker.Consumers
 {
     public class SendEmailConsumer : IConsumer<ISendEmailRequest>
     {
-        private readonly IEmailRepository _repository;
         private readonly IMapper<ISendEmailRequest, DbEmail> _mapper;
+        private readonly ILogger<SendEmailConsumer> _logger;
+        private readonly IEmailRepository _emailRepository;
+        private readonly IEmailTemplateRepository _templateRepository;
+
         private readonly IOptions<SmtpCredentialsOptions> _options;
 
+        private bool SendEmail(ISendEmailRequest request)
+        {
+            MailAddress from = new(_options.Value.Email);
+            MailAddress to = new(request.Email);
+
+            var dbEmailTemplateText = GetDbEmailTemplateText(request);
+            string subject = GetParsedEmailTemplateText(request.TemplateValues, dbEmailTemplateText.Subject);
+            string body = GetParsedEmailTemplateText(request.TemplateValues, dbEmailTemplateText.Text);
+
+            var message = new MailMessage(from, to)
+            {
+                Subject = GetParsedEmailTemplateText(request.TemplateValues, dbEmailTemplateText.Subject),
+                Body = GetParsedEmailTemplateText(request.TemplateValues, dbEmailTemplateText.Text)
+            };
+
+            var smtp = new SmtpClient(_options.Value.Host, _options.Value.Port)
+            {
+                Credentials = new NetworkCredential(_options.Value.Email, _options.Value.Password),
+                EnableSsl = true
+            };
+
+            try
+            {
+                smtp.Send(message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Email was not send. Reason: {ex.Message}");
+
+                throw;
+            }
+
+            var dbEmail = _mapper.Map(request);
+            dbEmail.Body = body;
+            dbEmail.Subject = subject;
+
+            _emailRepository.SaveEmail(dbEmail);
+
+            return true;
+        }
+
+        private DbEmailTemplateText GetDbEmailTemplateText(ISendEmailRequest request)
+        {
+            var dbEmailTemplate = _templateRepository.GetEmailTemplateById(request.TemplateId);
+
+            var dbEmailTemplateText = dbEmailTemplate?.EmailTemplateTexts.FirstOrDefault(ett => ett.Language == request.Language);
+
+            if (dbEmailTemplateText == null)
+            {
+                string messageTemp = "Email template text was not found.";
+                _logger.LogWarning(messageTemp);
+
+                throw new NotFoundException(messageTemp);
+            }
+
+            return dbEmailTemplateText;
+        }
+
+        private string GetParsedEmailTemplateText(IDictionary<string, string> values, string text)
+        {
+            string[] strArray = text.Split('{', '}');
+
+            for (int i = 0; i < strArray.Length; i++)
+            {
+                if (values.TryGetValue(strArray[i], out string value))
+                {
+                    strArray[i] = value;
+                }
+            }
+
+            StringBuilder sb = new();
+            sb.AppendJoin("", strArray);
+
+            return sb.ToString();
+        }
+
         public SendEmailConsumer(
-            IEmailRepository repository,
+            IEmailRepository emailRepository,
+            ILogger<SendEmailConsumer> logger,
+            IEmailTemplateRepository templateRepository,
             IMapper<ISendEmailRequest, DbEmail> mapper,
             IOptions<SmtpCredentialsOptions> options)
         {
-            _repository = repository;
             _mapper = mapper;
+            _logger = logger;
             _options = options;
+            _emailRepository = emailRepository;
+            _templateRepository = templateRepository;
         }
 
         public async Task Consume(ConsumeContext<ISendEmailRequest> context)
@@ -32,36 +121,6 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
             var response = OperationResultWrapper.CreateResponse(SendEmail, context.Message);
 
             await context.RespondAsync<IOperationResult<bool>>(response);
-        }
-
-        private bool SendEmail(ISendEmailRequest request)
-        {
-            MailAddress from = new MailAddress(_options.Value.Email);
-            MailAddress to = new MailAddress(request.Email);
-
-            var m = new MailMessage(from, to)
-            {
-                Subject = request.Subject,
-                Body = request.Text
-            };
-
-            SmtpClient smtp = new SmtpClient(_options.Value.Host, _options.Value.Port)
-            {
-                Credentials = new NetworkCredential(_options.Value.Email, _options.Value.Password),
-                EnableSsl = true
-            };
-
-            smtp.Send(m);
-
-            SaveEmail(request);
-
-            return true;
-        }
-
-        private void SaveEmail(ISendEmailRequest request)
-        {
-            // TODO fix
-            //_repository.SaveEmail(_mapper.Map(request));
         }
     }
 }
