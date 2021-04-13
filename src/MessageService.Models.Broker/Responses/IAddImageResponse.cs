@@ -8,9 +8,9 @@ namespace LT.DigitalOffice.Broker.Responses
 {
     public interface IAddImageResponse
     {
-        Guid? Id { get; }
+        Guid Id { get; }
 
-        static object CreateObj(Guid? id)
+        static object CreateObj(Guid id)
         {
             return new
             {

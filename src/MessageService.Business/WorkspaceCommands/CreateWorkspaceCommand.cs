@@ -69,7 +69,12 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         {
             _validator.ValidateAndThrowCustom(workspace);
 
-            var imageId = AddImageContent(workspace.Image);
+            Guid? imageId = null;
+            if (workspace.Image != null)
+            {
+                imageId = AddImageContent(workspace.Image);
+            }
+
             var ownerId = _httpContextAccessor.HttpContext.GetUserId();
 
             return _repository.CreateWorkspace(_mapper.Map(workspace, ownerId, imageId));

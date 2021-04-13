@@ -41,7 +41,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
         private Guid _workspaceId;
         private Guid _userId;
-        private Guid? _imageId;
+        private Guid _imageId;
         private Workspace _workspace;
         private DbWorkspace _dbWorkspace;
         private ValidationResult _validationResultError;
