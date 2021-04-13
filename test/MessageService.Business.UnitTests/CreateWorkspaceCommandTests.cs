@@ -101,10 +101,17 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             _imageId = Guid.NewGuid();
             _userId = Guid.NewGuid();
 
+            var image = new Image
+            {
+                Name = "name",
+                Content = "context",
+                Extension = "jpg"
+            };
+
             _workspace = new Workspace
             {
                 Name = "Name",
-                Image = "Img.jpg",
+                Image = image,
                 Description = "Description",
             };
 

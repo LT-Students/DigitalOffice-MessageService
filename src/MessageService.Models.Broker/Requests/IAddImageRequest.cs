@@ -2,13 +2,20 @@
 {
     public interface IAddImageRequest
     {
-        string Content { get; }
+        public string Name { get; set; }
+        public string Content { get; set; }
+        public string Extension { get; set; }
 
-        static object CreateObj(string content)
+        static object CreateObj(
+            string name,
+            string content,
+            string extension)
         {
             return new
             {
-                Content = content
+                Name = name,
+                Content = content,
+                Extension = extension
             };
         }
     }

@@ -24,13 +24,16 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         private readonly ILogger<CreateWorkspaceCommand> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private Guid? AddImageContent(string imageContext)
+        private Guid? AddImageContent(Image image)
         {
             Guid? imageId = null;
 
             try
             {
-                var imageRequest = IAddImageRequest.CreateObj(imageContext);
+                var imageRequest = IAddImageRequest.CreateObj(
+                    image.Name,
+                    image.Content,
+                    image.Extension);
                 var imageResponse = _requestClient.GetResponse<IOperationResult<IAddImageResponse>>(imageRequest).Result;
                 if (imageResponse.Message.IsSuccess)
                 {

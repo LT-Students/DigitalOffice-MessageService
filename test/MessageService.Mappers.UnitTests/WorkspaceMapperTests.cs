@@ -16,8 +16,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
         private DbWorkspace _dbWorkspace;
         private Guid _ownerId;
         private Guid? _imageId;
-
-        private const string _existingImage = "img.jpg";
+        private Image _existingImage;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -26,6 +25,13 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 
             _imageId = Guid.NewGuid();
             _ownerId = Guid.NewGuid();
+
+            _existingImage = new Image
+            {
+                Name = "name",
+                Content = "context",
+                Extension = "jpg"
+            };
 
             _workspace = new Workspace
             {
