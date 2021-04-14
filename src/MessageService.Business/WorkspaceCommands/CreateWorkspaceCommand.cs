@@ -24,7 +24,7 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         private readonly ILogger<CreateWorkspaceCommand> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private Guid? AddImageContent(Image image, Guid ownerId)
+        private Guid? AddImageContent(ImageInfo image, Guid ownerId)
         {
             Guid? imageId = null;
 

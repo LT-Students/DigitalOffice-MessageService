@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Requests
 {
-    public class Image
+    public class ImageInfo
     {
         public string Content { get; set; }
         public string Extension { get; set; }
