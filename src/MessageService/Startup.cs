@@ -104,7 +104,7 @@ namespace LT.DigitalOffice.MessageService
                     new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
                 x.AddRequestClient<IAddImageRequest>(
                     new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.CreateImageEndpoint}"));
-                x.AddRequestClient<IAddImageRequest>(
+                x.AddRequestClient<IGetEmailTemplateTagsRequest>(
                     new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.GetTempalateTagsEndpoint}"));
 
                 x.ConfigureKernelMassTransit(rabbitMqConfig);
