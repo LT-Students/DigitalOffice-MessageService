@@ -24,7 +24,7 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         private readonly ILogger<CreateWorkspaceCommand> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private Guid? AddImageContent(Image image)
+        private Guid? AddImageContent(Image image, Guid ownerId)
         {
             Guid? imageId = null;
 
@@ -33,7 +33,8 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
                 var imageRequest = IAddImageRequest.CreateObj(
                     image.Name,
                     image.Content,
-                    image.Extension);
+                    image.Extension,
+                    ownerId);
                 var imageResponse = _requestClient.GetResponse<IOperationResult<IAddImageResponse>>(imageRequest).Result;
                 if (imageResponse.Message.IsSuccess)
                 {
@@ -72,13 +73,13 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         {
             _validator.ValidateAndThrowCustom(workspace);
 
+            var ownerId = _httpContextAccessor.HttpContext.GetUserId();
+
             Guid? imageId = null;
             if (workspace.Image != null)
             {
-                imageId = AddImageContent(workspace.Image);
+                imageId = AddImageContent(workspace.Image, ownerId);
             }
-
-            var ownerId = _httpContextAccessor.HttpContext.GetUserId();
 
             return _repository.CreateWorkspace(_mapper.Map(workspace, ownerId, imageId));
         }
