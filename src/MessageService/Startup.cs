@@ -93,10 +93,6 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            /*var rabbitMqConfig = Configuration
-                .GetSection(BaseRabbitMqOptions.RabbitMqSectionName)
-                .Get<RabbitMqConfig>();*/
-
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<SendEmailConsumer>();
@@ -128,7 +124,7 @@ namespace LT.DigitalOffice.MessageService
                 x.AddRequestClient<IAddImageRequest>(
                     new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.GetTempalateTagsEndpoint}"));
 
-                x.AddRequestClients(_rabbitMqConfig);//
+                x.AddRequestClients(_rabbitMqConfig);
             });
 
             services.AddMassTransitHostedService();
