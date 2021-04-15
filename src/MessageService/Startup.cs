@@ -29,7 +29,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -57,11 +56,10 @@ namespace LT.DigitalOffice.MessageService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddKernelExtensions();
-
             services.Configure<SmtpCredentialsOptions>(Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials));
+            services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
+            services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
 
-            services.AddHealthChecks();
 
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
             if (string.IsNullOrEmpty(connStr))
@@ -82,6 +80,7 @@ namespace LT.DigitalOffice.MessageService
                 .AddRabbitMqCheck();
 
             services.AddControllers();
+            services.AddBusinessObjects();//спросить
 
             ConfigureMassTransit(services);
 
