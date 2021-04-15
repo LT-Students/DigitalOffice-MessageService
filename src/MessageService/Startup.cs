@@ -85,6 +85,7 @@ namespace LT.DigitalOffice.MessageService
             });
 
             services.Configure<SmtpCredentialsOptions>(Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials));
+            services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
             services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
             services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
 
