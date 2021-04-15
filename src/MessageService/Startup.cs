@@ -1,7 +1,8 @@
 using FluentValidation;
+using HealthChecks.UI.Client;
 using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.Kernel;
-using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.Configurations;
+using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands;
@@ -23,31 +24,42 @@ using LT.DigitalOffice.MessageService.Validation;
 using LT.DigitalOffice.UserService.Configuration;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService
 {
     public class Startup
     {
+        private readonly RabbitMqConfig _rabbitMqConfig;
+        private readonly BaseServiceInfoConfig _serviceInfoConfig;
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            _serviceInfoConfig = Configuration
+                .GetSection(BaseServiceInfoConfig.SectionName)
+                .Get<BaseServiceInfoConfig>();
+
+            _rabbitMqConfig = Configuration
+                .GetSection(BaseRabbitMqConfig.SectionName)
+                .Get<RabbitMqConfig>();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddKernelExtensions();
-
             services.Configure<SmtpCredentialsOptions>(Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials));
+            services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
+            services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
 
-            services.AddHealthChecks();
 
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
             if (string.IsNullOrEmpty(connStr))
@@ -55,12 +67,20 @@ namespace LT.DigitalOffice.MessageService
                 connStr = Configuration.GetConnectionString("SQLConnectionString");
             }
 
+            services.AddHttpContextAccessor();
+
             services.AddDbContext<MessageServiceDbContext>(options =>
             {
                 options.UseSqlServer(connStr);
             });
 
+            services
+                .AddHealthChecks()
+                .AddSqlServer(connStr)
+                .AddRabbitMqCheck();
+
             services.AddControllers();
+            services.AddBusinessObjects();
 
             ConfigureMassTransit(services);
 
@@ -72,10 +92,6 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMassTransit(IServiceCollection services)
         {
-            var rabbitMqConfig = Configuration
-                .GetSection(BaseRabbitMqOptions.RabbitMqSectionName)
-                .Get<RabbitMqConfig>();
-
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<SendEmailConsumer>();
@@ -83,31 +99,31 @@ namespace LT.DigitalOffice.MessageService
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(rabbitMqConfig.Host, "/", host =>
+                    cfg.Host(_rabbitMqConfig.Host, "/", host =>
                     {
-                        host.Username($"{rabbitMqConfig.Username}_{rabbitMqConfig.Password}");
-                        host.Password(rabbitMqConfig.Password);
+                        host.Username($"{_serviceInfoConfig.Name}_{_serviceInfoConfig.Id}");
+                        host.Password(_serviceInfoConfig.Id);
                     });
 
-                    cfg.ReceiveEndpoint(rabbitMqConfig.SendEmailEndpoint, ep =>
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.SendEmailEndpoint, ep =>
                     {
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
 
-                    cfg.ReceiveEndpoint(rabbitMqConfig.GetTempalateTagsEndpoint, ep =>
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.GetTempalateTagsEndpoint, ep =>
                     {
                         ep.ConfigureConsumer<EmailTemplateTagsConsumer>(context);
                     });
                 });
 
                 x.AddRequestClient<ICheckTokenRequest>(
-                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.ValidateTokenEndpoint}"));
+                    new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.ValidateTokenEndpoint}"));
                 x.AddRequestClient<IAddImageRequest>(
-                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.CreateImageEndpoint}"));
+                    new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.CreateImageEndpoint}"));
                 x.AddRequestClient<IAddImageRequest>(
-                    new Uri($"{rabbitMqConfig.BaseUrl}/{rabbitMqConfig.GetTempalateTagsEndpoint}"));
+                    new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.GetTempalateTagsEndpoint}"));
 
-                x.ConfigureKernelMassTransit(rabbitMqConfig);
+                x.AddRequestClients(_rabbitMqConfig);
             });
 
             services.AddMassTransitHostedService();
@@ -148,11 +164,11 @@ namespace LT.DigitalOffice.MessageService
             services.AddTransient<IValidator<EmailTemplateRequest>, AddEmailTemplateValidator>();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             app.UseHealthChecks("/api/healthcheck");
 
-            app.UseExceptionHandler(tempApp => tempApp.Run(CustomExceptionHandler.HandleCustomException));
+            app.UseExceptionsHandler(loggerFactory);
 
             UpdateDatabase(app);
 
@@ -175,6 +191,18 @@ namespace LT.DigitalOffice.MessageService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                endpoints.MapHealthChecks($"/{_serviceInfoConfig.Id}/hc", new HealthCheckOptions
+                {
+                    ResultStatusCodes = new Dictionary<HealthStatus, int>
+                    {
+                        { HealthStatus.Unhealthy, 200 },
+                        { HealthStatus.Healthy, 200 },
+                        { HealthStatus.Degraded, 200 },
+                    },
+                    Predicate = check => check.Name != "masstransit-bus",
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
             });
         }
 

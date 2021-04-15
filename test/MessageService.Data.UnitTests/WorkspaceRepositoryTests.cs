@@ -8,6 +8,7 @@ using System;
 using LT.DigitalOffice.UnitTestKernel;
 using System.Linq;
 using LT.DigitalOffice.Kernel.Exceptions;
+using LT.DigitalOffice.Kernel.Exceptions.Models;
 
 namespace LT.DigitalOffice.MessageService.Data.UnitTests
 {
