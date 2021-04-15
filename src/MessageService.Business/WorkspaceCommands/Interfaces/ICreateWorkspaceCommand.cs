@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces
@@ -7,6 +8,7 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces
     /// Represents interface for a command in command pattern.
     /// Provides method for adding a workspace.
     /// </summary>
+    [AutoInject]
     public interface ICreateWorkspaceCommand
     {
         /// <summary>

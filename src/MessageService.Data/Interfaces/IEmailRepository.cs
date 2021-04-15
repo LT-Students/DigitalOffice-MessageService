@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.MessageService.Models.Db;
+﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.MessageService.Models.Db;
 
 namespace LT.DigitalOffice.MessageService.Data.Interfaces
 {
@@ -6,6 +7,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     /// Represents interface of repository in repository pattern.
     /// Provides methods for working with the database of MessageService.
     /// </summary>
+    [AutoInject]
     public interface IEmailRepository
     {
         /// <summary>

@@ -3,6 +3,7 @@ using HealthChecks.UI.Client;
 using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
+using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands;
@@ -18,10 +19,10 @@ using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Validation;
-using LT.DigitalOffice.UserService.Configuration;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -35,10 +36,13 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService
 {
-    public class Startup
+    public class Startup : BaseApiInfo
     {
+        public const string CorsPolicyName = "LtDoCorsPolicy";
+
         private readonly RabbitMqConfig _rabbitMqConfig;
         private readonly BaseServiceInfoConfig _serviceInfoConfig;
+
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
@@ -52,14 +56,37 @@ namespace LT.DigitalOffice.MessageService
             _rabbitMqConfig = Configuration
                 .GetSection(BaseRabbitMqConfig.SectionName)
                 .Get<RabbitMqConfig>();
+
+            Version = "1.2.5";
+            Description = "MessageService, is intended to work with the messages, emails and email templates.";
+            StartTime = DateTime.UtcNow;
+            ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    CorsPolicyName,
+                    builder =>
+                    {
+                        builder
+                            .WithOrigins(
+                                "https://*.ltdo.xyz",
+                                "http://*.ltdo.xyz",
+                                "http://ltdo.xyz",
+                                "http://ltdo.xyz:9802",
+                                "http://localhost:4200",
+                                "http://localhost:4500")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
             services.Configure<SmtpCredentialsOptions>(Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials));
             services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
             services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
-
 
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
             if (string.IsNullOrEmpty(connStr))
@@ -84,9 +111,7 @@ namespace LT.DigitalOffice.MessageService
 
             ConfigureMassTransit(services);
 
-            ConfigureCommands(services);
             ConfigureMappers(services);
-            ConfigureRepositories(services);
             ConfigureValidators(services);
         }
 
@@ -116,13 +141,6 @@ namespace LT.DigitalOffice.MessageService
                     });
                 });
 
-                x.AddRequestClient<ICheckTokenRequest>(
-                    new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.ValidateTokenEndpoint}"));
-                x.AddRequestClient<IAddImageRequest>(
-                    new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.CreateImageEndpoint}"));
-                x.AddRequestClient<IAddImageRequest>(
-                    new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.GetTempalateTagsEndpoint}"));
-
                 x.AddRequestClients(_rabbitMqConfig);
             });
 
@@ -131,30 +149,10 @@ namespace LT.DigitalOffice.MessageService
 
         private void ConfigureMappers(IServiceCollection services)
         {
-            services.AddTransient<IDbWorkspaceMapper, DbWorkspaceMapper>();
             services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
             services.AddTransient<IMapper<EmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
             services.AddTransient<IMapper<EmailTemplateTextInfo, DbEmailTemplateText>, EmailTemplateTextMapper>();
             services.AddTransient<IMapper<EditEmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
-        }
-
-        private void ConfigureCommands(IServiceCollection services)
-        {
-            services.AddTransient<IDisableEmailTemplateCommand, DisableEmailTemplateCommand>();
-            services.AddTransient<IAddEmailTemplateCommand, AddEmailTemplateCommand>();
-            services.AddTransient<IEditEmailTemplateCommand, EditEmailTemplateCommand>();
-            services.AddTransient<ICreateWorkspaceCommand, CreateWorkspaceCommand>();
-            services.AddTransient<IRemoveWorkspaceCommand, RemoveWorkspaceCommand>();
-        }
-
-        private void ConfigureRepositories(IServiceCollection services)
-        {
-            services.AddTransient<IDataProvider, MessageServiceDbContext>();
-
-            services.AddTransient<IWorkspaceRepository, WorkspaceRepository>();
-            services.AddTransient<IEmailRepository, EmailRepository>();
-            services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
         }
 
         private void ConfigureValidators(IServiceCollection services)
@@ -166,31 +164,23 @@ namespace LT.DigitalOffice.MessageService
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
-            app.UseHealthChecks("/api/healthcheck");
+            UpdateDatabase(app);
+
+            app.UseForwardedHeaders();
 
             app.UseExceptionsHandler(loggerFactory);
 
-            UpdateDatabase(app);
-
-            app.UseMiddleware<TokenMiddleware>();
-
-#if RELEASE
-            app.UseHttpsRedirection();
-#endif
+            app.UseApiInformation();
 
             app.UseRouting();
 
-            string corsUrl = Configuration.GetSection("Settings")["CorsUrl"];
+            app.UseMiddleware<TokenMiddleware>();
 
-            app.UseCors(builder =>
-                builder
-                    .WithOrigins(corsUrl)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
+            app.UseCors(CorsPolicyName);
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireCors(CorsPolicyName);
 
                 endpoints.MapHealthChecks($"/{_serviceInfoConfig.Id}/hc", new HealthCheckOptions
                 {
