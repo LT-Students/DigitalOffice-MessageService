@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces
@@ -7,6 +8,7 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interf
     /// Represents interface for a command in command pattern.
     /// Provides method for adding an email template.
     /// </summary>
+    [AutoInject]
     public interface IAddEmailTemplateCommand
     {
         /// <summary>
