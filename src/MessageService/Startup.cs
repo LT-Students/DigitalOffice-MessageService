@@ -80,7 +80,7 @@ namespace LT.DigitalOffice.MessageService
                 .AddRabbitMqCheck();
 
             services.AddControllers();
-            services.AddBusinessObjects();//спросить
+            services.AddBusinessObjects();
 
             ConfigureMassTransit(services);
 
