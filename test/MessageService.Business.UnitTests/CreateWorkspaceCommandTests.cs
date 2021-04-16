@@ -42,7 +42,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
         private Guid _workspaceId;
         private Guid _userId;
-        private Guid? _imageId;
+        private Guid _imageId;
         private Workspace _workspace;
         private DbWorkspace _dbWorkspace;
         private ValidationResult _validationResultError;
@@ -102,10 +102,17 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             _imageId = Guid.NewGuid();
             _userId = Guid.NewGuid();
 
+            var image = new ImageInfo
+            {
+                Name = "name",
+                Content = "context",
+                Extension = "jpg"
+            };
+
             _workspace = new Workspace
             {
                 Name = "Name",
-                Image = "Img.jpg",
+                Image = image,
                 Description = "Description",
             };
 
