@@ -80,6 +80,30 @@ namespace LT.DigitalOffice.MessageService
             services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
             services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
 
+            string smptHost = Environment.GetEnvironmentVariable("Host");
+            if (string.IsNullOrEmpty(smptHost))
+            {
+                smptHost = Configuration.GetConnectionString("Host");
+            }
+
+            string smptPort = Environment.GetEnvironmentVariable("Port");
+            if (string.IsNullOrEmpty(smptPort))
+            {
+                smptPort = Configuration.GetConnectionString("Port");
+            }
+
+            string smptEmail = Environment.GetEnvironmentVariable("Email");
+            if (string.IsNullOrEmpty(smptEmail))
+            {
+                smptEmail = Configuration.GetConnectionString("Email");
+            }
+
+            string smptPassword = Environment.GetEnvironmentVariable("Password");
+            if (string.IsNullOrEmpty(smptPassword))
+            {
+                smptPassword = Configuration.GetConnectionString("Password");
+            }
+
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
             if (string.IsNullOrEmpty(connStr))
             {
