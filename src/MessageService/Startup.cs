@@ -80,28 +80,31 @@ namespace LT.DigitalOffice.MessageService
             services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
             services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
 
-            string smptHost = Environment.GetEnvironmentVariable("Host");
-            if (string.IsNullOrEmpty(smptHost))
+
+            var smtpCredentialsOptions = Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials);
+
+            var smtpHost = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Host));
+            if (string.IsNullOrEmpty(smtpHost))
             {
-                smptHost = Configuration.GetConnectionString("Host");
+                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Host)]  = smtpHost;
             }
 
-            string smptPort = Environment.GetEnvironmentVariable("Port");
-            if (string.IsNullOrEmpty(smptPort))
+            var smtpPort = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Port));
+            if (string.IsNullOrEmpty(smtpPort))
             {
-                smptPort = Configuration.GetConnectionString("Port");
+                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Port)] = smtpPort;
             }
 
-            string smptEmail = Environment.GetEnvironmentVariable("Email");
-            if (string.IsNullOrEmpty(smptEmail))
+            var smtpEmail = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Email));
+            if (string.IsNullOrEmpty(smtpEmail))
             {
-                smptEmail = Configuration.GetConnectionString("Email");
+                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Email)] = smtpEmail;
             }
 
-            string smptPassword = Environment.GetEnvironmentVariable("Password");
-            if (string.IsNullOrEmpty(smptPassword))
+            var smtpPassword = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Password));
+            if (string.IsNullOrEmpty(smtpPassword))
             {
-                smptPassword = Configuration.GetConnectionString("Password");
+                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Password)] = smtpPassword;
             }
 
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
@@ -109,6 +112,8 @@ namespace LT.DigitalOffice.MessageService
             {
                 connStr = Configuration.GetConnectionString("SQLConnectionString");
             }
+
+            services.Configure<SmtpCredentialsOptions>(smtpCredentialsOptions);
 
             services.AddHttpContextAccessor();
 
