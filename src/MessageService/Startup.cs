@@ -75,18 +75,12 @@ namespace LT.DigitalOffice.MessageService
                     });
             });
 
-            services.Configure<SmtpCredentialsOptions>(Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials));
-            services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
-            services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
-            services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
-
-
             var smtpCredentialsOptions = Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials);
 
             var smtpHost = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Host));
             if (string.IsNullOrEmpty(smtpHost))
             {
-                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Host)]  = smtpHost;
+                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Host)] = smtpHost;
             }
 
             var smtpPort = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Port));
@@ -113,7 +107,11 @@ namespace LT.DigitalOffice.MessageService
                 connStr = Configuration.GetConnectionString("SQLConnectionString");
             }
 
+            services.Configure<SmtpCredentialsOptions>(Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials));
             services.Configure<SmtpCredentialsOptions>(smtpCredentialsOptions);
+            services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
+            services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
+            services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
 
             services.AddHttpContextAccessor();
 
