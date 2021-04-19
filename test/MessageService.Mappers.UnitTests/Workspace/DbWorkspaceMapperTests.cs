@@ -7,9 +7,9 @@ using LT.DigitalOffice.UnitTestKernel;
 using NUnit.Framework;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
+namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.Workspace
 {
-    public class WorkspaceMapperTests
+    public class DbWorkspaceMapperTests
     {
         private IDbWorkspaceMapper _mapper;
 

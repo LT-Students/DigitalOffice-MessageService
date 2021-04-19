@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
+namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
 {
     public class DbEmailTemplateMapperTests
     {

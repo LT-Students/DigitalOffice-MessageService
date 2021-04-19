@@ -7,7 +7,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
+namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
 {
     public class DbEmailMapperTests
     {
