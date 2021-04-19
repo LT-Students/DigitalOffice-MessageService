@@ -1,6 +1,6 @@
 ﻿using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.MessageService.Mappers.EmailMappers;
-using LT.DigitalOffice.MessageService.Mappers.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.UnitTestKernel;
 using Moq;
@@ -9,9 +9,9 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 {
-    public class EmailMapperTests
+    public class DbEmailMapperTests
     {
-        private IMapper<ISendEmailRequest, DbEmail> _mapper;
+        private IDbEmailMapper _mapper;
         private Mock<ISendEmailRequest> _emailMock;
 
         private DbEmail _dbEmail;
@@ -37,7 +37,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
                 .Setup(x => x.Email)
                 .Returns(receiver);
 
-            _mapper = new EmailMapper();
+            _mapper = new DbEmailMapper();
         }
 
         #region ISendEmailRequestToDbEmail

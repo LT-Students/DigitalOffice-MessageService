@@ -1,7 +1,8 @@
-﻿using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers;
+﻿using LT.DigitalOffice.MessageService.Mappers.Db;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.UnitTestKernel;
 using NUnit.Framework;
 using System;
@@ -12,7 +13,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
     {
         private IDbWorkspaceMapper _mapper;
 
-        private Workspace _workspace;
+        private WorkspaceRequest _workspace;
         private DbWorkspace _dbWorkspace;
         private Guid _ownerId;
         private Guid? _imageId;
@@ -33,7 +34,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
                 Extension = "jpg"
             };
 
-            _workspace = new Workspace
+            _workspace = new WorkspaceRequest
             {
                 Name = "Name",
                 Description = "Description",

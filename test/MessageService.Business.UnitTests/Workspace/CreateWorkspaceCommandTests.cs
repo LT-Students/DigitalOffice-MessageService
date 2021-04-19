@@ -3,14 +3,15 @@ using FluentValidation.Results;
 using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Broker.Responses;
 using LT.DigitalOffice.Kernel.Broker;
-using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
+using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
 using LT.DigitalOffice.UnitTestKernel;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
@@ -21,12 +22,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace LT.DigitalOffice.MessageService.Business.UnitTests
+namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
 {
     public class CreateWorkspaceCommandTests
     {
         private Mock<IWorkspaceRepository> _repositoryMock;
-        private Mock<IValidator<Workspace>> _validatorMock;
+        private Mock<ICreateWorkspaceValidator> _validatorMock;
         private Mock<IDbWorkspaceMapper> _mapperMock;
         private Mock<ILogger<CreateWorkspaceCommand>> _loggerMock;
         private Mock<IHttpContextAccessor> _httpContextAccessorMock;
@@ -43,7 +44,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
         private Guid _workspaceId;
         private Guid _userId;
         private Guid _imageId;
-        private Workspace _workspace;
+        private WorkspaceRequest _workspace;
         private DbWorkspace _dbWorkspace;
         private ValidationResult _validationResultError;
         private Mock<ValidationResult> _validationResultIsValidMock;
@@ -109,7 +110,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 Extension = "jpg"
             };
 
-            _workspace = new Workspace
+            _workspace = new WorkspaceRequest
             {
                 Name = "Name",
                 Image = image,
@@ -149,10 +150,10 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
 
             _mapperMock = new Mock<IDbWorkspaceMapper>();
             _mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<Workspace>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+                .Setup(mapper => mapper.Map(It.IsAny<WorkspaceRequest>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
                 .Returns(_dbWorkspace);
 
-            _validatorMock = new Mock<IValidator<Workspace>>();
+            _validatorMock = new Mock<ICreateWorkspaceValidator>();
             _validatorMock
                 .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
                 .Returns(_validationResultIsValidMock.Object);
@@ -163,12 +164,12 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             ClientRequestUp();
 
             _command = new CreateWorkspaceCommand(
-                _repositoryMock.Object,
-                _validatorMock.Object,
                 _mapperMock.Object,
-                _requestBrokerMock.Object,
+                _validatorMock.Object,
+                _repositoryMock.Object,
                 _loggerMock.Object,
-                _httpContextAccessorMock.Object);
+                _httpContextAccessorMock.Object,
+                _requestBrokerMock.Object);
         }
 
         [Test]
@@ -210,7 +211,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
                 .Verifiable();
 
             _mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<Workspace>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+                .Setup(mapper => mapper.Map(It.IsAny<WorkspaceRequest>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
                 .Throws<BadRequestException>();
 
             Assert.Throws<BadRequestException>(() => _command.Execute(_workspace));

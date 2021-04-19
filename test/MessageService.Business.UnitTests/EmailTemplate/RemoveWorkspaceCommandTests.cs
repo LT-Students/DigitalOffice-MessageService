@@ -13,7 +13,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.MessageService.Business.UnitTests
+namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
 {
     class RemoveWorkspaceCommandTests
     {
@@ -84,9 +84,9 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests
             _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
 
             _command = new RemoveWorkspaceCommand(
-                _workspaceRepositoryMock.Object,
                 _userRepositoryMock.Object,
-                _httpContextAccessorMock.Object);
+                _httpContextAccessorMock.Object,
+                _workspaceRepositoryMock.Object);
         }
 
         [Test]

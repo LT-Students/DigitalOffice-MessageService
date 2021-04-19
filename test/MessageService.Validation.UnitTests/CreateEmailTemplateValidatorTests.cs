@@ -2,14 +2,14 @@
 using FluentValidation.TestHelper;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Validation.UnitTests
 {
-    class AddEmailTemplateValidatorTests
+    class CreateEmailTemplateValidatorTests
     {
         private IValidator<EmailTemplateRequest> _validator;
         private EmailTemplateRequest _emailTemplateRequest;
@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _validator = new AddEmailTemplateValidator();
+            _validator = new CreateEmailTemplateValidator();
 
             _emailTemplateRequest = new EmailTemplateRequest
             {

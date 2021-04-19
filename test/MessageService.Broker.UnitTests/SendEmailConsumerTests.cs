@@ -2,6 +2,7 @@
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.UnitTestKernel;
@@ -29,7 +30,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         private Mock<ILogger<SendEmailConsumer>> _logger;
         private Mock<IEmailRepository> _emailRepositoryMock;
         private Mock<IEmailTemplateRepository> _templateRepositoryMock;
-        private Mock<IMapper<ISendEmailRequest, DbEmail>> _mapperMock;
+        private Mock<IDbEmailMapper> _mapperMock;
         private IRequestClient<ISendEmailRequest> _requestClient;
 
         [OneTimeSetUp]
@@ -37,7 +38,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         {
             _logger = new Mock<ILogger<SendEmailConsumer>>();
             _smtpCredentialsOptions = new Mock<IOptions<SmtpCredentialsOptions>>();
-            _mapperMock = new Mock<IMapper<ISendEmailRequest, DbEmail>>();
+            _mapperMock = new Mock<IDbEmailMapper>();
 
             _emailRepositoryMock = new Mock<IEmailRepository>();
 
@@ -89,11 +90,11 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             _harness = new InMemoryTestHarness();
             _consumerTestHarness = _harness.Consumer(() =>
                 new SendEmailConsumer(
+                    _mapperMock.Object,
                     _emailRepositoryMock.Object,
                     _logger.Object,
-                    _templateRepositoryMock.Object,
-                    _mapperMock.Object,
-                    _smtpCredentialsOptions.Object));
+                    _smtpCredentialsOptions.Object,
+                    _templateRepositoryMock.Object));
         }
 
         [Test]
