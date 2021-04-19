@@ -1,14 +1,12 @@
-﻿using FluentValidation;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
-using Microsoft.AspNetCore.Mvc;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
 using System;
 using System.Linq;
 
@@ -16,38 +14,39 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
 {
     public class EditEmailTemplateCommand : IEditEmailTemplateCommand
     {
-        private readonly IAccessValidator accessValidator;
-        private readonly IEmailTemplateRepository repository;
-        private readonly IValidator<EditEmailTemplateRequest> validator;
-        private readonly IMapper<EmailTemplateTextInfo, DbEmailTemplateText> mapperTemplateText;
-        private readonly IMapper<EditEmailTemplateRequest, DbEmailTemplate> mapperEmailTemplate;
-
-        private readonly int numberRight = 3;
+        private readonly IAccessValidator _accessValidator;
+        private readonly IEmailTemplateRepository _repository;
+        private readonly IEditEmailTemplateValidator _validator;
+        private readonly IDbEmailTemplateTextMapper _mapperTemplateText;
+        private readonly IEditDbEmailTemplateMapper _mapperEmailTemplate;
 
         public EditEmailTemplateCommand(
-            [FromServices] IAccessValidator accessValidator,
-            [FromServices] IEmailTemplateRepository repository,
-            [FromServices] IValidator<EditEmailTemplateRequest> validator,
-            [FromServices] IMapper<EmailTemplateTextInfo, DbEmailTemplateText> mapperTemplateText,
-            [FromServices] IMapper<EditEmailTemplateRequest, DbEmailTemplate> mapperEmailTemplate)
+            IAccessValidator accessValidator,
+            IEmailTemplateRepository repository,
+            IEditEmailTemplateValidator validator,
+            IDbEmailTemplateTextMapper mapperTemplateText,
+            IEditDbEmailTemplateMapper mapperEmailTemplate)
         {
-            this.validator = validator;
-            this.repository = repository;
-            this.accessValidator = accessValidator;
-            this.mapperTemplateText = mapperTemplateText;
-            this.mapperEmailTemplate = mapperEmailTemplate;
+            _validator = validator;
+            _repository = repository;
+            _accessValidator = accessValidator;
+            _mapperTemplateText = mapperTemplateText;
+            _mapperEmailTemplate = mapperEmailTemplate;
         }
 
         // TODO: rework edit method => patch
         public void Execute(EditEmailTemplateRequest editEmailTemplate)
         {
-            CheckUserRights();
+            if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveEmailTemplates)))
+            {
+                throw new ForbiddenException("Not enough rights.");
+            }
 
-            validator.ValidateAndThrowCustom(editEmailTemplate);
+            _validator.ValidateAndThrowCustom(editEmailTemplate);
 
-            var dbEmailTemplate = repository.GetEmailTemplateById(editEmailTemplate.Id);
+            var dbEmailTemplate = _repository.GetEmailTemplateById(editEmailTemplate.Id);
 
-            var editDbEmailTemplate = mapperEmailTemplate.Map(editEmailTemplate);
+            var editDbEmailTemplate = _mapperEmailTemplate.Map(editEmailTemplate);
 
             editDbEmailTemplate.CreatedAt = dbEmailTemplate.CreatedAt;
             editDbEmailTemplate.IsActive = dbEmailTemplate.IsActive;
@@ -57,7 +56,7 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
             {
                 var dbEmailTemplateTexts = dbEmailTemplate.EmailTemplateTexts
                     .FirstOrDefault(x => x.Language == emailTemplateText.Language);
-                var newDbEmailTemplateTexts = mapperTemplateText.Map(emailTemplateText);
+                var newDbEmailTemplateTexts = _mapperTemplateText.Map(emailTemplateText);
 
                 if (dbEmailTemplateTexts != null)
                 {
@@ -72,17 +71,7 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
                 editDbEmailTemplate.EmailTemplateTexts.Add(newDbEmailTemplateTexts);
             }
 
-            repository.EditEmailTemplate(editDbEmailTemplate);
-        }
-
-        private void CheckUserRights()
-        {
-            bool isAccess = accessValidator.IsAdmin() || accessValidator.HasRights(numberRight);
-
-            if (!isAccess)
-            {
-                throw new ForbiddenException("Not enough rights.");
-            }
+            _repository.EditEmailTemplate(editDbEmailTemplate);
         }
     }
 }

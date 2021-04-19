@@ -1,4 +1,4 @@
-﻿namespace LT.DigitalOffice.MessageService.Models.Dto.Requests.Enums
+﻿namespace LT.DigitalOffice.MessageService.Models.Dto.Enums
 {
     public enum StatusType
     {

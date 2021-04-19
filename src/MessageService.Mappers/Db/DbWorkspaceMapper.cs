@@ -1,13 +1,13 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers
+namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
     public class DbWorkspaceMapper : IDbWorkspaceMapper
     {
-        public DbWorkspace Map(Workspace value, Guid ownerId, Guid? imageId)
+        public DbWorkspace Map(WorkspaceRequest value, Guid ownerId, Guid? imageId)
         {
             if (value == null)
             {

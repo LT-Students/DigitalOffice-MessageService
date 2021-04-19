@@ -11,16 +11,16 @@ namespace LT.DigitalOffice.MessageService.Data
 {
     public class EmailTemplateRepository : IEmailTemplateRepository
     {
-        private readonly IDataProvider provider;
+        private readonly IDataProvider _provider;
 
         public EmailTemplateRepository(IDataProvider provider)
         {
-            this.provider = provider;
+            _provider = provider;
         }
 
         public void DisableEmailTemplate(Guid templateId)
         {
-            var dbEmailTemplateText = provider.EmailTemplates
+            var dbEmailTemplateText = _provider.EmailTemplates
                 .FirstOrDefault(templateText => templateText.Id == templateId);
 
             if (dbEmailTemplateText == null)
@@ -30,8 +30,8 @@ namespace LT.DigitalOffice.MessageService.Data
 
             dbEmailTemplateText.IsActive = false;
 
-            provider.EmailTemplates.Update(dbEmailTemplateText);
-            provider.Save();
+            _provider.EmailTemplates.Update(dbEmailTemplateText);
+            _provider.Save();
         }
 
         public Guid AddEmailTemplate(DbEmailTemplate emailTemplate)
@@ -41,15 +41,15 @@ namespace LT.DigitalOffice.MessageService.Data
                 throw new ArgumentNullException(nameof(emailTemplate));
             }
 
-            provider.EmailTemplates.Add(emailTemplate);
-            provider.Save();
+            _provider.EmailTemplates.Add(emailTemplate);
+            _provider.Save();
 
             return emailTemplate.Id;
         }
 
         public DbEmailTemplate GetEmailTemplateById(Guid emailTemplateId)
         {
-            var dbEmailTemplate = provider.EmailTemplates
+            var dbEmailTemplate = _provider.EmailTemplates
                 .FirstOrDefault(et => et.Id == emailTemplateId);
 
             if (dbEmailTemplate == null)
@@ -62,7 +62,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public DbEmailTemplate GetEmailTemplateByType(int type)
         {
-            var dbEmailTemplate = provider.EmailTemplates
+            var dbEmailTemplate = _provider.EmailTemplates
                 .FirstOrDefault(et => et.Type == type);
 
             if (dbEmailTemplate == null)
@@ -75,7 +75,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public void EditEmailTemplate(DbEmailTemplate dbEmailTemplateToEdit)
         {
-            var dbTemplate = provider.EmailTemplates
+            var dbTemplate = _provider.EmailTemplates
                 .AsNoTracking()
                 .FirstOrDefault(et => et.Id == dbEmailTemplateToEdit.Id);
 
@@ -84,8 +84,8 @@ namespace LT.DigitalOffice.MessageService.Data
                 throw new NotFoundException("Email template with this ID '{templateId}' does not exist.");
             }
 
-            provider.EmailTemplates.Update(dbEmailTemplateToEdit);
-            provider.Save();
+            _provider.EmailTemplates.Update(dbEmailTemplateToEdit);
+            _provider.Save();
         }
     }
 }

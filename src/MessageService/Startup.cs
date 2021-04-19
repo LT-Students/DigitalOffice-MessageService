@@ -1,19 +1,20 @@
 using FluentValidation;
 using HealthChecks.UI.Client;
-using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
-using LT.DigitalOffice.MessageService.Mappers.EmailMappers;
-using LT.DigitalOffice.MessageService.Mappers.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Mappers.Db;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Validation;
+using LT.DigitalOffice.MessageService.Validation.EmailTemplate;
+using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Workspace;
+using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -102,9 +103,6 @@ namespace LT.DigitalOffice.MessageService
             services.AddBusinessObjects();
 
             ConfigureMassTransit(services);
-
-            ConfigureMappers(services);
-            ConfigureValidators(services);
         }
 
         private void ConfigureMassTransit(IServiceCollection services)
@@ -137,21 +135,6 @@ namespace LT.DigitalOffice.MessageService
             });
 
             services.AddMassTransitHostedService();
-        }
-
-        private void ConfigureMappers(IServiceCollection services)
-        {
-            services.AddTransient<IMapper<ISendEmailRequest, DbEmail>, EmailMapper>();
-            services.AddTransient<IMapper<EmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
-            services.AddTransient<IMapper<EmailTemplateTextInfo, DbEmailTemplateText>, EmailTemplateTextMapper>();
-            services.AddTransient<IMapper<EditEmailTemplateRequest, DbEmailTemplate>, EmailTemplateMapper>();
-        }
-
-        private void ConfigureValidators(IServiceCollection services)
-        {
-            services.AddTransient<IValidator<EditEmailTemplateRequest>, EditEmailTemplateValidator>();
-            services.AddTransient<IValidator<Workspace>, WorkspaceValidator>();
-            services.AddTransient<IValidator<EmailTemplateRequest>, AddEmailTemplateValidator>();
         }
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)

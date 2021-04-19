@@ -1,6 +1,5 @@
 ﻿using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Dto;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -8,26 +7,26 @@ namespace LT.DigitalOffice.MessageService.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class EmailController : ControllerBase
+    public class EmailTemplateController : ControllerBase
     {
-        [HttpGet("removeEmailTemplate")]
-        public void RemoveEmailTemplate(
+        [HttpGet("remove")]
+        public void Remove(
             [FromServices] IDisableEmailTemplateCommand command,
             [FromQuery] Guid emailTemplateId)
         {
             command.Execute(emailTemplateId);
         }
 
-        [HttpPost("addEmailTemplate")]
-        public Guid AddEmailTemplate(
-            [FromServices] IAddEmailTemplateCommand command,
+        [HttpPost("create")]
+        public Guid Create(
+            [FromServices] ICreateEmailTemplateCommand command,
             [FromBody] EmailTemplateRequest emailTemplate)
         {
             return command.Execute(emailTemplate);
         }
 
-        [HttpPost("editEmailTemplate")]
-        public void EditEmailtemplate(
+        [HttpPost("edit")]
+        public void Edit(
             [FromServices] IEditEmailTemplateCommand command,
             [FromBody] EditEmailTemplateRequest emailTemplate)
         {

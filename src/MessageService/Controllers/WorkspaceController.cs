@@ -1,5 +1,5 @@
 ﻿using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
         [HttpPost("create")]
         public Guid Create(
             [FromServices] ICreateWorkspaceCommand command,
-            [FromBody] Workspace request)
+            [FromBody] WorkspaceRequest request)
         {
             return command.Execute(request);
         }

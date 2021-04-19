@@ -1,10 +1,11 @@
-﻿using LT.DigitalOffice.MessageService.Mappers.Interfaces;
+﻿using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using System;
-namespace LT.DigitalOffice.MessageService.Mappers.EmailMappers
+
+namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
-    public class EmailTemplateTextMapper : IMapper<EmailTemplateTextInfo, DbEmailTemplateText>
+    public class DbEmailTemplateTextMapper : IDbEmailTemplateTextMapper
     {
         public DbEmailTemplateText Map(EmailTemplateTextInfo templateText)
         {

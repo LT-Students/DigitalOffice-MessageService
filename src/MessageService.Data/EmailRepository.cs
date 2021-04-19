@@ -6,17 +6,17 @@ namespace LT.DigitalOffice.MessageService.Data
 {
     public class EmailRepository : IEmailRepository
     {
-        private readonly IDataProvider provider;
+        private readonly IDataProvider _provider;
 
         public EmailRepository(IDataProvider provider)
         {
-            this.provider = provider;
+            _provider = provider;
         }
 
         public void SaveEmail(DbEmail email)
         {
-            provider.Emails.Add(email);
-            provider.Save();
+            _provider.Emails.Add(email);
+            _provider.Save();
         }
     }
 }

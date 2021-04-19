@@ -1,14 +1,12 @@
-﻿using LT.DigitalOffice.MessageService.Mappers.Interfaces;
+﻿using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using System;
 using System.Linq;
 
-namespace LT.DigitalOffice.MessageService.Mappers.EmailMappers
+namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
-    public class EmailTemplateMapper : IMapper<EmailTemplateRequest, DbEmailTemplate>,
-        IMapper<EditEmailTemplateRequest, DbEmailTemplate>
+    public class DbEmailTemplateMapper : IDbEmailTemplateMapper
     {
         public DbEmailTemplate Map(EmailTemplateRequest emailTemplate)
         {
@@ -38,21 +36,6 @@ namespace LT.DigitalOffice.MessageService.Mappers.EmailMappers
                     }
                 )
                 .ToList()
-            };
-        }
-
-        public DbEmailTemplate Map(EditEmailTemplateRequest emailTemplate)
-        {
-            if (emailTemplate == null)
-            {
-                throw new ArgumentNullException(nameof(emailTemplate));
-            }
-
-            return new DbEmailTemplate
-            {
-                Id = emailTemplate.Id,
-                Name = emailTemplate.Name,
-                Type = (int)emailTemplate.Type
             };
         }
     }

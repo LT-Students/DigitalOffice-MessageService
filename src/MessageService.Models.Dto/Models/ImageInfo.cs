@@ -1,4 +1,4 @@
-﻿namespace LT.DigitalOffice.MessageService.Models.Dto.Requests
+﻿namespace LT.DigitalOffice.MessageService.Models.Dto.Models
 {
     public class ImageInfo
     {

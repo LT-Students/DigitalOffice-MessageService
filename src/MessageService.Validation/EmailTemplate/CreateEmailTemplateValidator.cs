@@ -1,22 +1,21 @@
 ﻿using FluentValidation;
-using LT.DigitalOffice.MessageService.Models.Dto;
-using LT.DigitalOffice.MessageService.Models.Dto.Enums;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
 
 namespace LT.DigitalOffice.MessageService.Validation
 {
-    public class EditEmailTemplateValidator : AbstractValidator<EditEmailTemplateRequest>
+    public class CreateEmailTemplateValidator : AbstractValidator<EmailTemplateRequest>, ICreateEmailTemplateValidator
     {
-        public EditEmailTemplateValidator()
+        public CreateEmailTemplateValidator()
         {
-            RuleFor(et => et.Id)
-                .NotEmpty();
-
             RuleFor(et => et.Name)
                 .NotEmpty();
 
             RuleFor(et => et.Type)
                 .IsInEnum();
+
+            RuleFor(et => et.AuthorId)
+                .NotEmpty();
 
             RuleFor(et => et.EmailTemplateTexts)
                 .NotNull();

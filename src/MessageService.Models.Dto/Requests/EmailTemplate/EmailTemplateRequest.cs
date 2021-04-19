@@ -3,7 +3,7 @@ using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.MessageService.Models.Dto.Requests
+namespace LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate
 {
     public class EmailTemplateRequest
     {
