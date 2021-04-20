@@ -105,7 +105,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 Language = _editEmailTemplateTextInfo.Language
             };
 
-
             foreach (var templateText in _newEmailTemplate.EmailTemplateTexts)
             {
                 var dbEmailTemplateText = new DbEmailTemplateText
@@ -159,7 +158,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
 
             Assert.Throws<ValidationException>(() => _command.Execute(_newEmailTemplate));
         }
-
 
         [Test]
         public void ShouldThrowNullReferenceExceptionWhenEmailTemplateIdIsNotExist()
