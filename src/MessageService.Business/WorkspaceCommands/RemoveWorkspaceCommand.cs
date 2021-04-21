@@ -1,5 +1,4 @@
-﻿using LT.DigitalOffice.Kernel.Exceptions;
-using LT.DigitalOffice.Kernel.Exceptions.Models;
+﻿using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
@@ -13,17 +12,17 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
 {
     public class RemoveWorkspaceCommand : IRemoveWorkspaceCommand
     {
-        private readonly IWorkspaceRepository _workspaceRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IWorkspaceRepository _workspaceRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public RemoveWorkspaceCommand(
-            IWorkspaceRepository workspaceRepository,
             IUserRepository userRepository,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IWorkspaceRepository workspaceRepository)
         {
-            _workspaceRepository = workspaceRepository;
             _userRepository = userRepository;
+            _workspaceRepository = workspaceRepository;
             _httpContextAccessor = httpContextAccessor;
         }
 

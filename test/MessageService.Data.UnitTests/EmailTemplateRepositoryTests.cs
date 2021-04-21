@@ -16,13 +16,13 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 {
     public class EmailTemplateRepositoryTests
     {
-        private IDataProvider provider;
-        private IEmailTemplateRepository repository;
+        private IDataProvider _provider;
+        private IEmailTemplateRepository _repository;
 
-        private DbEmailTemplate dbEmailTemplate;
-        private Guid emailTemplateId;
-        private DbEmailTemplate dbEmailTemplateToAdd;
-        private DbEmailTemplate editDbEmailTemplate;
+        private DbEmailTemplate _dbEmailTemplate;
+        private Guid _emailTemplateId;
+        private DbEmailTemplate _dbEmailTemplateToAdd;
+        private DbEmailTemplate _editDbEmailTemplate;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -30,26 +30,26 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             var dbOptions = new DbContextOptionsBuilder<MessageServiceDbContext>()
                    .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
                    .Options;
-            provider = new MessageServiceDbContext(dbOptions);
+            _provider = new MessageServiceDbContext(dbOptions);
 
-            repository = new EmailTemplateRepository(provider);
+            _repository = new EmailTemplateRepository(_provider);
         }
 
         [SetUp]
         public void SetUp()
         {
-            emailTemplateId = Guid.NewGuid();
+            _emailTemplateId = Guid.NewGuid();
 
             var dbEmailTemplateText = new DbEmailTemplateText
             {
                 Id = Guid.NewGuid(),
-                EmailTemplateId = emailTemplateId,
+                EmailTemplateId = _emailTemplateId,
                 Subject = "Subject",
                 Text = "Hello, {userFirstName}!!! Your password: {userPassword}, enter it at login",
                 Language = "en"
             };
 
-            dbEmailTemplateToAdd = new DbEmailTemplate
+            _dbEmailTemplateToAdd = new DbEmailTemplate
             {
                 Id = Guid.NewGuid(),
                 AuthorId = Guid.NewGuid(),
@@ -61,9 +61,9 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 }
             };
 
-            dbEmailTemplate = new DbEmailTemplate
+            _dbEmailTemplate = new DbEmailTemplate
             {
-                Id = emailTemplateId,
+                Id = _emailTemplateId,
                 AuthorId = Guid.NewGuid(),
                 IsActive = true,
                 Type = (int)EmailTemplateType.Greeting,
@@ -74,24 +74,24 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 }
             };
 
-            editDbEmailTemplate = new DbEmailTemplate
+            _editDbEmailTemplate = new DbEmailTemplate
             {
-                Id = dbEmailTemplate.Id,
-                AuthorId = dbEmailTemplate.AuthorId,
-                IsActive = dbEmailTemplate.IsActive,
-                CreatedAt = dbEmailTemplate.CreatedAt
+                Id = _dbEmailTemplate.Id,
+                AuthorId = _dbEmailTemplate.AuthorId,
+                IsActive = _dbEmailTemplate.IsActive,
+                CreatedAt = _dbEmailTemplate.CreatedAt
             };
 
-            provider.EmailTemplates.Add(dbEmailTemplate);
-            provider.Save();
+            _provider.EmailTemplates.Add(_dbEmailTemplate);
+            _provider.Save();
         }
 
         [TearDown]
         public void CleanDb()
         {
-            if (provider.IsInMemory())
+            if (_provider.IsInMemory())
             {
-                provider.EnsureDeleted();
+                _provider.EnsureDeleted();
             }
         }
 
@@ -99,24 +99,24 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenEmailTemplateDoesNotExist()
         {
-            Assert.Throws<NotFoundException>(() => repository.DisableEmailTemplate(Guid.NewGuid()));
-            Assert.AreEqual(provider.EmailTemplates, new List<DbEmailTemplate> { dbEmailTemplate });
+            Assert.Throws<NotFoundException>(() => _repository.DisableEmailTemplate(Guid.NewGuid()));
+            Assert.AreEqual(_provider.EmailTemplates, new List<DbEmailTemplate> { _dbEmailTemplate });
         }
 
         [Test]
         public void ShouldRemoveEmailTemplateSuccessfully()
         {
-            repository.DisableEmailTemplate(emailTemplateId);
+            _repository.DisableEmailTemplate(_emailTemplateId);
 
-            Assert.IsTrue(provider.EmailTemplates.Find(emailTemplateId).IsActive == false);
-            Assert.AreEqual(provider.EmailTemplates, new List<DbEmailTemplate> { dbEmailTemplate });
+            Assert.IsTrue(_provider.EmailTemplates.Find(_emailTemplateId).IsActive == false);
+            Assert.AreEqual(_provider.EmailTemplates, new List<DbEmailTemplate> { _dbEmailTemplate });
         }
 
         [Test]
         public void ShouldThrowExceptionWhenEmailTemplateIdNull()
         {
-            Assert.Throws<NotFoundException>(() => repository.DisableEmailTemplate(Guid.Empty));
-            Assert.AreEqual(provider.EmailTemplates, new List<DbEmailTemplate> { dbEmailTemplate });
+            Assert.Throws<NotFoundException>(() => _repository.DisableEmailTemplate(Guid.Empty));
+            Assert.AreEqual(_provider.EmailTemplates, new List<DbEmailTemplate> { _dbEmailTemplate });
         }
         #endregion
 
@@ -124,8 +124,8 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldAddEmailTemplateCorrectly()
         {
-            Assert.AreEqual(dbEmailTemplateToAdd.Id, repository.AddEmailTemplate(dbEmailTemplateToAdd));
-            Assert.AreEqual(dbEmailTemplateToAdd, provider.EmailTemplates.Find(dbEmailTemplateToAdd.Id));
+            Assert.AreEqual(_dbEmailTemplateToAdd.Id, _repository.AddEmailTemplate(_dbEmailTemplateToAdd));
+            Assert.AreEqual(_dbEmailTemplateToAdd, _provider.EmailTemplates.Find(_dbEmailTemplateToAdd.Id));
         }
         #endregion
 
@@ -135,35 +135,35 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         {
             var emailTemplaiId = Guid.NewGuid();
 
-            Assert.Throws<NotFoundException>(() => repository.GetEmailTemplateById(emailTemplaiId));
+            Assert.Throws<NotFoundException>(() => _repository.GetEmailTemplateById(emailTemplaiId));
         }
 
         [Test]
         public void ShouldGetEmailTemplateByIdSuccessful()
         {
-            var newDbEmailTemplate = repository.GetEmailTemplateById(dbEmailTemplate.Id);
+            var newDbEmailTemplate = _repository.GetEmailTemplateById(_dbEmailTemplate.Id);
 
-            provider.MakeEntityDetached(dbEmailTemplate);
+            _provider.MakeEntityDetached(_dbEmailTemplate);
             newDbEmailTemplate.EmailTemplateTexts.ElementAt(0).EmailTemplate = null;
 
-            SerializerAssert.AreEqual(dbEmailTemplate, newDbEmailTemplate);
+            SerializerAssert.AreEqual(_dbEmailTemplate, newDbEmailTemplate);
         }
 
         [Test]
         public void ShouldThrowExceptionWhenEmailTemplateTypeNotFound()
         {
-            Assert.Throws<NotFoundException>(() => repository.GetEmailTemplateByType((int)EmailTemplateType.Warning));
+            Assert.Throws<NotFoundException>(() => _repository.GetEmailTemplateByType((int)EmailTemplateType.Warning));
         }
 
         [Test]
         public void ShouldGetEmailTemplateByTypeSuccessful()
         {
-            var newDbEmailTemplate = repository.GetEmailTemplateByType((int)EmailTemplateType.Greeting);
+            var newDbEmailTemplate = _repository.GetEmailTemplateByType((int)EmailTemplateType.Greeting);
 
-            provider.MakeEntityDetached(dbEmailTemplate);
+            _provider.MakeEntityDetached(_dbEmailTemplate);
             newDbEmailTemplate.EmailTemplateTexts.ElementAt(0).EmailTemplate = null;
 
-            SerializerAssert.AreEqual(dbEmailTemplate, newDbEmailTemplate);
+            SerializerAssert.AreEqual(_dbEmailTemplate, newDbEmailTemplate);
         }
         #endregion
 
@@ -174,22 +174,22 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             var newdbEmailTemplate = new DbEmailTemplate
             {
                 Id = Guid.NewGuid(),
-                AuthorId = editDbEmailTemplate.AuthorId,
-                IsActive = editDbEmailTemplate.IsActive,
-                CreatedAt = editDbEmailTemplate.CreatedAt
+                AuthorId = _editDbEmailTemplate.AuthorId,
+                IsActive = _editDbEmailTemplate.IsActive,
+                CreatedAt = _editDbEmailTemplate.CreatedAt
             };
 
-            Assert.Throws<NotFoundException>(() => repository.EditEmailTemplate(newdbEmailTemplate));
+            Assert.Throws<NotFoundException>(() => _repository.EditEmailTemplate(newdbEmailTemplate));
         }
 
         [Test]
         public void ShouldEditEmailTemplateSuccessfully()
         {
-            provider.MakeEntityDetached(dbEmailTemplate);
+            _provider.MakeEntityDetached(_dbEmailTemplate);
 
-            repository.EditEmailTemplate(editDbEmailTemplate);
+            _repository.EditEmailTemplate(_editDbEmailTemplate);
 
-            SerializerAssert.AreEqual(editDbEmailTemplate, repository.GetEmailTemplateById(editDbEmailTemplate.Id));
+            SerializerAssert.AreEqual(_editDbEmailTemplate, _repository.GetEmailTemplateById(_editDbEmailTemplate.Id));
         }
         #endregion
     }

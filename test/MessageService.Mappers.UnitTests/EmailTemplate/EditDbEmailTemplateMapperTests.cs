@@ -1,0 +1,100 @@
+﻿using LT.DigitalOffice.MessageService.Mappers.Db;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
+using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.UnitTestKernel;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
+{
+    class EditDbEmailTemplateMapperTests
+    {
+        private IEditDbEmailTemplateMapper _mapper;
+
+        private EmailTemplateRequest _emailTemplate;
+        private DbEmailTemplate _expectedDbEmailTemplate;
+        private EmailTemplateTextInfo _emailTemplateTextInfo;
+        private EditEmailTemplateRequest _editEmailTemplateRequest;
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _mapper = new EditDbEmailTemplateMapper();
+
+            _emailTemplate = new EmailTemplateRequest
+            {
+                Name = "Pattern name",
+                Type = EmailTemplateType.Greeting,
+                AuthorId = Guid.NewGuid(),
+                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                {
+                    new EmailTemplateTextInfo
+                    {
+                        Subject = "Subject",
+                        Text = "Email text",
+                        Language = "en"
+                    }
+                }
+            };
+
+            _emailTemplateTextInfo = new EmailTemplateTextInfo()
+            {
+                Subject = "New subject",
+                Text = "New email text",
+                Language = "ru"
+            };
+
+            _editEmailTemplateRequest = new EditEmailTemplateRequest()
+            {
+                Name = "New pattern name",
+                Type = EmailTemplateType.Greeting,
+                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                {
+                    new EmailTemplateTextInfo
+                    {
+                        Subject = _emailTemplateTextInfo.Subject,
+                        Text = _emailTemplateTextInfo.Text,
+                        Language = _emailTemplateTextInfo.Language
+                    }
+                }
+            };
+
+            _expectedDbEmailTemplate = new DbEmailTemplate
+            {
+                Name = _emailTemplate.Name,
+                CreatedAt = DateTime.UtcNow,
+                AuthorId = _emailTemplate.AuthorId,
+                Type = (int)_emailTemplate.Type,
+                IsActive = true
+            };
+        }
+
+        [Test]
+        public void ShouldThrowArgumentNullExceptionWhenEditEmailTemplateRequestIsNull()
+        {
+            EditEmailTemplateRequest newEditEmailTemplateRequest = null;
+
+            Assert.Throws<ArgumentNullException>(() => _mapper.Map(newEditEmailTemplateRequest));
+        }
+
+        [Test]
+        public void ShouldReturnRightModelSuccessful()
+        {
+            var dbEmailTemplate = _mapper.Map(_editEmailTemplateRequest);
+
+            var expectedDbEmailTemplate = new DbEmailTemplate
+            {
+                Id = _editEmailTemplateRequest.Id,
+                Name = _editEmailTemplateRequest.Name,
+                Type = (int)_editEmailTemplateRequest.Type
+            };
+
+            SerializerAssert.AreEqual(expectedDbEmailTemplate, dbEmailTemplate);
+        }
+    }
+}

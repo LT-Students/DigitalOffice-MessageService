@@ -10,6 +10,7 @@
     <ProjectReference Include="..\MessageService.Data\MessageService.Data.csproj" />
     <ProjectReference Include="..\MessageService.Mappers\MessageService.Mappers.csproj" />
     <ProjectReference Include="..\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />
+    <ProjectReference Include="..\MessageService.Validation\MessageService.Validation.csproj" />
   </ItemGroup>
 
 </Project>

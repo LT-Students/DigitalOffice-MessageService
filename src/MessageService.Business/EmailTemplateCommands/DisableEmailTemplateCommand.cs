@@ -1,33 +1,33 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.Constants;
+using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
 {
     public class DisableEmailTemplateCommand : IDisableEmailTemplateCommand
     {
-        private readonly IEmailTemplateRepository repository;
-        private readonly IAccessValidator accessValidator;
-        private readonly int numberRight = 3;
+        private readonly IAccessValidator _accessValidator;
+        private readonly IEmailTemplateRepository _repository;
 
         public DisableEmailTemplateCommand(
-            [FromServices] IEmailTemplateRepository repository,
-            [FromServices] IAccessValidator accessValidator)
+            IAccessValidator accessValidator,
+            IEmailTemplateRepository repository)
         {
-            this.repository = repository;
-            this.accessValidator = accessValidator;
+            _repository = repository;
+            _accessValidator = accessValidator;
         }
 
         public void Execute(Guid emailTemplateId)
         {
-            if (!(accessValidator.IsAdmin() || accessValidator.HasRights(numberRight)))
+            if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveEmailTemplates)))
             {
-                throw new Exception("Not enough rights.");
+                throw new ForbiddenException("Not enough rights.");
             }
 
-            repository.DisableEmailTemplate(emailTemplateId);
+            _repository.DisableEmailTemplate(emailTemplateId);
         }
     }
 }

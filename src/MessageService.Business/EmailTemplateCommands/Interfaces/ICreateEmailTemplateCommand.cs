@@ -9,12 +9,13 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interf
     /// Provides method for adding an email template.
     /// </summary>
     [AutoInject]
-    public interface IEditEmailTemplateCommand
+    public interface ICreateEmailTemplateCommand
     {
         /// <summary>
-        /// Edit email template data with check right user.
+        ///  Adding a new email template.
         /// </summary>
-        /// <param name="editEmailTemplate">Edit email template data.</param>
-        void Execute(EditEmailTemplateRequest editEmailTemplate);
+        /// <param name="emailTemplate">Email template data.</param>
+        /// <returns>Guid of the added email template.</returns>
+        Guid Execute(EmailTemplateRequest emailTemplate);
     }
 }

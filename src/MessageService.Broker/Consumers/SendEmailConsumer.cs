@@ -1,9 +1,8 @@
 ﻿using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Kernel.Broker;
-using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using MassTransit;
 using Microsoft.Extensions.Logging;
@@ -20,9 +19,9 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 {
     public class SendEmailConsumer : IConsumer<ISendEmailRequest>
     {
-        private readonly IMapper<ISendEmailRequest, DbEmail> _mapper;
-        private readonly ILogger<SendEmailConsumer> _logger;
+        private readonly IDbEmailMapper _mapper;
         private readonly IEmailRepository _emailRepository;
+        private readonly ILogger<SendEmailConsumer> _logger;
         private readonly IEmailTemplateRepository _templateRepository;
 
         private readonly IOptions<SmtpCredentialsOptions> _options;
@@ -104,11 +103,11 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
         }
 
         public SendEmailConsumer(
+            IDbEmailMapper mapper,
             IEmailRepository emailRepository,
             ILogger<SendEmailConsumer> logger,
-            IEmailTemplateRepository templateRepository,
-            IMapper<ISendEmailRequest, DbEmail> mapper,
-            IOptions<SmtpCredentialsOptions> options)
+            IOptions<SmtpCredentialsOptions> options,
+            IEmailTemplateRepository templateRepository)
         {
             _mapper = mapper;
             _logger = logger;

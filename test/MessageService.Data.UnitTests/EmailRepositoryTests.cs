@@ -10,10 +10,10 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 {
     public class EmailRepositoryTests
     {
-        private IDataProvider provider;
-        private IEmailRepository repository;
+        private IDataProvider _provider;
+        private IEmailRepository _repository;
 
-        private DbEmail emailToSave;
+        private DbEmail _emailToSave;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -21,15 +21,15 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             var dbOptions = new DbContextOptionsBuilder<MessageServiceDbContext>()
                 .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
                 .Options;
-            provider = new MessageServiceDbContext(dbOptions);
+            _provider = new MessageServiceDbContext(dbOptions);
 
-            repository = new EmailRepository(provider);
+            _repository = new EmailRepository(_provider);
         }
 
         [SetUp]
         public void SetUp()
         {
-            emailToSave = new DbEmail
+            _emailToSave = new DbEmail
             {
                 Id = Guid.NewGuid(),
                 SenderId = Guid.NewGuid(),
@@ -42,9 +42,9 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [TearDown]
         public void CleanDb()
         {
-            if (provider.IsInMemory())
+            if (_provider.IsInMemory())
             {
-                provider.EnsureDeleted();
+                _provider.EnsureDeleted();
             }
         }
 
@@ -52,9 +52,9 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldSaveEmailCorrectly()
         {
-            repository.SaveEmail(emailToSave);
+            _repository.SaveEmail(_emailToSave);
 
-            Assert.That(provider.Emails.Find(emailToSave.Id), Is.EqualTo(emailToSave));
+            Assert.That(_provider.Emails.Find(_emailToSave.Id), Is.EqualTo(_emailToSave));
         }
         #endregion
     }

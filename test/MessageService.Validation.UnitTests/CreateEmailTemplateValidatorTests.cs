@@ -3,35 +3,28 @@ using FluentValidation.TestHelper;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplate;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Validation.UnitTests
 {
-    public class EditEmailTemplateValidatorTests
+    class CreateEmailTemplateValidatorTests
     {
-        private IValidator<EditEmailTemplateRequest> _validator;
-        private EditEmailTemplateRequest _emailTemplateRequest;
+        private IValidator<EmailTemplateRequest> _validator;
+        private EmailTemplateRequest _emailTemplateRequest;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _validator = new EditEmailTemplateValidator();
+            _validator = new CreateEmailTemplateValidator();
 
-            _emailTemplateRequest = new EditEmailTemplateRequest
+            _emailTemplateRequest = new EmailTemplateRequest
             {
-                Id = Guid.NewGuid(),
                 Name = "Pattern name",
+                AuthorId = Guid.NewGuid(),
                 Type = EmailTemplateType.Greeting,
             };
-        }
-
-        [Test]
-        public void ShouldThrowExceptionWhenEmailTemplateIdIsEmpty()
-        {
-            _validator.ShouldHaveValidationErrorFor(x => x.Id, Guid.Empty);
         }
 
         [Test]
@@ -47,9 +40,15 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         }
 
         [Test]
+        public void ShouldThrowExceptionWhenEmailTemplateAuthorIsEmpty()
+        {
+            _validator.ShouldHaveValidationErrorFor(x => x.AuthorId, Guid.Empty);
+        }
+
+        [Test]
         public void ShouldThrowExceptionWhenTemplateTextsIsNull()
         {
-            IEnumerable<EmailTemplateTextInfo> templateTexts = null;
+            IEnumerable<EmailTemplateTextInfo> templateTexts= null;
 
             _validator.ShouldHaveValidationErrorFor(x => x.EmailTemplateTexts, templateTexts);
         }

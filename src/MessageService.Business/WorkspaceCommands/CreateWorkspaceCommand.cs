@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using LT.DigitalOffice.Broker.Requests;
+﻿using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Broker.Responses;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Extensions;
@@ -7,7 +6,9 @@ using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
+using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -17,12 +18,12 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
 {
     public class CreateWorkspaceCommand : ICreateWorkspaceCommand
     {
-        private readonly IWorkspaceRepository _repository;
-        private readonly IValidator<Workspace> _validator;
         private readonly IDbWorkspaceMapper _mapper;
-        private readonly IRequestClient<IAddImageRequest> _requestClient;
+        private readonly ICreateWorkspaceValidator _validator;
+        private readonly IWorkspaceRepository _repository;
         private readonly ILogger<CreateWorkspaceCommand> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IRequestClient<IAddImageRequest> _requestClient;
 
         private Guid? AddImageContent(ImageInfo image, Guid ownerId)
         {
@@ -54,22 +55,22 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         }
 
         public CreateWorkspaceCommand(
-            IWorkspaceRepository repository,
-            IValidator<Workspace> validator,
             IDbWorkspaceMapper mapper,
-            IRequestClient<IAddImageRequest> requestClient,
+            ICreateWorkspaceValidator validator,
+            IWorkspaceRepository repository,
             ILogger<CreateWorkspaceCommand> logger,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IRequestClient<IAddImageRequest> requestClient)
         {
-            _repository = repository;
-            _validator = validator;
             _mapper = mapper;
-            _requestClient = requestClient;
             _logger = logger;
+            _validator = validator;
+            _repository = repository;
+            _requestClient = requestClient;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public Guid Execute(Workspace workspace)
+        public Guid Execute(WorkspaceRequest workspace)
         {
             _validator.ValidateAndThrowCustom(workspace);
 
