@@ -81,7 +81,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
             if (dbTemplate == null)
             {
-                throw new NotFoundException("Email template with this ID '{templateId}' does not exist.");
+                throw new NotFoundException($"Email template with this ID '{dbEmailTemplateToEdit.Id}' does not exist.");
             }
 
             _provider.EmailTemplates.Update(dbEmailTemplateToEdit);
