@@ -49,7 +49,7 @@ namespace LT.DigitalOffice.MessageService
                 .GetSection(BaseRabbitMqConfig.SectionName)
                 .Get<RabbitMqConfig>();
 
-            Version = "1.2.5";
+            Version = "1.2.6";
             Description = "MessageService, is intended to work with the messages, emails and email templates.";
             StartTime = DateTime.UtcNow;
             ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
