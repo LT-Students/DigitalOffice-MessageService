@@ -4,6 +4,9 @@ using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
+using LT.DigitalOffice.UnitTestKernel;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -37,9 +40,16 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 .Returns(true);
 
             _repositoryMock
-                .Setup(x => x.DisableEmailTemplate(It.IsAny<Guid>()));
+                .Setup(x => x.DisableEmailTemplate(It.IsAny<Guid>()))
+                .Returns(true);
 
-            _command.Execute(_emailTemplateId);
+            var expectedResponse = new OperationResultResponse<bool>
+            {
+                Status = OperationResultStatusType.FullSuccess,
+                Body = true
+            };
+
+            SerializerAssert.AreEqual(expectedResponse, _command.Execute(_emailTemplateId));
 
             _repositoryMock.Verify();
         }

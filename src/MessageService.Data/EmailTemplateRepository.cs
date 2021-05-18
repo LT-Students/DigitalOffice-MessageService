@@ -18,7 +18,7 @@ namespace LT.DigitalOffice.MessageService.Data
             _provider = provider;
         }
 
-        public void DisableEmailTemplate(Guid templateId)
+        public bool DisableEmailTemplate(Guid templateId)
         {
             var dbEmailTemplateText = _provider.EmailTemplates
                 .FirstOrDefault(templateText => templateText.Id == templateId);
@@ -32,6 +32,8 @@ namespace LT.DigitalOffice.MessageService.Data
 
             _provider.EmailTemplates.Update(dbEmailTemplateText);
             _provider.Save();
+
+            return true;
         }
 
         public Guid AddEmailTemplate(DbEmailTemplate emailTemplate)
@@ -73,7 +75,7 @@ namespace LT.DigitalOffice.MessageService.Data
             return dbEmailTemplate;
         }
 
-        public void EditEmailTemplate(DbEmailTemplate dbEmailTemplateToEdit)
+        public bool EditEmailTemplate(DbEmailTemplate dbEmailTemplateToEdit)
         {
             var dbTemplate = _provider.EmailTemplates
                 .AsNoTracking()
@@ -86,6 +88,8 @@ namespace LT.DigitalOffice.MessageService.Data
 
             _provider.EmailTemplates.Update(dbEmailTemplateToEdit);
             _provider.Save();
+
+            return true;
         }
     }
 }

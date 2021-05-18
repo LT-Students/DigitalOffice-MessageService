@@ -1,4 +1,5 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces
@@ -14,6 +15,6 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interf
         ///  Disable an email template.
         /// </summary>
         /// <param name="emailTemplateId">Email template Id.</param>
-        void Execute(Guid emailTemplateId);
+        OperationResultResponse<bool> Execute(Guid emailTemplateId);
     }
 }

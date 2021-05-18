@@ -13,7 +13,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
+namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
 {
     class RemoveWorkspaceCommandTests
     {

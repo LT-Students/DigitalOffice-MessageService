@@ -11,6 +11,7 @@ using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
 using LT.DigitalOffice.UnitTestKernel;
 using MassTransit;
@@ -175,7 +176,13 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
         [Test]
         public void ShouldCreateWorkspaceCorrectly()
         {
-            SerializerAssert.AreEqual(_command.Execute(_workspace), _workspaceId);
+            var expectedResponse = new OperationResultResponse<Guid>
+            {
+                Status = Models.Dto.Enums.OperationResultStatusType.FullSuccess,
+                Body = _workspaceId
+            };
+
+            SerializerAssert.AreEqual(expectedResponse, _command.Execute(_workspace));
         }
 
         [Test]
@@ -188,7 +195,14 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 .Setup(x => x.Errors)
                 .Returns(new List<string>() { "some error" });
 
-            SerializerAssert.AreEqual(_command.Execute(_workspace), _workspaceId);
+            var expectedResponse = new OperationResultResponse<Guid>
+            {
+                Status = Models.Dto.Enums.OperationResultStatusType.PartialSuccess,
+                Body = _workspaceId,
+                Errors = new List<string> { $"Can not add image to user with id {_userId}. Please try again later." }
+            };
+
+            SerializerAssert.AreEqual(expectedResponse, _command.Execute(_workspace));
         }
 
         [Test]
@@ -199,7 +213,14 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                     It.IsAny<object>(), default, default))
                 .Throws(new Exception());
 
-            SerializerAssert.AreEqual(_command.Execute(_workspace), _workspaceId);
+            var expectedResponse = new OperationResultResponse<Guid>
+            {
+                Status = Models.Dto.Enums.OperationResultStatusType.PartialSuccess,
+                Body = _workspaceId,
+                Errors = new List<string> { $"Can not add image to user with id {_userId}. Please try again later." }
+            };
+
+            SerializerAssert.AreEqual(expectedResponse, _command.Execute(_workspace));
         }
 
         [Test]
