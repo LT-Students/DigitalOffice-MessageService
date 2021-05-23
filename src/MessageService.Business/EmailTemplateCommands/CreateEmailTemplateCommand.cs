@@ -5,7 +5,9 @@ using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
 using System;
 
@@ -30,7 +32,7 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
             _accessValidator = accessValidator;
         }
 
-        public Guid Execute(EmailTemplateRequest emailTemplate)
+        public OperationResultResponse<Guid> Execute(EmailTemplateRequest emailTemplate)
         {
             if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveEmailTemplates)))
             {
@@ -39,7 +41,13 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
 
             _validator.ValidateAndThrowCustom(emailTemplate);
 
-            return _repository.AddEmailTemplate(_mapper.Map(emailTemplate));
+            var id = _repository.AddEmailTemplate(_mapper.Map(emailTemplate));
+
+            return new OperationResultResponse<Guid>
+            {
+                Status = OperationResultStatusType.FullSuccess,
+                Body = id
+            };
         }
     }
 }

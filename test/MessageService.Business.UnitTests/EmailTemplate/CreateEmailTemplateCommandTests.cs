@@ -10,7 +10,9 @@ using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
+using LT.DigitalOffice.UnitTestKernel;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -106,7 +108,13 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 .Setup(mapper => mapper.Map(It.IsAny<EmailTemplateRequest>()))
                 .Returns(dbEmailTemplate);
 
-            Assert.That(_command.Execute(emailTemplate), Is.EqualTo(emailId));
+            var expectedResponse = new OperationResultResponse<Guid>
+            {
+                Status = OperationResultStatusType.FullSuccess,
+                Body = emailId
+            };
+
+            SerializerAssert.AreEqual(expectedResponse, _command.Execute(emailTemplate));
 
             _mapperMock.Verify();
             _repositoryMock.Verify();

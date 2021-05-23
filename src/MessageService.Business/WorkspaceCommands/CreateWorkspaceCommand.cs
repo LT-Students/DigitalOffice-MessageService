@@ -6,13 +6,17 @@ using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
 {
@@ -25,9 +29,11 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRequestClient<IAddImageRequest> _requestClient;
 
-        private Guid? AddImageContent(ImageInfo image, Guid ownerId)
+        private Guid? AddImageContent(ImageInfo image, Guid ownerId, List<string> errors)
         {
             Guid? imageId = null;
+
+            string errorMessage = "Can not add image to user with id {userId}. Please try again later.";
 
             try
             {
@@ -43,12 +49,16 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
                 }
                 else
                 {
-                    _logger.LogWarning(string.Join(", ", imageResponse.Message.Errors));
+                    _logger.LogWarning(errorMessage, ownerId);
+
+                    errors.Add($"Can not add image to user with id {ownerId}. Please try again later.");
                 }
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "Exception on create image request.");
+                _logger.LogError(exception, errorMessage, ownerId);
+
+                errors.Add($"Can not add image to user with id {ownerId}. Please try again later.");
             }
 
             return imageId;
@@ -70,8 +80,10 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public Guid Execute(WorkspaceRequest workspace)
+        public OperationResultResponse<Guid> Execute(WorkspaceRequest workspace)
         {
+            List<string> errors = new();
+
             _validator.ValidateAndThrowCustom(workspace);
 
             var ownerId = _httpContextAccessor.HttpContext.GetUserId();
@@ -79,10 +91,17 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
             Guid? imageId = null;
             if (workspace.Image != null)
             {
-                imageId = AddImageContent(workspace.Image, ownerId);
+                imageId = AddImageContent(workspace.Image, ownerId, errors);
             }
 
-            return _repository.CreateWorkspace(_mapper.Map(workspace, ownerId, imageId));
+            var id = _repository.CreateWorkspace(_mapper.Map(workspace, ownerId, imageId));
+
+            return new OperationResultResponse<Guid>
+            {
+                Status = errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess,
+                Body = id,
+                Errors = errors
+            };
         }
     }
 }

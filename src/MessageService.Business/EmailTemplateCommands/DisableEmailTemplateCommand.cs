@@ -3,6 +3,8 @@ using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
@@ -20,14 +22,20 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
             _accessValidator = accessValidator;
         }
 
-        public void Execute(Guid emailTemplateId)
+        public OperationResultResponse<bool> Execute(Guid emailTemplateId)
         {
             if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveEmailTemplates)))
             {
                 throw new ForbiddenException("Not enough rights.");
             }
 
-            _repository.DisableEmailTemplate(emailTemplateId);
+            var isSuccess = _repository.DisableEmailTemplate(emailTemplateId);
+
+            return new OperationResultResponse<bool>
+            {
+                Status = isSuccess ? OperationResultStatusType.FullSuccess : OperationResultStatusType.Failed,
+                Body = isSuccess
+            };
         }
     }
 }

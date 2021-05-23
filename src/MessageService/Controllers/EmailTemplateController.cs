@@ -1,5 +1,6 @@
 ﻿using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -9,16 +10,16 @@ namespace LT.DigitalOffice.MessageService.Controllers
     [ApiController]
     public class EmailTemplateController : ControllerBase
     {
-        [HttpGet("remove")]
-        public void Remove(
+        [HttpDelete("remove")]
+        public OperationResultResponse<bool> Remove(
             [FromServices] IDisableEmailTemplateCommand command,
             [FromQuery] Guid emailTemplateId)
         {
-            command.Execute(emailTemplateId);
+            return command.Execute(emailTemplateId);
         }
 
         [HttpPost("create")]
-        public Guid Create(
+        public OperationResultResponse<Guid> Create(
             [FromServices] ICreateEmailTemplateCommand command,
             [FromBody] EmailTemplateRequest emailTemplate)
         {
@@ -26,11 +27,11 @@ namespace LT.DigitalOffice.MessageService.Controllers
         }
 
         [HttpPost("edit")]
-        public void Edit(
+        public OperationResultResponse<bool> Edit(
             [FromServices] IEditEmailTemplateCommand command,
             [FromBody] EditEmailTemplateRequest emailTemplate)
         {
-            command.Execute(emailTemplate);
+            return command.Execute(emailTemplate);
         }
     }
 }

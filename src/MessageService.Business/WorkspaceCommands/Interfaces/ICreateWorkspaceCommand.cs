@@ -1,5 +1,6 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces
@@ -16,6 +17,6 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces
         /// </summary>
         /// <param name="workspace">Workspace data.</param>
         /// <returns>Guid of the added workspace.</returns>
-        Guid Execute(WorkspaceRequest workspace);
+        OperationResultResponse<Guid> Execute(WorkspaceRequest workspace);
     }
 }

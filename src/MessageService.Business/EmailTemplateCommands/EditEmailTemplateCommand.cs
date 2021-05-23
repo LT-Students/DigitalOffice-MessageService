@@ -5,7 +5,9 @@ using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
 using System;
 using System.Linq;
@@ -35,7 +37,7 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
         }
 
         // TODO: rework edit method => patch
-        public void Execute(EditEmailTemplateRequest editEmailTemplate)
+        public OperationResultResponse<bool> Execute(EditEmailTemplateRequest editEmailTemplate)
         {
             if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveEmailTemplates)))
             {
@@ -71,7 +73,13 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
                 editDbEmailTemplate.EmailTemplateTexts.Add(newDbEmailTemplateTexts);
             }
 
-            _repository.EditEmailTemplate(editDbEmailTemplate);
+            var isSuccess = _repository.EditEmailTemplate(editDbEmailTemplate);
+
+            return new OperationResultResponse<bool>
+            {
+                Status = isSuccess ? OperationResultStatusType.FullSuccess : OperationResultStatusType.Failed,
+                Body = isSuccess
+            };
         }
     }
 }

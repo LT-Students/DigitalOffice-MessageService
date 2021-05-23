@@ -10,13 +10,15 @@ using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
+using LT.DigitalOffice.UnitTestKernel;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
+namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
 {
     class EditEmailTemplateCommandTests
     {
@@ -251,6 +253,10 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 .Setup(x => x.GetEmailTemplateById(_newEmailTemplate.Id))
                 .Returns(_dbEmailTemplate);
 
+            _repositoryMock
+                .Setup(x => x.EditEmailTemplate(_newDbEmailTemplate))
+                .Returns(true);
+
             _mapperEmailTemplateMock
                 .Setup(mapper => mapper.Map(_newEmailTemplate))
                 .Returns(_newDbEmailTemplate);
@@ -259,7 +265,13 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 .Setup(x => x.Map(_editEmailTemplateTextInfo))
                 .Returns(_editDbEmailTemplateText);
 
-            _command.Execute(_newEmailTemplate);
+            var expectedResponse = new OperationResultResponse<bool>
+            {
+                Status = OperationResultStatusType.FullSuccess,
+                Body = true
+            };
+
+            SerializerAssert.AreEqual(expectedResponse, _command.Execute(_newEmailTemplate));
 
             _mapperEmailTemplateMock.Verify();
             _repositoryMock.Verify(repository => repository.GetEmailTemplateById(_dbEmailTemplate.Id), Times.Once);

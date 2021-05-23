@@ -1,5 +1,6 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces
@@ -15,6 +16,6 @@ namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interf
         /// Edit email template data with check right user.
         /// </summary>
         /// <param name="editEmailTemplate">Edit email template data.</param>
-        void Execute(EditEmailTemplateRequest editEmailTemplate);
+        OperationResultResponse<bool> Execute(EditEmailTemplateRequest editEmailTemplate);
     }
 }
