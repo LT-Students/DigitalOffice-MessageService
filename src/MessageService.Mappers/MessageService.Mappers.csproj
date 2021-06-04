@@ -3,7 +3,6 @@
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
   <ItemGroup>
-    <ProjectReference Include="..\MessageService.Models.Broker\MessageService.Models.Broker.csproj" />
     <ProjectReference Include="..\MessageService.Models.Db\MessageService.Models.Db.csproj" />
     <ProjectReference Include="..\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />
   </ItemGroup>

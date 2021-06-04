@@ -1,6 +1,6 @@
-﻿using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+﻿using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.Models.Broker.Requests.Message;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Db

@@ -4,7 +4,7 @@ using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
 
 namespace LT.DigitalOffice.Broker.Requests
 {
-    [AutoInjectRequest(nameof(RabbitMqConfig.CreateImageEndpoint))]
+    [AutoInjectRequest(nameof(RabbitMqConfig.AddImageEndpoint))]
     public interface IAddImageRequest
     {
         public string Name { get; set; }

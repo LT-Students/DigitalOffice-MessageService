@@ -12,6 +12,7 @@ using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
+using LT.DigitalOffice.Models.Broker.Enums;
 using LT.DigitalOffice.UnitTestKernel;
 using Moq;
 using NUnit.Framework;

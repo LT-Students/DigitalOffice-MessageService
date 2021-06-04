@@ -1,5 +1,5 @@
-﻿using LT.DigitalOffice.MessageService.Models.Dto.Enums;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
+﻿using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.Models.Broker.Enums;
 using System;
 using System.Collections.Generic;
 
