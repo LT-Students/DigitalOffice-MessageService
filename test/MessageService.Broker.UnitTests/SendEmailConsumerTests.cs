@@ -3,7 +3,6 @@ using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Email.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.UnitTestKernel;
 using MassTransit;

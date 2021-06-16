@@ -3,7 +3,9 @@ using FluentValidation.Results;
 using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.Broker.Responses;
 using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
+using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
@@ -178,7 +180,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
         {
             var expectedResponse = new OperationResultResponse<Guid>
             {
-                Status = Models.Dto.Enums.OperationResultStatusType.FullSuccess,
+                Status = OperationResultStatusType.FullSuccess,
                 Body = _workspaceId
             };
 
@@ -197,7 +199,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
 
             var expectedResponse = new OperationResultResponse<Guid>
             {
-                Status = Models.Dto.Enums.OperationResultStatusType.PartialSuccess,
+                Status = OperationResultStatusType.PartialSuccess,
                 Body = _workspaceId,
                 Errors = new List<string> { $"Can not add image to user with id {_userId}. Please try again later." }
             };
@@ -215,7 +217,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
 
             var expectedResponse = new OperationResultResponse<Guid>
             {
-                Status = Models.Dto.Enums.OperationResultStatusType.PartialSuccess,
+                Status = OperationResultStatusType.PartialSuccess,
                 Body = _workspaceId,
                 Errors = new List<string> { $"Can not add image to user with id {_userId}. Please try again later." }
             };

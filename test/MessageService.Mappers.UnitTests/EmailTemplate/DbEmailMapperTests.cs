@@ -1,5 +1,6 @@
 ﻿using LT.DigitalOffice.Broker.Requests;
 using LT.DigitalOffice.MessageService.Mappers.Db;
+using LT.DigitalOffice.MessageService.Mappers.Db.Email;
 using LT.DigitalOffice.MessageService.Mappers.Db.Email.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.UnitTestKernel;
