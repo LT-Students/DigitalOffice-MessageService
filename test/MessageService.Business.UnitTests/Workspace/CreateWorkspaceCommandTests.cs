@@ -7,7 +7,7 @@ using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;

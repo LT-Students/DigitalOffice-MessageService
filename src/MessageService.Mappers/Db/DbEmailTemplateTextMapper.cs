@@ -1,6 +1,6 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Emails;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Db

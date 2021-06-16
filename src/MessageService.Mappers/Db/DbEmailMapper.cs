@@ -1,9 +1,9 @@
 ﻿using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db.Email.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Mappers.Db
+namespace LT.DigitalOffice.MessageService.Mappers.Db.Email
 {
     public class DbEmailMapper : IDbEmailMapper
     {

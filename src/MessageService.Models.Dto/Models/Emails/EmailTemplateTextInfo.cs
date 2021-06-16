@@ -1,4 +1,4 @@
-﻿namespace LT.DigitalOffice.MessageService.Models.Dto.Models
+﻿namespace LT.DigitalOffice.MessageService.Models.Dto.Models.Emails
 {
     public class EmailTemplateTextInfo
     {

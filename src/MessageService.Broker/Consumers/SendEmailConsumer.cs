@@ -2,7 +2,7 @@
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db.Email.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using MassTransit;
 using Microsoft.Extensions.Logging;

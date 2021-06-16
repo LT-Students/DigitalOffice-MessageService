@@ -1,5 +1,5 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Db;
-using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
