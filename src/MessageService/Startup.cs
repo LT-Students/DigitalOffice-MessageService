@@ -1,4 +1,3 @@
-using FluentValidation;
 using HealthChecks.UI.Client;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
@@ -6,15 +5,8 @@ using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
-using LT.DigitalOffice.MessageService.Mappers.Db;
-using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
-using LT.DigitalOffice.MessageService.Validation;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplate;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
-using LT.DigitalOffice.MessageService.Validation.Workspace;
-using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
+using LT.DigitalOffice.UserService.Business.Helpers.Email;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -25,6 +17,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService
 {
@@ -127,6 +120,9 @@ namespace LT.DigitalOffice.MessageService
 
             services.AddControllers();
             services.AddBusinessObjects();
+
+            //TODO Fix initialization of this
+            services.AddTransient<EmailSender>();
 
             ConfigureMassTransit(services);
         }

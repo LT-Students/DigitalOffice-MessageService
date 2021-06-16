@@ -2,16 +2,12 @@
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Db.Email.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.UserService.Business.Helpers.Email;
 using MassTransit;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,52 +15,17 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 {
     public class SendEmailConsumer : IConsumer<ISendEmailRequest>
     {
-        private readonly IDbEmailMapper _mapper;
-        private readonly IEmailRepository _emailRepository;
         private readonly ILogger<SendEmailConsumer> _logger;
         private readonly IEmailTemplateRepository _templateRepository;
-
-        private readonly IOptions<SmtpCredentialsOptions> _options;
+        private readonly EmailSender _sender;
 
         private bool SendEmail(ISendEmailRequest request)
         {
-            MailAddress from = new(_options.Value.Email);
-            MailAddress to = new(request.Email);
-
             var dbEmailTemplateText = GetDbEmailTemplateText(request);
             string subject = GetParsedEmailTemplateText(request.TemplateValues, dbEmailTemplateText.Subject);
             string body = GetParsedEmailTemplateText(request.TemplateValues, dbEmailTemplateText.Text);
 
-            var message = new MailMessage(from, to)
-            {
-                Subject = GetParsedEmailTemplateText(request.TemplateValues, dbEmailTemplateText.Subject),
-                Body = GetParsedEmailTemplateText(request.TemplateValues, dbEmailTemplateText.Text)
-            };
-
-            var smtp = new SmtpClient(_options.Value.Host, _options.Value.Port)
-            {
-                Credentials = new NetworkCredential(_options.Value.Email, _options.Value.Password),
-                EnableSsl = true
-            };
-
-            try
-            {
-                smtp.Send(message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning($"Email was not send. Reason: {ex.Message}");
-
-                throw;
-            }
-
-            var dbEmail = _mapper.Map(request);
-            dbEmail.Body = body;
-            dbEmail.Subject = subject;
-
-            _emailRepository.SaveEmail(dbEmail);
-
-            return true;
+            return _sender.SendEmail(request.Email, subject, body);
         }
 
         private DbEmailTemplateText GetDbEmailTemplateText(ISendEmailRequest request)
@@ -103,17 +64,13 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
         }
 
         public SendEmailConsumer(
-            IDbEmailMapper mapper,
-            IEmailRepository emailRepository,
             ILogger<SendEmailConsumer> logger,
-            IOptions<SmtpCredentialsOptions> options,
-            IEmailTemplateRepository templateRepository)
+            IEmailTemplateRepository templateRepository,
+            EmailSender sender)
         {
-            _mapper = mapper;
             _logger = logger;
-            _options = options;
-            _emailRepository = emailRepository;
             _templateRepository = templateRepository;
+            _sender = sender;
         }
 
         public async Task Consume(ConsumeContext<ISendEmailRequest> context)

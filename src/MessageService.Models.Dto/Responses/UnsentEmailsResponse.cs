@@ -7,6 +7,5 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Responses
     {
         public int TotalCount { get; set; }
         public List<UnsentEmailInfo> Emails { get; set; } = new();
-        public List<string> Errors { get; set; } = new();
     }
 }

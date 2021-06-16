@@ -14,6 +14,8 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         public DateTime Time { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
+
+        public DbUnsentEmail UnsentEmail { get; set; }
     }
 
     public class DbEmailConfiguration : IEntityTypeConfiguration<DbEmail>
@@ -37,6 +39,10 @@ namespace LT.DigitalOffice.MessageService.Models.Db
             builder
                 .Property(e => e.Body)
                 .IsRequired();
+
+            builder
+                .HasOne(e => e.UnsentEmail)
+                .WithOne(ue => ue.Email);
         }
     }
 }

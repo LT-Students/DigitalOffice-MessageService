@@ -6,6 +6,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands.Interface
     [AutoInject]
     public interface IGetAllUnsentEmailsCommand
     {
-        UnsentEmailsResponse Execute();
+        UnsentEmailsResponse Execute(int skipCount, int takeCount);
     }
 }

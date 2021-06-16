@@ -13,6 +13,8 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         public DateTime CreatedAt { get; set; }
         public DateTime LastSendAt { get; set; }
         public uint TotalSendingCount { get; set; }
+
+        public DbEmail Email { get; set; }
     }
 
     public class DbUnsentEmailConfiguration : IEntityTypeConfiguration<DbUnsentEmail>
@@ -24,6 +26,11 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
             builder
                 .HasKey(ue => ue.Id);
+
+            builder
+                .HasOne(ue => ue.Email)
+                .WithOne(e => e.UnsentEmail)
+                .HasForeignKey<DbUnsentEmail>(ue => ue.EmailId);
         }
     }
 }

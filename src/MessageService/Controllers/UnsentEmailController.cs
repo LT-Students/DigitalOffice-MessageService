@@ -18,9 +18,11 @@ namespace LT.DigitalOffice.MessageService.Controllers
         }
 
         public UnsentEmailsResponse GetAll(
-            [FromServices] IGetAllUnsentEmailsCommand command)
+            [FromServices] IGetAllUnsentEmailsCommand command,
+            [FromQuery] int skipCount,
+            [FromQuery] int takeCount)
         {
-            return command.Execute();
+            return command.Execute(skipCount, takeCount);
         }
 
     }

@@ -5,7 +5,7 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
-    class UnsentEmailInfoMapper : IUnsentEmailInfoMapper
+    public class UnsentEmailInfoMapper : IUnsentEmailInfoMapper
     {
         public UnsentEmailInfo Map(DbUnsentEmail email)
         {

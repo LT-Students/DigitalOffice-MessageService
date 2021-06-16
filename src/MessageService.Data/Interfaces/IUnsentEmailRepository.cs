@@ -9,7 +9,10 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     public interface IUnsentEmailRepository
     {
         IEnumerable<DbUnsentEmail> GetAll();
+        IEnumerable<DbUnsentEmail> Find(int skipCount, int takeCount, out int totalCount);
+        void Add(DbUnsentEmail email);
         DbUnsentEmail Get(Guid id);
-        bool Remove(Guid id);
+        bool Remove(DbUnsentEmail email);
+        void IncrementTotalCount(DbUnsentEmail email);
     }
 }
