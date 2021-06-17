@@ -21,8 +21,8 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         private DbUnsentEmail _unsentEmailInDb1;
         private DbUnsentEmail _unsentEmailInDb2;
 
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
+        [SetUp]
+        public void SetUp()
         {
             var dbOptions = new DbContextOptionsBuilder<MessageServiceDbContext>()
                 .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
@@ -63,12 +63,6 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             _provider.Save();
 
             _repository = new UnsentEmailRepository(_provider);
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            
         }
 
         [TearDown]

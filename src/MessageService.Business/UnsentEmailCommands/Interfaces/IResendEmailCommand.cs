@@ -5,7 +5,7 @@ using System;
 namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands.Interfaces
 {
     [AutoInject]
-    public interface IResendCommand
+    public interface IResendEmailCommand
     {
         OperationResultResponse<bool> Execute(Guid id);
     }

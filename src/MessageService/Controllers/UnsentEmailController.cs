@@ -11,7 +11,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
     public class UnsentEmailController : ControllerBase
     {
         public OperationResultResponse<bool> Resend(
-            [FromServices] IResendCommand command,
+            [FromServices] IResendEmailCommand command,
             [FromQuery] Guid id)
         {
             return command.Execute(id);

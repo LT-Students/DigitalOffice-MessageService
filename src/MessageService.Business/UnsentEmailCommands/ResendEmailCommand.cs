@@ -8,12 +8,12 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands
 {
-    public class ResendCommand : IResendCommand
+    public class ResendEmailCommand : IResendEmailCommand
     {
         private readonly IAccessValidator _accessValidator;
         private readonly EmailSender _emailSender;
 
-        public ResendCommand(
+        public ResendEmailCommand(
             IAccessValidator accessValidator,
             EmailSender emailSender)
         {
