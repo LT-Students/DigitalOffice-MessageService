@@ -4,6 +4,7 @@ using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
+using LT.DigitalOffice.MessageService.Broker.Helpers;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
 using LT.DigitalOffice.UserService.Business.Helpers.Email;
@@ -69,7 +70,7 @@ namespace LT.DigitalOffice.MessageService
                     });
             });
 
-            var smtpCredentialsOptions = Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials);
+            var smtpCredentialsOptions = Configuration.GetSection(SmtpCredentialsOptions.SectionName);
 
             var smtpHost = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Host));
             if (!string.IsNullOrEmpty(smtpHost))
@@ -121,8 +122,21 @@ namespace LT.DigitalOffice.MessageService
             services.AddControllers();
             services.AddBusinessObjects();
 
-            //TODO Fix initialization of this
             services.AddTransient<EmailSender>();
+
+            #region Start EmailResender
+
+            int resendIntervalMinutes = Configuration
+                .GetSection(EmailEngineConfig.SectionName)
+                .Get<EmailEngineConfig>().ResendIntervalInMinutes;
+
+            var resender = new EmailResender(
+                    smtpCredentialsOptions.Get<SmtpCredentialsOptions>(),
+                    connStr);
+
+            Task.Run(() => resender.StartResend(resendIntervalMinutes));
+
+            #endregion
 
             ConfigureMassTransit(services);
         }

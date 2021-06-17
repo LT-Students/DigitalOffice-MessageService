@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands
     {
         private readonly IAccessValidator _accessValidator;
         private readonly IUnsentEmailRepository _repository;
-        private readonly IUnsentEmailInfoMapper _mapper;
+        private readonly IUnsentEmailInfoMapper _unsentEmailMapper;
 
         public GetAllUnsentEmailsCommand(
             IAccessValidator accessValidator,
@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands
         {
             _accessValidator = accessValidator;
             _repository = repository;
-            _mapper = mapper;
+            _unsentEmailMapper = mapper;
         }
 
         public UnsentEmailsResponse Execute(int skipCount, int takeCount)
@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands
             return new UnsentEmailsResponse
             {
                 TotalCount = totalCount,
-                Emails = emails.Select(e => _mapper.Map(e)).ToList()
+                Emails = emails.Select(e => _unsentEmailMapper.Map(e)).ToList()
             };
         }
     }

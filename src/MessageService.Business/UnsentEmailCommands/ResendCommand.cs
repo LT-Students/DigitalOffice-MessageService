@@ -3,7 +3,7 @@ using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.UnsentEmailCommands.Interfaces;
-using LT.DigitalOffice.MessageService.Data.Interfaces;
+using LT.DigitalOffice.UserService.Business.Helpers.Email;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands
@@ -11,14 +11,14 @@ namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands
     public class ResendCommand : IResendCommand
     {
         private readonly IAccessValidator _accessValidator;
-        private readonly IUnsentEmailRepository _repository;
+        private readonly EmailSender _emailSender;
 
         public ResendCommand(
             IAccessValidator accessValidator,
-            IUnsentEmailRepository repository)
+            EmailSender emailSender)
         {
             _accessValidator = accessValidator;
-            _repository = repository;
+            _emailSender = emailSender;
         }
 
         public OperationResultResponse<bool> Execute(Guid id)
@@ -28,10 +28,12 @@ namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands
                 throw new ForbiddenException("Not enough rights.");
             }
 
+            bool isSuccess = _emailSender.ResendEmail(id);
+
             return new OperationResultResponse<bool>
             {
-                Status = OperationResultStatusType.FullSuccess,
-                Body = true
+                Status = isSuccess ? OperationResultStatusType.FullSuccess : OperationResultStatusType.Failed,
+                Body = isSuccess
             };
         }
     }

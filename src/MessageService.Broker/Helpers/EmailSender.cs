@@ -6,17 +6,14 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.UserService.Business.Helpers.Email
 {
     public class EmailSender
     {
-        private const int ResendInterval = 15;
-
         private readonly IEmailRepository _emailRepository;
         private readonly IUnsentEmailRepository _unsentEmailRepository;
-        private static ILogger<EmailSender> _logger;
+        private readonly ILogger<EmailSender> _logger;
         private readonly IOptions<SmtpCredentialsOptions> _options;
 
         private bool Send(DbEmail email)
@@ -40,7 +37,7 @@ namespace LT.DigitalOffice.UserService.Business.Helpers.Email
             catch (Exception exc)
             {
                 _logger.LogWarning(exc,
-                            "Errors while sending email to {to} with subject: {subject} and body: {body}. Email is in resend queue.",
+                            "Errors while sending email to {to} with subject: {subject} and body: {body}. Email replaced to resend queue.",
                             email.Receiver,
                             email.Subject,
                             email.Body);
@@ -49,30 +46,6 @@ namespace LT.DigitalOffice.UserService.Business.Helpers.Email
             }
 
             return true;
-        }
-
-        private void StartResend(double intervalInMinutes)
-        {
-            while (true)
-            {
-                Task.Delay(TimeSpan.FromMinutes(intervalInMinutes)).Wait();
-
-                var unsentEmails = _unsentEmailRepository.GetAll();
-
-                foreach (var email in unsentEmails)
-                {
-                    var isSuccess = Send(email.Email);
-
-                    if (isSuccess)
-                    {
-                        _unsentEmailRepository.Remove(email);
-                    }
-                    else
-                    {
-                        _unsentEmailRepository.IncrementTotalCount(email);
-                    }       
-                }
-            }
         }
 
         public EmailSender(
@@ -85,12 +58,11 @@ namespace LT.DigitalOffice.UserService.Business.Helpers.Email
             _options = options;
             _emailRepository = emailRepository;
             _unsentEmailRepository = unsentEmailRepository;
-            StartResend(ResendInterval);
         }
 
         public bool SendEmail(string to, string subject, string body)
         {
-            DbEmail email = new DbEmail
+            DbEmail email = new()
             {
                 Id = Guid.NewGuid(),
                 Body = body,
@@ -116,6 +88,19 @@ namespace LT.DigitalOffice.UserService.Business.Helpers.Email
                     TotalSendingCount = 1
                 });
 
+            return false;
+        }
+
+        public bool ResendEmail(Guid unsentEmailId)
+        {
+            var unsentEmail = _unsentEmailRepository.Get(unsentEmailId);
+            if(Send(unsentEmail.Email))
+            {
+                _unsentEmailRepository.Remove(unsentEmail);
+                return true;
+            }
+
+            _unsentEmailRepository.IncrementTotalCount(unsentEmail);
             return false;
         }
     }

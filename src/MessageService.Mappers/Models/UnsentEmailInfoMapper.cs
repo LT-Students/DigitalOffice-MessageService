@@ -7,6 +7,14 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
     public class UnsentEmailInfoMapper : IUnsentEmailInfoMapper
     {
+        private readonly IEmailInfoMapper _mapper;
+
+        public UnsentEmailInfoMapper(
+            IEmailInfoMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         public UnsentEmailInfo Map(DbUnsentEmail email)
         {
             if (email == null)
@@ -17,7 +25,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
             return new UnsentEmailInfo
             {
                 Id = email.Id,
-                EmailId = email.EmailId,
+                Email = _mapper.Map(email.Email),
                 CreatedAt = email.CreatedAt,
                 LastSendAt = email.LastSendAt,
                 TotalSendingCount = email.TotalSendingCount

@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
+﻿using LT.DigitalOffice.Kernel.Exceptions.Models;
+using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -95,6 +96,95 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             }
 
             Assert.AreEqual(_provider.UnsentEmails.ToList().Count, response.Count());
+        }
+
+        [Test]
+        public void ShouldFindAllUnsentEmails()
+        {
+            var response1 = _repository.Find(0, 1, out int total).First();
+            var response2 = _repository.Find(1, 1, out int _).First();
+
+            Assert.AreEqual(_provider.UnsentEmails.ToList().Count, total);
+            Assert.IsTrue(_provider.UnsentEmails.ToList().Contains(response1));
+            Assert.IsTrue(_provider.UnsentEmails.ToList().Contains(response2));
+            Assert.AreNotEqual(response1, response2);
+        }
+
+        [Test]
+        public void ShouldThrowArgumentNullExceptionWhenEmailToAddIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => _repository.Add(null));
+        }
+
+        [Test]
+        public void ShouldAddUnsentEmailSuccessful()
+        {
+            DbUnsentEmail email = new DbUnsentEmail
+            {
+                Id = Guid.NewGuid(),
+                CreatedAt = DateTime.UtcNow,
+                LastSendAt = DateTime.UtcNow,
+                EmailId = Guid.NewGuid(),
+                TotalSendingCount = 1
+            };
+
+            _repository.Add(email);
+
+            Assert.NotNull(_provider.UnsentEmails.ToList().Contains(email));
+        }
+
+        [Test]
+        public void ShouldThrowNotFoundExceptionWhenEmailDoesNotExist()
+        {
+            Assert.Throws<NotFoundException>(() => _repository.Get(Guid.NewGuid()));
+        }
+
+        [Test]
+        public void ShouldGetUnsentEmailSuccessful()
+        {
+            Assert.AreEqual(_unsentEmailInDb1, _repository.Get(_unsentEmailInDb1.Id));
+        }
+
+        [Test]
+        public void ShouldThrowArgumentNullExceptionWhenEmailToRemoveIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => _repository.Remove(null));
+        }
+
+        [Test]
+        public void ShouldRemoveUnsentEmailSuccessful()
+        {
+            var emailForRemove = new DbUnsentEmail
+            {
+                Id = Guid.NewGuid(),
+                EmailId = _emailInDb1.Id,
+                CreatedAt = DateTime.UtcNow,
+                LastSendAt = DateTime.UtcNow,
+                TotalSendingCount = 2
+            };
+
+            _provider.UnsentEmails.Add(emailForRemove);
+            _provider.Save();
+
+            Assert.IsTrue(_repository.Remove(emailForRemove));
+            Assert.IsFalse(_provider.UnsentEmails.ToList().Contains(emailForRemove));
+        }
+
+        [Test]
+        public void ShouldIncrementTotalCountUnsentEmailSuccessful()
+        {
+            var count = _unsentEmailInDb1.TotalSendingCount;
+            var time = _unsentEmailInDb1.LastSendAt;
+            _repository.IncrementTotalCount(_unsentEmailInDb1);
+
+            Assert.AreEqual(count + 1, _unsentEmailInDb1.TotalSendingCount);
+            Assert.Less(time, _unsentEmailInDb1.LastSendAt);
+        }
+
+        [Test]
+        public void ShouldThrowArgumentNullExceptionWhenEmailToIncrementIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => _repository.IncrementTotalCount(null));
         }
     }
 }

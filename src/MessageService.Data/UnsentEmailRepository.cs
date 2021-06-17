@@ -32,7 +32,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public DbUnsentEmail Get(Guid id)
         {
-            return _provider.UnsentEmails.FirstOrDefault(eu => eu.Id == id)
+            return _provider.UnsentEmails.Include(x => x.Email).FirstOrDefault(eu => eu.Id == id)
                 ?? throw new NotFoundException($"There is not unsent email with id {id}");
         }
 
@@ -45,7 +45,7 @@ namespace LT.DigitalOffice.MessageService.Data
         {
             totalCount = _provider.UnsentEmails.Count();
 
-            return _provider.UnsentEmails.Skip(skipCount * takeCount).Take(takeCount).ToList();
+            return _provider.UnsentEmails.Include(u => u.Email).Skip(skipCount * takeCount).Take(takeCount).ToList();
         }
 
         public bool Remove(DbUnsentEmail email)
@@ -63,6 +63,11 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public void IncrementTotalCount(DbUnsentEmail email)
         {
+            if (email == null)
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
             email.TotalSendingCount++;
             email.LastSendAt = DateTime.UtcNow;
             _provider.Save();
