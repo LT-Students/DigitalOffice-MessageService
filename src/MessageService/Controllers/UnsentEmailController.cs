@@ -10,15 +10,17 @@ namespace LT.DigitalOffice.MessageService.Controllers
     [ApiController]
     public class UnsentEmailController : ControllerBase
     {
+        [HttpDelete("resend")]
         public OperationResultResponse<bool> Resend(
             [FromServices] IResendEmailCommand command,
-            [FromQuery] Guid id)
+            [FromQuery] Guid unsentEmailId)
         {
-            return command.Execute(id);
+            return command.Execute(unsentEmailId);
         }
 
+        [HttpGet("getall")]
         public UnsentEmailsResponse GetAll(
-            [FromServices] IGetAllUnsentEmailsCommand command,
+            [FromServices] IFindUnsentEmailsCommand command,
             [FromQuery] int skipCount,
             [FromQuery] int takeCount)
         {

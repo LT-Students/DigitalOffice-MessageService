@@ -19,13 +19,13 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
     public class GetAllUnsentEmailsCommandTests
     {
         private AutoMocker _mocker;
-        private IGetAllUnsentEmailsCommand _command;
+        private IFindUnsentEmailsCommand _command;
 
         [SetUp]
         public void SetUp()
         {
             _mocker = new AutoMocker();
-            _command = _mocker.CreateInstance<GetAllUnsentEmailsCommand>();
+            _command = _mocker.CreateInstance<FindUnsentEmailsCommand>();
 
             _mocker
                 .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))

@@ -10,13 +10,13 @@ using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands
 {
-    public class GetAllUnsentEmailsCommand : IGetAllUnsentEmailsCommand
+    public class FindUnsentEmailsCommand : IFindUnsentEmailsCommand
     {
         private readonly IAccessValidator _accessValidator;
         private readonly IUnsentEmailRepository _repository;
         private readonly IUnsentEmailInfoMapper _unsentEmailMapper;
 
-        public GetAllUnsentEmailsCommand(
+        public FindUnsentEmailsCommand(
             IAccessValidator accessValidator,
             IUnsentEmailRepository repository,
             IUnsentEmailInfoMapper mapper)

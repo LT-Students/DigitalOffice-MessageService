@@ -4,7 +4,7 @@ using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands.Interfaces
 {
     [AutoInject]
-    public interface IGetAllUnsentEmailsCommand
+    public interface IFindUnsentEmailsCommand
     {
         UnsentEmailsResponse Execute(int skipCount, int takeCount);
     }
