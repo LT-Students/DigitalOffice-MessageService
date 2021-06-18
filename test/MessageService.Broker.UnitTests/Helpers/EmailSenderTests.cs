@@ -45,7 +45,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests.Helpers
                         {
                             Id = id,
                             Body = "Body",
-                            Receiver = "belehov.egor2001@yandex.ru",
+                            Receiver = "malkinevgeniy11@gmail.com",
                             Subject = "Subject",
                             Time = DateTime.UtcNow
                         },
@@ -67,7 +67,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests.Helpers
             _mocker
                 .Setup<IUnsentEmailRepository, bool>(x => x.Remove(It.IsAny<DbUnsentEmail>()));
 
-            Assert.IsTrue(_sender.SendEmail("belehov.egor2001@yandex.ru", "afwgbalwgfp;aogwpga", "awgawgagaawihawkgfap;iwhfpafawf;alowhawnfl"));
+            Assert.IsTrue(_sender.SendEmail("malkinevgeniy11@gmail.com", "test subject", "test body"));
         }
     }
 }

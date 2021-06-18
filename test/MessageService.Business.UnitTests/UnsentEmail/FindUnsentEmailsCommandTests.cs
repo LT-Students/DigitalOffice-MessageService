@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
 {
-    public class GetAllUnsentEmailsCommandTests
+    public class FindUnsentEmailsCommandTests
     {
         private AutoMocker _mocker;
         private IFindUnsentEmailsCommand _command;
