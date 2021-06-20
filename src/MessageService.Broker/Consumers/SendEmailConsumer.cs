@@ -50,10 +50,15 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
             try
             {
                 smtp.Send(message);
+
+                _logger.LogInformation(
+                    "Email '{subject}' was sent successfully to '{receiver}'.",
+                    subject,
+                    to.Address);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Email was not send. Reason: {ex.Message}");
+                _logger.LogError("Email was not send. Reason: '{error}'.", ex);
 
                 throw;
             }
