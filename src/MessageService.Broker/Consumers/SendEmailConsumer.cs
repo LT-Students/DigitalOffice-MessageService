@@ -28,6 +28,10 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
         private bool SendEmail(ISendEmailRequest request)
         {
+            _logger.LogInformation(
+                "Start email sending to '{receiver}'.",
+                request.Email);
+
             MailAddress from = new(_options.Value.Email);
             MailAddress to = new(request.Email);
 
