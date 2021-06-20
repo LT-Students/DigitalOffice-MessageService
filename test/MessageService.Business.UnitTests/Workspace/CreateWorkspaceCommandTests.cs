@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.Broker.Responses;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands;
@@ -13,6 +11,8 @@ using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
+using LT.DigitalOffice.Models.Broker.Requests.File;
+using LT.DigitalOffice.Models.Broker.Responses.File;
 using LT.DigitalOffice.UnitTestKernel;
 using MassTransit;
 using Microsoft.AspNetCore.Http;

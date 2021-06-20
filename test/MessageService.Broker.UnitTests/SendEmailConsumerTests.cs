@@ -1,10 +1,9 @@
-﻿using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.Kernel.Broker;
+﻿using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.Models.Broker.Requests.Message;
 using LT.DigitalOffice.UnitTestKernel;
 using MassTransit;
 using MassTransit.Testing;
@@ -21,7 +20,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
 {
     class SendEmailConsumerTests
     {
-        private IDictionary<string, string> _templateTags;
+        private Dictionary<string, string> _templateTags;
 
         private DbEmailTemplate _dbEmailTemplate;
         private InMemoryTestHarness _harness;
