@@ -1,7 +1,7 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
-using LT.DigitalOffice.MessageService.Business.UnsentEmailCommands;
-using LT.DigitalOffice.MessageService.Business.UnsentEmailCommands.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail;
+using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -108,7 +108,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
                     Id = emails[0].EmailId,
                     Body = "Body",
                     Subject = "Subject",
-                    To = "To"
+                    Receiver = "To"
                 }
             };
 
@@ -123,7 +123,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
                     Id = emails[0].EmailId,
                     Body = "Body",
                     Subject = "Subject",
-                    To = "To"
+                    Receiver = "To"
                 }
             };
 

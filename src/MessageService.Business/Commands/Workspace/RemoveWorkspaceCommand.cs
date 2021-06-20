@@ -2,13 +2,13 @@
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
 
-namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
+namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 {
     public class RemoveWorkspaceCommand : IRemoveWorkspaceCommand
     {

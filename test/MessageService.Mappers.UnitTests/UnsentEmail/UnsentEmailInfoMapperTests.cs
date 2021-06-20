@@ -36,7 +36,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.UnsentEmail
                 Id = _dbEmail.Id,
                 Body = _dbEmail.Body,
                 Subject = _dbEmail.Subject,
-                To = _dbEmail.Receiver
+                Receiver = _dbEmail.Receiver
             };
 
             _dbUnsentEmail = new DbUnsentEmail

@@ -1,5 +1,5 @@
 ﻿using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using Microsoft.AspNetCore.Mvc;
 using System;

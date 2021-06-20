@@ -3,11 +3,11 @@ using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
+namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
 {
     public class DisableEmailTemplateCommand : IDisableEmailTemplateCommand
     {

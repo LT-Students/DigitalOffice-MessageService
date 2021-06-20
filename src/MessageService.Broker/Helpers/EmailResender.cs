@@ -13,8 +13,8 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 {
     public class EmailResender
     {
-        private IUnsentEmailRepository _unsentEmailRepository;
-        private SmtpCredentialsOptions _credentialsOptions;
+        private readonly IUnsentEmailRepository _unsentEmailRepository;
+        private readonly SmtpCredentialsOptions _credentialsOptions;
 
         private bool Send(DbEmail email)
         {

@@ -3,7 +3,7 @@ using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces
+namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces
 {
     /// <summary>
     /// Represents interface for a command in command pattern.

@@ -1,5 +1,5 @@
 ﻿using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.UnsentEmailCommands.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -18,8 +18,8 @@ namespace LT.DigitalOffice.MessageService.Controllers
             return command.Execute(unsentEmailId);
         }
 
-        [HttpGet("getall")]
-        public UnsentEmailsResponse GetAll(
+        [HttpGet("find")]
+        public UnsentEmailsResponse Find(
             [FromServices] IFindUnsentEmailsCommand command,
             [FromQuery] int skipCount,
             [FromQuery] int takeCount)

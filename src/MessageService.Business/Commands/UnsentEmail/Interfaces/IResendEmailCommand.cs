@@ -2,7 +2,7 @@
 using LT.DigitalOffice.Kernel.Responses;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands.Interfaces
+namespace LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail.Interfaces
 {
     [AutoInject]
     public interface IResendEmailCommand

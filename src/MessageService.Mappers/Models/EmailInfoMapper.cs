@@ -19,7 +19,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
                 Id = email.Id,
                 Body = email.Body,
                 Subject = email.Subject,
-                To = email.Receiver
+                Receiver = email.Receiver
             };
         }
     }

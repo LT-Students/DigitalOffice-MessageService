@@ -2,8 +2,8 @@
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.UnsentEmailCommands;
-using LT.DigitalOffice.MessageService.Business.UnsentEmailCommands.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail;
+using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using Microsoft.Extensions.Options;

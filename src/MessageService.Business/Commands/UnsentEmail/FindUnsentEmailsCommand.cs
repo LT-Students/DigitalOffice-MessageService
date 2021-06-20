@@ -1,6 +1,6 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
-using LT.DigitalOffice.MessageService.Business.UnsentEmailCommands.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -8,7 +8,7 @@ using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LT.DigitalOffice.MessageService.Business.UnsentEmailCommands
+namespace LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail
 {
     public class FindUnsentEmailsCommand : IFindUnsentEmailsCommand
     {

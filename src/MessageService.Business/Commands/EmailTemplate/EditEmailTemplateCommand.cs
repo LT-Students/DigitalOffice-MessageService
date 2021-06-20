@@ -4,7 +4,7 @@ using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
@@ -13,7 +13,7 @@ using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
 using System;
 using System.Linq;
 
-namespace LT.DigitalOffice.MessageService.Business.EmailTemplatesCommands
+namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
 {
     public class EditEmailTemplateCommand : IEditEmailTemplateCommand
     {

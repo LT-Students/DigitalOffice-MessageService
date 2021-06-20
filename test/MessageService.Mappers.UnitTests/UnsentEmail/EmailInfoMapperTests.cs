@@ -40,7 +40,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.UnsentEmail
                 Id = email.Id,
                 Body = email.Body,
                 Subject = email.Subject,
-                To = email.Receiver
+                Receiver = email.Receiver
             };
 
             SerializerAssert.AreEqual(expected, _mapper.Map(email));
