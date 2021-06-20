@@ -18,7 +18,6 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests.Helpers
         public void SetUp()
         {
             _mocker = new AutoMocker();
-            _sender = _mocker.CreateInstance<EmailSender>();
 
             _mocker
                 .Setup<IOptions<SmtpCredentialsOptions>, SmtpCredentialsOptions>(x => x.Value)
@@ -29,6 +28,8 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests.Helpers
                     Password = "%4fgT1_3ioR",
                     Port = 587
                 });
+
+            _sender = _mocker.CreateInstance<EmailSender>();
         }
 
         [Test]

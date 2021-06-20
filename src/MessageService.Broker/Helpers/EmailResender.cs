@@ -2,45 +2,15 @@
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
-using LT.DigitalOffice.MessageService.Models.Db;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Net;
-using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Broker.Helpers
 {
-    public class EmailResender
+    public class EmailResender : BaseEmailSender
     {
         private readonly IUnsentEmailRepository _unsentEmailRepository;
-        private readonly SmtpCredentialsOptions _credentialsOptions;
-
-        private bool Send(DbEmail email)
-        {
-            var message = new MailMessage(_credentialsOptions.Email, email.Receiver)
-            {
-                Subject = email.Subject,
-                Body = email.Body
-            };
-
-            var smtp = new SmtpClient(_credentialsOptions.Host, _credentialsOptions.Port)
-            {
-                Credentials = new NetworkCredential(_credentialsOptions.Email, _credentialsOptions.Password),
-                EnableSsl = true
-            };
-
-            try
-            {
-                smtp.Send(message);
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
-        }
 
         public void StartResend(double intervalInMinutes)
         {
@@ -69,13 +39,12 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
         public EmailResender(
             SmtpCredentialsOptions credentialsOptions,
             string sqlConnectionString)
+            : base(credentialsOptions)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MessageServiceDbContext>();
             optionsBuilder.UseSqlServer(sqlConnectionString);
             IDataProvider dataProvider = new MessageServiceDbContext(optionsBuilder.Options);
             _unsentEmailRepository = new UnsentEmailRepository(dataProvider);
-
-            _credentialsOptions = credentialsOptions;
         }
     }
 }

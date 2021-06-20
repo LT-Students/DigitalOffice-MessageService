@@ -23,11 +23,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
         public void SetUp()
         {
             _mocker = new();
-            _command = _mocker.CreateInstance<ResendEmailCommand>();
-
-            _mocker
-                .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))
-                .Returns(true);
 
             _mocker
                 .Setup<IOptions<SmtpCredentialsOptions>, SmtpCredentialsOptions>(x => x.Value)
@@ -38,6 +33,12 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
                     Password = "%4fgT1_3ioR",
                     Port = 587
                 });
+
+            _command = _mocker.CreateInstance<ResendEmailCommand>();
+
+            _mocker
+                .Setup<IAccessValidator, bool>(x => x.IsAdmin(null))
+                .Returns(true);
         }
 
         [Test]
