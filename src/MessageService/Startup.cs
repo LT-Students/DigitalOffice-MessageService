@@ -1,4 +1,3 @@
-using FluentValidation;
 using HealthChecks.UI.Client;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
@@ -6,15 +5,7 @@ using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
-using LT.DigitalOffice.MessageService.Mappers.Db;
-using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
-using LT.DigitalOffice.MessageService.Validation;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplate;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
-using LT.DigitalOffice.MessageService.Validation.Workspace;
-using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -64,13 +55,7 @@ namespace LT.DigitalOffice.MessageService
                     builder =>
                     {
                         builder
-                            .WithOrigins(
-                                "https://*.ltdo.xyz",
-                                "http://*.ltdo.xyz",
-                                "http://ltdo.xyz",
-                                "http://ltdo.xyz:9802",
-                                "http://localhost:4200",
-                                "http://localhost:4500")
+                            .AllowAnyOrigin()
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
@@ -125,7 +110,10 @@ namespace LT.DigitalOffice.MessageService
                 .AddSqlServer(connStr)
                 .AddRabbitMqCheck();
 
-            services.AddControllers();
+            services
+                .AddControllers()
+                .AddNewtonsoftJson();
+
             services.AddBusinessObjects();
 
             ConfigureMassTransit(services);
