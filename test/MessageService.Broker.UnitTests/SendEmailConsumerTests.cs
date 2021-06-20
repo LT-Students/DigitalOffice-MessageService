@@ -142,61 +142,61 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             }
         }
 
-        [Test]
-        public async Task ShouldSendEmail()
-        {
-            _templateRepositoryMock
-                .Setup(x => x.GetEmailTemplateById(_dbEmailTemplate.Id))
-                .Returns(_dbEmailTemplate);
+        //[Test]
+        //public async Task ShouldSendEmail()
+        //{
+        //    _templateRepositoryMock
+        //        .Setup(x => x.GetEmailTemplateById(_dbEmailTemplate.Id))
+        //        .Returns(_dbEmailTemplate);
 
-            var language = "en";
-            var senderId = Guid.NewGuid();
-            var emailRecipient = "malkinevgeniy11@gmail.com";
+        //    var language = "en";
+        //    var senderId = Guid.NewGuid();
+        //    var emailRecipient = "malkinevgeniy11@gmail.com";
 
-            var expected = new
-            {
-                IsSuccess = true,
-                Errors = null as List<string>,
-                Body = true
-            };
+        //    var expected = new
+        //    {
+        //        IsSuccess = true,
+        //        Errors = null as List<string>,
+        //        Body = true
+        //    };
 
-            var dbEmail = new DbEmail
-            {
-                Id = Guid.NewGuid(),
-                Receiver = emailRecipient,
-                SenderId = senderId,
-                Time = DateTime.UtcNow
-            };
+        //    var dbEmail = new DbEmail
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        Receiver = emailRecipient,
+        //        SenderId = senderId,
+        //        Time = DateTime.UtcNow
+        //    };
 
-            _mapperMock
-                .Setup(X => X.Map(It.IsAny<ISendEmailRequest>()))
-                .Returns(dbEmail);
+        //    _mapperMock
+        //        .Setup(X => X.Map(It.IsAny<ISendEmailRequest>()))
+        //        .Returns(dbEmail);
 
-            await _harness.Start();
+        //    await _harness.Start();
 
-            try
-            {
-                _requestClient = await _harness.ConnectRequestClient<ISendEmailRequest>();
+        //    try
+        //    {
+        //        _requestClient = await _harness.ConnectRequestClient<ISendEmailRequest>();
 
-                var response = await _requestClient.GetResponse<IOperationResult<bool>>(
-                ISendEmailRequest.CreateObj(
-                    _dbEmailTemplate.Id,
-                    senderId,
-                    emailRecipient,
-                    language,
-                    _templateTags));
+        //        var response = await _requestClient.GetResponse<IOperationResult<bool>>(
+        //        ISendEmailRequest.CreateObj(
+        //            _dbEmailTemplate.Id,
+        //            senderId,
+        //            emailRecipient,
+        //            language,
+        //            _templateTags));
 
-                Assert.True(response.Message.IsSuccess);
-                Assert.AreEqual(null, response.Message.Errors);
-                SerializerAssert.AreEqual(expected, response.Message);
-                Assert.True(_consumerTestHarness.Consumed.Select<ISendEmailRequest>().Any());
-                Assert.True(_harness.Sent.Select<IOperationResult<bool>>().Any());
-                _templateRepositoryMock.Verify(x => x.GetEmailTemplateById(_dbEmailTemplate.Id), Times.Once);
-            }
-            finally
-            {
-                await _harness.Stop();
-            }
-        }
+        //        Assert.True(response.Message.IsSuccess);
+        //        Assert.AreEqual(null, response.Message.Errors);
+        //        SerializerAssert.AreEqual(expected, response.Message);
+        //        Assert.True(_consumerTestHarness.Consumed.Select<ISendEmailRequest>().Any());
+        //        Assert.True(_harness.Sent.Select<IOperationResult<bool>>().Any());
+        //        _templateRepositoryMock.Verify(x => x.GetEmailTemplateById(_dbEmailTemplate.Id), Times.Once);
+        //    }
+        //    finally
+        //    {
+        //        await _harness.Stop();
+        //    }
+        //}
     }
 }
