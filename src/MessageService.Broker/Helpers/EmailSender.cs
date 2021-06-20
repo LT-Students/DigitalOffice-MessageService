@@ -94,7 +94,7 @@ namespace LT.DigitalOffice.UserService.Business.Helpers.Email
         public bool ResendEmail(Guid unsentEmailId)
         {
             var unsentEmail = _unsentEmailRepository.Get(unsentEmailId);
-            if(Send(unsentEmail.Email))
+            if (Send(unsentEmail.Email))
             {
                 _unsentEmailRepository.Remove(unsentEmail);
                 return true;
