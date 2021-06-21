@@ -10,7 +10,5 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Configurations
 
         [AutoInjectRequest(typeof(IAddImageRequest))]
         public string AddImageEndpoint { get; set; }
-
-        public string GetTempalateTagsEndpoint { get; set; }
     }
 }
