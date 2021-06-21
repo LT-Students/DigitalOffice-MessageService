@@ -46,7 +46,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests.Helpers
                         {
                             Id = id,
                             Body = "Body",
-                            Receiver = "malkinevgeniy11@gmail.com",
+                            Receiver = "belehov.egor2001@yandex.ru",
                             Subject = "Subject",
                             Time = DateTime.UtcNow
                         },
