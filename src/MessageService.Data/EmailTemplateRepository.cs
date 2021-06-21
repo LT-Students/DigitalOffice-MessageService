@@ -49,14 +49,15 @@ namespace LT.DigitalOffice.MessageService.Data
             return emailTemplate.Id;
         }
 
-        public DbEmailTemplate GetEmailTemplateById(Guid emailTemplateId)
+        public DbEmailTemplate GetEmailTemplateById(Guid id)
         {
             var dbEmailTemplate = _provider.EmailTemplates
-                .FirstOrDefault(et => et.Id == emailTemplateId);
+                .Include(et => et.EmailTemplateTexts)
+                .FirstOrDefault(et => et.Id == id);
 
             if (dbEmailTemplate == null)
             {
-                throw new NotFoundException($"Email template with this ID '{emailTemplateId}' does not exist");
+                throw new NotFoundException($"Email template with this ID '{id}' does not exist");
             }
 
             return dbEmailTemplate;
@@ -64,7 +65,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public DbEmailTemplate GetEmailTemplateByType(int type)
         {
-            var dbEmailTemplate = _provider.EmailTemplates
+            var dbEmailTemplate = _provider.EmailTemplates.Include(et => et.EmailTemplateTexts)
                 .FirstOrDefault(et => et.Type == type);
 
             if (dbEmailTemplate == null)

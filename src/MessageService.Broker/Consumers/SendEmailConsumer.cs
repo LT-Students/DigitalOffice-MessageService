@@ -1,9 +1,7 @@
-﻿using LT.DigitalOffice.Broker.Requests;
-using LT.DigitalOffice.Kernel.Broker;
+﻿using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.UserService.Business.Helpers.Email;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -21,6 +19,13 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
         private bool SendEmail(ISendEmailRequest request)
         {
+            _logger.LogInformation(
+                "Start email sending to '{receiver}'.",
+                request.Email);
+
+            MailAddress from = new(_options.Value.Email);
+            MailAddress to = new(request.Email);
+
             var dbEmailTemplateText = GetDbEmailTemplateText(request);
             string subject = GetParsedEmailTemplateText(request.TemplateValues, dbEmailTemplateText.Subject);
             string body = GetParsedEmailTemplateText(request.TemplateValues, dbEmailTemplateText.Text);

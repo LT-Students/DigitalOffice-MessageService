@@ -7,7 +7,12 @@ using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Broker.Helpers;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
-using LT.DigitalOffice.UserService.Business.Helpers.Email;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Validation;
+using LT.DigitalOffice.MessageService.Validation.EmailTemplate;
+using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Workspace;
+using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -58,13 +63,7 @@ namespace LT.DigitalOffice.MessageService
                     builder =>
                     {
                         builder
-                            .WithOrigins(
-                                "https://*.ltdo.xyz",
-                                "http://*.ltdo.xyz",
-                                "http://ltdo.xyz",
-                                "http://ltdo.xyz:9802",
-                                "http://localhost:4200",
-                                "http://localhost:4500")
+                            .AllowAnyOrigin()
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
@@ -119,7 +118,10 @@ namespace LT.DigitalOffice.MessageService
                 .AddSqlServer(connStr)
                 .AddRabbitMqCheck();
 
-            services.AddControllers();
+            services
+                .AddControllers()
+                .AddNewtonsoftJson();
+
             services.AddBusinessObjects();
 
             services.AddTransient<EmailSender>();
