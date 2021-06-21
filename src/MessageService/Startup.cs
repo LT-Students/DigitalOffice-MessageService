@@ -7,7 +7,6 @@ using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Broker.Helpers;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
-using LT.DigitalOffice.UserService.Business.Helpers.Email;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

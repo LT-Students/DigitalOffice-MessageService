@@ -1,6 +1,6 @@
-﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
+﻿using LT.DigitalOffice.MessageService.Broker.Helpers;
+using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.UserService.Business.Helpers.Email;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.AutoMock;

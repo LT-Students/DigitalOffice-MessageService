@@ -1,12 +1,10 @@
-﻿using LT.DigitalOffice.MessageService;
-using LT.DigitalOffice.MessageService.Broker.Helpers;
-using LT.DigitalOffice.MessageService.Data.Interfaces;
+﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 
-namespace LT.DigitalOffice.UserService.Business.Helpers.Email
+namespace LT.DigitalOffice.MessageService.Broker.Helpers
 {
     public class EmailSender : BaseEmailSender
     {
@@ -37,7 +35,7 @@ namespace LT.DigitalOffice.UserService.Business.Helpers.Email
 
             _emailRepository.SaveEmail(email);
 
-            if (Send(email)) 
+            if (Send(email))
             {
                 return true;
             }
