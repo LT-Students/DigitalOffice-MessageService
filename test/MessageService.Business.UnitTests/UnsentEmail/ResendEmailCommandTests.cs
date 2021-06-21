@@ -70,40 +70,40 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
                 .Verify<IUnsentEmailRepository, DbUnsentEmail>(x => x.Get(id), Times.Once);
         }
 
-        [Test]
-        public void ShouldResendEmailSuccessfuly()
-        {
-            Guid emailId = Guid.NewGuid();
+        //[Test]
+        //public void ShouldResendEmailSuccessfuly()
+        //{
+        //    Guid emailId = Guid.NewGuid();
 
-            DbUnsentEmail email = new()
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow,
-                LastSendAt = DateTime.UtcNow,
-                TotalSendingCount = 1,
-                Email = new()
-                {
-                    Id = emailId,
-                    Body = "Body",
-                    Subject = "Subject",
-                    Receiver = "malkinevgeniy11@gmail.com",
-                    Time = DateTime.UtcNow
-                },
-                EmailId = emailId
-            };
+        //    DbUnsentEmail email = new()
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        CreatedAt = DateTime.UtcNow,
+        //        LastSendAt = DateTime.UtcNow,
+        //        TotalSendingCount = 1,
+        //        Email = new()
+        //        {
+        //            Id = emailId,
+        //            Body = "Body",
+        //            Subject = "Subject",
+        //            Receiver = "malkinevgeniy11@gmail.com",
+        //            Time = DateTime.UtcNow
+        //        },
+        //        EmailId = emailId
+        //    };
 
-            _mocker
-                .Setup<IUnsentEmailRepository, DbUnsentEmail>(x => x.Get(email.Id))
-                .Returns(email);
+        //    _mocker
+        //        .Setup<IUnsentEmailRepository, DbUnsentEmail>(x => x.Get(email.Id))
+        //        .Returns(email);
 
-            OperationResultResponse<bool> response = _command.Execute(email.Id);
+        //    OperationResultResponse<bool> response = _command.Execute(email.Id);
 
-            Assert.AreEqual(OperationResultStatusType.FullSuccess, response.Status);
-            Assert.IsTrue(response.Body);
-            _mocker
-                .Verify<IAccessValidator, bool>(x => x.IsAdmin(null), Times.Once);
-            _mocker
-                .Verify<IUnsentEmailRepository, DbUnsentEmail>(x => x.Get(email.Id), Times.Once);
-        }
+        //    Assert.AreEqual(OperationResultStatusType.FullSuccess, response.Status);
+        //    Assert.IsTrue(response.Body);
+        //    _mocker
+        //        .Verify<IAccessValidator, bool>(x => x.IsAdmin(null), Times.Once);
+        //    _mocker
+        //        .Verify<IUnsentEmailRepository, DbUnsentEmail>(x => x.Get(email.Id), Times.Once);
+        //}
     }
 }
