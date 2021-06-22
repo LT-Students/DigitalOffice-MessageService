@@ -7,7 +7,6 @@ using NUnit.Framework;
 using System;
 using LT.DigitalOffice.UnitTestKernel;
 using System.Linq;
-using LT.DigitalOffice.Kernel.Exceptions;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 
 namespace LT.DigitalOffice.MessageService.Data.UnitTests
@@ -67,23 +66,24 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         }
 
         #region AddWorkspace
+
         [Test]
-        public void ShouldAddEmailTemplateCorrectly()
+        public void ShouldAddWorkspaceCorrectly()
         {
             _dbWorkspaceToAdd.Id = Guid.NewGuid();
 
-            var result = _repository.CreateWorkspace(_dbWorkspaceToAdd);
+            _repository.Add(_dbWorkspaceToAdd);
 
-            Assert.AreEqual(_dbWorkspaceToAdd.Id, result);
             Assert.AreEqual(_dbWorkspaceToAdd, _provider.Workspaces.Find(_dbWorkspaceToAdd.Id));
         }
+
         #endregion
 
         #region GetWorkspace
         [Test]
         public void ShouldReturnExistsWorkspace()
         {
-            SerializerAssert.AreEqual(_repository.GetWorkspace(_dbWorkspaceInDb.Id), _dbWorkspaceInDb);
+            SerializerAssert.AreEqual(_repository.Get(_dbWorkspaceInDb.Id), _dbWorkspaceInDb);
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         {
             var incorrectId = Guid.NewGuid();
 
-            Assert.Throws<NotFoundException>(() => _repository.GetWorkspace(incorrectId));
+            Assert.Throws<NotFoundException>(() => _repository.Get(incorrectId));
         }
         #endregion
 

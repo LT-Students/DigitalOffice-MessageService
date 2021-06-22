@@ -124,7 +124,7 @@ namespace LT.DigitalOffice.MessageService
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<SendEmailConsumer>();
-                x.AddConsumer<EmailTemplateTagsConsumer>();
+                x.AddConsumer<CreateWorkspaceConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -138,10 +138,9 @@ namespace LT.DigitalOffice.MessageService
                     {
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
-
-                    cfg.ReceiveEndpoint(_rabbitMqConfig.GetTempalateTagsEndpoint, ep =>
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.CreateWorkspaceEndpoint, ep =>
                     {
-                        ep.ConfigureConsumer<EmailTemplateTagsConsumer>(context);
+                        ep.ConfigureConsumer<CreateWorkspaceConsumer>(context);
                     });
                 });
 

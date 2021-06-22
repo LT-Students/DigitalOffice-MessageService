@@ -12,12 +12,12 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
 {
     public class RemoveWorkspaceCommand : IRemoveWorkspaceCommand
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IWorkspaceUserRepository _userRepository;
         private readonly IWorkspaceRepository _workspaceRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public RemoveWorkspaceCommand(
-            IUserRepository userRepository,
+            IWorkspaceUserRepository userRepository,
             IHttpContextAccessor httpContextAccessor,
             IWorkspaceRepository workspaceRepository)
         {
@@ -30,7 +30,7 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
         {
             var requesterId = _httpContextAccessor.HttpContext.GetUserId();
 
-            if (requesterId != _workspaceRepository.GetWorkspace(workspaceId).OwnerId
+            if (requesterId != _workspaceRepository.Get(workspaceId).OwnerId
                 && _userRepository.GetAdmins(workspaceId).FirstOrDefault(wa => wa.UserId == requesterId) == null)
             {
                 throw new ForbiddenException("Not enough rights.");

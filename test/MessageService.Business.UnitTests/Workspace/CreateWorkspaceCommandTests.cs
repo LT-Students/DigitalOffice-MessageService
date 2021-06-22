@@ -144,11 +144,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
         [SetUp]
         public void SetUp()
         {
-            _repositoryMock = new Mock<IWorkspaceRepository>();
-            _repositoryMock
-                .Setup(x => x.CreateWorkspace(It.IsAny<DbWorkspace>()))
-                .Returns(_workspaceId);
-
             _mapperMock = new Mock<IDbWorkspaceMapper>();
             _mapperMock
                 .Setup(mapper => mapper.Map(It.IsAny<WorkspaceRequest>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
@@ -160,6 +155,8 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 .Returns(_validationResultIsValidMock.Object);
 
             _loggerMock = new Mock<ILogger<CreateWorkspaceCommand>>();
+
+            _repositoryMock = new Mock<IWorkspaceRepository>();
 
             BrokerSetUp();
             ClientRequestUp();
@@ -239,7 +236,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
 
             _validatorMock.Verify();
             _mapperMock.Verify();
-            _repositoryMock.Verify(repository => repository.CreateWorkspace(It.IsAny<DbWorkspace>()), Times.Never());
+            _repositoryMock.Verify(repository => repository.Add(It.IsAny<DbWorkspace>()), Times.Never());
         }
 
         [Test]
@@ -253,7 +250,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
             Assert.Throws<ValidationException>(() => _command.Execute(_workspace));
 
             _validatorMock.Verify();
-            _repositoryMock.Verify(repository => repository.CreateWorkspace(It.IsAny<DbWorkspace>()), Times.Never());
+            _repositoryMock.Verify(repository => repository.Add(It.IsAny<DbWorkspace>()), Times.Never());
         }
     }
 }

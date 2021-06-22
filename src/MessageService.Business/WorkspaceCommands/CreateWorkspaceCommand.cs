@@ -4,6 +4,7 @@ using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.MessageService.Business.WorkspaceCommands.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
@@ -94,12 +95,14 @@ namespace LT.DigitalOffice.MessageService.Business.WorkspaceCommands
                 imageId = AddImageContent(workspace.Image, ownerId, errors);
             }
 
-            var id = _repository.CreateWorkspace(_mapper.Map(workspace, ownerId, imageId));
+            DbWorkspace dbWorkspace = _mapper.Map(workspace, ownerId, imageId);
+
+            _repository.Add(dbWorkspace);
 
             return new OperationResultResponse<Guid>
             {
                 Status = errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess,
-                Body = id,
+                Body = dbWorkspace.Id,
                 Errors = errors
             };
         }

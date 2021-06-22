@@ -1,5 +1,4 @@
-﻿using LT.DigitalOffice.Kernel.Exceptions;
-using LT.DigitalOffice.Kernel.Exceptions.Models;
+﻿using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -17,15 +16,13 @@ namespace LT.DigitalOffice.MessageService.Data
             _provider = provider;
         }
 
-        public Guid CreateWorkspace(DbWorkspace workspace)
+        public void Add(DbWorkspace workspace)
         {
             _provider.Workspaces.Add(workspace);
             _provider.Save();
-
-            return workspace.Id;
         }
 
-        public DbWorkspace GetWorkspace(Guid workspaceId)
+        public DbWorkspace Get(Guid workspaceId)
         {
             var result = _provider.Workspaces.FirstOrDefault(w => w.Id == workspaceId);
             if (result == null)
@@ -45,6 +42,7 @@ namespace LT.DigitalOffice.MessageService.Data
             }
 
             dbWorkspace.IsActive = status;
+            dbWorkspace.DeactivatedAt = DateTime.UtcNow;
 
             _provider.Workspaces.Update(dbWorkspace);
             _provider.Save();

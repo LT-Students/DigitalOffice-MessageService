@@ -3,9 +3,12 @@ using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
+using LT.DigitalOffice.Models.Broker.Requests.Message;
 using LT.DigitalOffice.UnitTestKernel;
+using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.Workspace
 {
@@ -13,59 +16,101 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.Workspace
     {
         private IDbWorkspaceMapper _mapper;
 
-        private WorkspaceRequest _workspace;
-        private DbWorkspace _dbWorkspace;
-        private Guid _ownerId;
-        private Guid? _imageId;
-        private ImageInfo _existingImage;
-
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
             _mapper = new DbWorkspaceMapper();
+        }
 
-            _imageId = Guid.NewGuid();
-            _ownerId = Guid.NewGuid();
+        #region WorkspaceRequest Map tests
 
-            _existingImage = new ImageInfo
+        [Test]
+        public void ShouldThrowArgumentNullExceptionWhenWorkspaceRequestIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => _mapper.Map(null, Guid.NewGuid(), Guid.NewGuid()));
+        }
+
+        [Test]
+        public void ShouldMapSuccessfulyWorkspaceRequest()
+        {
+            var imageId = Guid.NewGuid();
+            var ownerId = Guid.NewGuid();
+
+            var existingImage = new ImageInfo
             {
                 Name = "name",
                 Content = "context",
                 Extension = "jpg"
             };
 
-            _workspace = new WorkspaceRequest
+            var workspace = new WorkspaceRequest
             {
                 Name = "Name",
                 Description = "Description",
-                Image = _existingImage
+                Image = existingImage
             };
 
-            _dbWorkspace = new DbWorkspace
+            var dbWorkspace = new DbWorkspace
             {
-                Name = _workspace.Name,
-                OwnerId = _ownerId,
-                Description = _workspace.Description,
-                ImageId = _imageId,
+                Name = workspace.Name,
+                OwnerId = ownerId,
+                Description = workspace.Description,
+                ImageId = imageId,
                 IsActive = true
             };
+
+
+            var result = _mapper.Map(workspace, ownerId, imageId);
+            dbWorkspace.Id = result.Id;
+            dbWorkspace.CreatedAt = result.CreatedAt;
+
+            SerializerAssert.AreEqual(dbWorkspace, result);
+        }
+
+        #endregion
+
+        #region ICreateWorkspaceRequest Map tests
+
+        [Test]
+        public void ShouldThrowArgumentNullExceptionWhenICreateWorkspaceRequestIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => _mapper.Map(null));
         }
 
         [Test]
-        public void ShouldThrowArgumentNullExceptionWhenWorkspaceRequestIsNull()
+        public void ShouldMapSuccessfulyICreateWorkspaceRequest()
         {
-            _workspace = null;
+            Guid creatorId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
+            string name = "Name";
 
-            Assert.Throws<ArgumentNullException>(() => _mapper.Map(_workspace, _ownerId, _imageId));
+            var request = new Mock<ICreateWorkspaceRequest>();
+            request
+                .Setup(x => x.Name)
+                .Returns(name);
+            request
+                .Setup(x => x.Users)
+                .Returns(new List<Guid>() { creatorId, userId });
+            request
+                .Setup(x => x.CreaterId)
+                .Returns(creatorId);
+
+            var dbWorkspace = new DbWorkspace
+            {
+                Name = name,
+                OwnerId = creatorId,
+                Description = "",
+                IsActive = true
+            };
+
+
+            var result = _mapper.Map(request.Object);
+            dbWorkspace.Id = result.Id;
+            dbWorkspace.CreatedAt = result.CreatedAt;
+
+            SerializerAssert.AreEqual(dbWorkspace, result);
         }
 
-        [Test]
-        public void ShouldReturnRightModelWhenWorkspaceRequestIsMapped()
-        {
-            var result = _mapper.Map(_workspace, _ownerId, _imageId);
-            _dbWorkspace.Id = result.Id;
-
-            SerializerAssert.AreEqual(_dbWorkspace, result);
-        }
+        #endregion
     }
 }

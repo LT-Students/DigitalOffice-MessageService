@@ -20,14 +20,14 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
         private IRemoveWorkspaceCommand _command;
 
         private Mock<IWorkspaceRepository> _workspaceRepositoryMock;
-        private Mock<IUserRepository> _userRepositoryMock;
+        private Mock<IWorkspaceUserRepository> _userRepositoryMock;
         private Mock<IHttpContextAccessor> _httpContextAccessorMock;
 
         private Guid _userId;
         private Guid _ownerId;
         private Guid _adminId;
         private DbWorkspace _existWorkspace;
-        private DbWorkspaceAdmin _dbWorkspaceAdmin;
+        private DbWorkspaceUser _dbWorkspaceAdmin;
 
         private void ClientRequestConfigure(Guid id)
         {
@@ -57,7 +57,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 Description = "description"
             };
 
-            _dbWorkspaceAdmin = new DbWorkspaceAdmin
+            _dbWorkspaceAdmin = new DbWorkspaceUser
             {
                 Id = Guid.NewGuid(),
                 UserId = _adminId,
@@ -70,16 +70,16 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
         {
             _workspaceRepositoryMock = new Mock<IWorkspaceRepository>();
             _workspaceRepositoryMock
-                .Setup(x => x.GetWorkspace(It.IsAny<Guid>()))
+                .Setup(x => x.Get(It.IsAny<Guid>()))
                 .Returns(_existWorkspace);
             _workspaceRepositoryMock
                 .Setup(x => x.SwitchActiveStatus(It.IsAny<Guid>(), It.IsAny<bool>()))
                 .Returns(true);
 
-            _userRepositoryMock = new Mock<IUserRepository>();
+            _userRepositoryMock = new Mock<IWorkspaceUserRepository>();
             _userRepositoryMock
                 .Setup(x => x.GetAdmins(_existWorkspace.Id))
-                .Returns(new List<DbWorkspaceAdmin>() { _dbWorkspaceAdmin });
+                .Returns(new List<DbWorkspaceUser>() { _dbWorkspaceAdmin });
 
             _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
 

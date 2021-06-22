@@ -29,7 +29,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
         private void CreateAdminsTable(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: DbWorkspaceAdmin.TableName,
+                name: "WorkspaceAdmins",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -57,7 +57,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(DbWorkspaceAdmin.TableName);
+            migrationBuilder.DropTable("WorkspaceAdmins");
 
             migrationBuilder.AddColumn<string>(
                 name: "Image",

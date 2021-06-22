@@ -126,6 +126,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                     senderId,
                     emailRecipient,
                     language,
+                    null,
                     _templateTags));
 
                 Assert.IsFalse(response.Message.IsSuccess);
