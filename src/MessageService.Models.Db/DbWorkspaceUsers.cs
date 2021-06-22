@@ -20,6 +20,11 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
         public DbWorkspace Workspace { get; set; }
         public ICollection<DbChannelUser> ChannelsUsers { get; set; }
+
+        public DbWorkspaceUser()
+        {
+            ChannelsUsers = new HashSet<DbChannelUser>();
+        }
     }
 
     public class DbWorkspaceUsersConfiguration : IEntityTypeConfiguration<DbWorkspaceUser>

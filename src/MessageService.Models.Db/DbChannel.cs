@@ -22,7 +22,12 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
         public ICollection<DbChannelUser> Users { get; set; }
 		public DbWorkspace Workspace { get; set; }
-	}
+
+        public DbChannel()
+        {
+            Users = new HashSet<DbChannelUser>();
+        }
+    }
 
     public class DbChannelConfiguration : IEntityTypeConfiguration<DbChannel>
     {
