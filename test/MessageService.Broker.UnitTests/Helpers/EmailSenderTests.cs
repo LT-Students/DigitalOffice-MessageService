@@ -21,43 +21,43 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests.Helpers
             _sender = _mocker.CreateInstance<EmailSender>();
         }
 
-        [Test]
-        public void ShouldResendEmailSuccessful()
-        {
-            var id = Guid.NewGuid();
+        //[Test]
+        //public void ShouldResendEmailSuccessful()
+        //{
+        //    var id = Guid.NewGuid();
 
-            _mocker
-                .Setup<IUnsentEmailRepository, DbUnsentEmail>(x => x.Get(It.IsAny<Guid>()))
-                .Returns(new DbUnsentEmail
-                {
-                    Id = Guid.NewGuid(),
-                    Email = new DbEmail
-                    {
-                        Id = id,
-                        Body = "Body",
-                        Receiver = "malkinevgeniy11@gmail.com",
-                        Subject = "Subject",
-                        Time = DateTime.UtcNow
-                    },
-                    CreatedAt = DateTime.UtcNow,
-                    LastSendAt = DateTime.UtcNow,
-                    EmailId = id,
-                    TotalSendingCount = 1
-                });
+        //    _mocker
+        //        .Setup<IUnsentEmailRepository, DbUnsentEmail>(x => x.Get(It.IsAny<Guid>()))
+        //        .Returns(new DbUnsentEmail
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Email = new DbEmail
+        //            {
+        //                Id = id,
+        //                Body = "Body",
+        //                Receiver = "malkinevgeniy11@gmail.com",
+        //                Subject = "Subject",
+        //                Time = DateTime.UtcNow
+        //            },
+        //            CreatedAt = DateTime.UtcNow,
+        //            LastSendAt = DateTime.UtcNow,
+        //            EmailId = id,
+        //            TotalSendingCount = 1
+        //        });
 
-            _mocker
-                .Setup<IUnsentEmailRepository, bool>(x => x.Remove(It.IsAny<DbUnsentEmail>()));
+        //    _mocker
+        //        .Setup<IUnsentEmailRepository, bool>(x => x.Remove(It.IsAny<DbUnsentEmail>()));
 
-            Assert.IsTrue(_sender.ResendEmail(Guid.NewGuid()));
-        }
+        //    Assert.IsTrue(_sender.ResendEmail(Guid.NewGuid()));
+        //}
 
-        [Test]
-        public void ShouldSendEmailSuccessful()
-        {
-            _mocker
-                .Setup<IUnsentEmailRepository, bool>(x => x.Remove(It.IsAny<DbUnsentEmail>()));
+        //[Test]
+        //public void ShouldSendEmailSuccessful()
+        //{
+        //    _mocker
+        //        .Setup<IUnsentEmailRepository, bool>(x => x.Remove(It.IsAny<DbUnsentEmail>()));
 
-            Assert.IsTrue(_sender.SendEmail("malkinevgeniy11@gmail.com", "test subject", "test body"));
-        }
+        //    Assert.IsTrue(_sender.SendEmail("malkinevgeniy11@gmail.com", "test subject", "test body"));
+        //}
     }
 }
