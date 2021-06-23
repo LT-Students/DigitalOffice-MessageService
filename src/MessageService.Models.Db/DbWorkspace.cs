@@ -16,7 +16,7 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime DeactivatedAt { get; set; }
+        public DateTime? DeactivatedAt { get; set; }
 
         public ICollection<DbWorkspaceUser> Users { get; set; }
         public ICollection<DbChannel> Channels { get; set; }
