@@ -1,12 +1,9 @@
 ﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
-using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail;
 using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using Microsoft.Extensions.Options;
 using Moq;
 using Moq.AutoMock;
 using NUnit.Framework;
@@ -23,16 +20,6 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
         public void SetUp()
         {
             _mocker = new();
-
-            _mocker
-                .Setup<IOptions<SmtpCredentialsOptions>, SmtpCredentialsOptions>(x => x.Value)
-                .Returns(new SmtpCredentialsOptions
-                {
-                    Email = "lt.digitaloffice@gmail.com",
-                    Host = "smtp.gmail.com",
-                    Password = "%4fgT1_3ioR",
-                    Port = 587
-                });
 
             _command = _mocker.CreateInstance<ResendEmailCommand>();
 

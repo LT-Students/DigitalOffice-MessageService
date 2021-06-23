@@ -66,20 +66,9 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         {
             _mocker = new AutoMocker();
 
-            _mocker
-                .Setup<IOptions<SmtpCredentialsOptions>, SmtpCredentialsOptions>(x => x.Value)
-                .Returns(new SmtpCredentialsOptions
-                {
-                    Email = "lt.digitaloffice@gmail.com",
-                    Host = "smtp.gmail.com",
-                    Password = "%4fgT1_3ioR",
-                    Port = 587
-                });
-
             _harness = new InMemoryTestHarness();
             _consumerTestHarness = _harness.Consumer(() =>
                 _mocker.CreateInstance<SendEmailConsumer>());
-            
         }
 
         [Test]

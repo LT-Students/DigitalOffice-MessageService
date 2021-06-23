@@ -37,9 +37,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
         }
 
         public EmailResender(
-            SmtpCredentialsOptions credentialsOptions,
             string sqlConnectionString)
-            : base(credentialsOptions)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MessageServiceDbContext>();
             optionsBuilder.UseSqlServer(sqlConnectionString);

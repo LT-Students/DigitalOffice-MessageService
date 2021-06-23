@@ -63,39 +63,12 @@ namespace LT.DigitalOffice.MessageService
                     });
             });
 
-            var smtpCredentialsOptions = Configuration.GetSection(SmtpCredentialsOptions.SectionName);
-
-            var smtpHost = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Host));
-            if (!string.IsNullOrEmpty(smtpHost))
-            {
-                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Host)] = smtpHost;
-            }
-
-            var smtpPort = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Port));
-            if (!string.IsNullOrEmpty(smtpPort))
-            {
-                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Port)] = smtpPort;
-            }
-
-            var smtpEmail = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Email));
-            if (!string.IsNullOrEmpty(smtpEmail))
-            {
-                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Email)] = smtpEmail;
-            }
-
-            var smtpPassword = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Password));
-            if (!string.IsNullOrEmpty(smtpPassword))
-            {
-                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Password)] = smtpPassword;
-            }
-
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
             if (string.IsNullOrEmpty(connStr))
             {
                 connStr = Configuration.GetConnectionString("SQLConnectionString");
             }
 
-            services.Configure<SmtpCredentialsOptions>(smtpCredentialsOptions);
             services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
             services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
             services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
@@ -126,9 +99,7 @@ namespace LT.DigitalOffice.MessageService
                 .GetSection(EmailEngineConfig.SectionName)
                 .Get<EmailEngineConfig>().ResendIntervalInMinutes;
 
-            var resender = new EmailResender(
-                    smtpCredentialsOptions.Get<SmtpCredentialsOptions>(),
-                    connStr);
+            var resender = new EmailResender(connStr);
 
             Task.Run(() => resender.StartResend(resendIntervalMinutes));
 

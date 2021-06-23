@@ -1,7 +1,6 @@
 ﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Broker.Helpers
@@ -13,10 +12,9 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 
         public EmailSender(
             ILogger<EmailSender> logger,
-            IOptions<SmtpCredentialsOptions> options,
             IEmailRepository emailRepository,
             IUnsentEmailRepository unsentEmailRepository)
-            : base(options.Value, logger)
+            : base(logger)
         {
             _emailRepository = emailRepository;
             _unsentEmailRepository = unsentEmailRepository;
