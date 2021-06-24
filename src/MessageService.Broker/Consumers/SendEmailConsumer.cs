@@ -85,7 +85,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
             }
             else
             {
-                dbEmailTemplate = _templateRepository.GetEmailTemplateByType((int)request.Type.Value);
+                dbEmailTemplate = _templateRepository.GetEmailTemplateByType((int)request.Type);
             }
 
             var dbEmailTemplateText = dbEmailTemplate?.EmailTemplateTexts.FirstOrDefault(ett => ett.Language == request.Language);

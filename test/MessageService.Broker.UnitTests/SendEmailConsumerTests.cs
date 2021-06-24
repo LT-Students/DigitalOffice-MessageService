@@ -3,6 +3,7 @@ using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.Models.Broker.Enums;
 using LT.DigitalOffice.Models.Broker.Requests.Message;
 using LT.DigitalOffice.UnitTestKernel;
 using MassTransit;
@@ -97,7 +98,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         }
 
         [Test]
-        public async Task ShouldThrowExceptionWhenEmailTemplateWasNotFound()
+        public async Task ShouldThrowExceptionWhenEmailTemplateByIdWasNotFound()
         {
             _templateRepositoryMock
                 .Setup(x => x.GetEmailTemplateById(_dbEmailTemplate.Id))
@@ -135,6 +136,52 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                 Assert.True(_consumerTestHarness.Consumed.Select<ISendEmailRequest>().Any());
                 Assert.True(_harness.Sent.Select<IOperationResult<bool>>().Any());
                 _templateRepositoryMock.Verify(x => x.GetEmailTemplateById(_dbEmailTemplate.Id), Times.Once);
+            }
+            finally
+            {
+                await _harness.Stop();
+            }
+        }
+
+        [Test]
+        public async Task ShouldThrowExceptionWhenEmailTemplateByTypeWasNotFound()
+        {
+            _templateRepositoryMock
+                .Setup(x => x.GetEmailTemplateByType(_dbEmailTemplate.Type))
+                .Returns(new DbEmailTemplate());
+
+            var language = "en";
+            var senderId = Guid.NewGuid();
+            var emailRecipient = "malkinevgeniy11@gmail.com";
+
+            var expected = new
+            {
+                IsSuccess = false,
+                Errors = new List<string> { "Email template text was not found." },
+                Body = false
+            };
+
+            await _harness.Start();
+
+            try
+            {
+                _requestClient = await _harness.ConnectRequestClient<ISendEmailRequest>();
+
+                var response = await _requestClient.GetResponse<IOperationResult<bool>>(
+                ISendEmailRequest.CreateObj(
+                    null,
+                    senderId,
+                    emailRecipient,
+                    language,
+                    (EmailTemplateType)_dbEmailTemplate.Type,
+                    _templateTags));
+
+                Assert.IsFalse(response.Message.IsSuccess);
+                Assert.AreEqual(expected.Errors, response.Message.Errors);
+                SerializerAssert.AreEqual(expected, response.Message);
+                Assert.True(_consumerTestHarness.Consumed.Select<ISendEmailRequest>().Any());
+                Assert.True(_harness.Sent.Select<IOperationResult<bool>>().Any());
+                _templateRepositoryMock.Verify(x => x.GetEmailTemplateByType(_dbEmailTemplate.Type), Times.Once);
             }
             finally
             {
