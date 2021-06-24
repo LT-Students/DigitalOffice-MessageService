@@ -71,7 +71,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         }
 
         [Test]
-        public async Task ShouldThrowExceptionWhenEmailTemplateWasNotFound()
+        public async Task ShouldThrowExceptionWhenEmailTemplateByIdWasNotFound()
         {
             _mocker
                 .Setup<IEmailTemplateRepository, DbEmailTemplate>(x => x.GetEmailTemplateById(_dbEmailTemplate.Id))
@@ -100,6 +100,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                     senderId,
                     emailRecipient,
                     language,
+                    null,
                     _templateTags));
 
                 Assert.IsFalse(response.Message.IsSuccess);
