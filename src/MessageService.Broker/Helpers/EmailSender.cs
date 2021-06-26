@@ -57,10 +57,12 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
             if (Send(unsentEmail.Email))
             {
                 _unsentEmailRepository.Remove(unsentEmail);
+
                 return true;
             }
 
             _unsentEmailRepository.IncrementTotalCount(unsentEmail);
+
             return false;
         }
     }
