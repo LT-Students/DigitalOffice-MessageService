@@ -3,7 +3,7 @@ using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces
+namespace LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces
 {
     [AutoInject]
     public interface IDbWorkspaceMapper

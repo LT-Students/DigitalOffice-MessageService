@@ -4,6 +4,7 @@ using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
+using LT.DigitalOffice.MessageService.Broker.Helpers;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
 using MassTransit;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService
 {
@@ -61,39 +63,12 @@ namespace LT.DigitalOffice.MessageService
                     });
             });
 
-            var smtpCredentialsOptions = Configuration.GetSection(SmtpCredentialsOptions.SmtpCredentials);
-
-            var smtpHost = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Host));
-            if (!string.IsNullOrEmpty(smtpHost))
-            {
-                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Host)] = smtpHost;
-            }
-
-            var smtpPort = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Port));
-            if (!string.IsNullOrEmpty(smtpPort))
-            {
-                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Port)] = smtpPort;
-            }
-
-            var smtpEmail = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Email));
-            if (!string.IsNullOrEmpty(smtpEmail))
-            {
-                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Email)] = smtpEmail;
-            }
-
-            var smtpPassword = Environment.GetEnvironmentVariable(nameof(SmtpCredentialsOptions.Password));
-            if (!string.IsNullOrEmpty(smtpPassword))
-            {
-                smtpCredentialsOptions[nameof(SmtpCredentialsOptions.Password)] = smtpPassword;
-            }
-
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
             if (string.IsNullOrEmpty(connStr))
             {
                 connStr = Configuration.GetConnectionString("SQLConnectionString");
             }
 
-            services.Configure<SmtpCredentialsOptions>(smtpCredentialsOptions);
             services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
             services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
             services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
@@ -115,6 +90,20 @@ namespace LT.DigitalOffice.MessageService
                 .AddNewtonsoftJson();
 
             services.AddBusinessObjects();
+
+            services.AddTransient<EmailSender>();
+
+            #region Start EmailResender
+
+            int resendIntervalMinutes = Configuration
+                .GetSection(EmailEngineConfig.SectionName)
+                .Get<EmailEngineConfig>().ResendIntervalInMinutes;
+
+            var resender = new EmailResender(connStr);
+
+            Task.Run(() => resender.StartResend(resendIntervalMinutes));
+
+            #endregion
 
             ConfigureMassTransit(services);
         }
