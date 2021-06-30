@@ -3,6 +3,7 @@
   <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
   <ItemGroup>
+    <ProjectReference Include="..\MessageService.Data.Provider.MsSql.Ef\MessageService.Data.Provider.MsSql.Ef.csproj" />
     <ProjectReference Include="..\MessageService.Data\MessageService.Data.csproj" />
     <ProjectReference Include="..\MessageService.Mappers\MessageService.Mappers.csproj" />
     <ProjectReference Include="..\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />

@@ -1,7 +1,8 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Db;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Enums;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Emails;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using LT.DigitalOffice.Models.Broker.Enums;
 using LT.DigitalOffice.UnitTestKernel;

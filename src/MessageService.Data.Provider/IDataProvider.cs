@@ -16,5 +16,6 @@ namespace LT.DigitalOffice.MessageService.Data.Provider
         DbSet<DbChannel> Channels { get; set; }
         DbSet<DbChannelUser> ChannelUsers { get; set; }
         DbSet<DbEmailTemplate> EmailTemplates { get; set; }
+        DbSet<DbUnsentEmail> UnsentEmails { get; set; }
     }
 }

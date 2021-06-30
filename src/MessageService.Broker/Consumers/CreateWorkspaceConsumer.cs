@@ -1,7 +1,7 @@
 ﻿using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.Models.Broker.Requests.Message;
 using MassTransit;

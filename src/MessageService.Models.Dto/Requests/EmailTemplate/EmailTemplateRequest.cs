@@ -1,4 +1,4 @@
-﻿using LT.DigitalOffice.MessageService.Models.Dto.Models;
+﻿using LT.DigitalOffice.MessageService.Models.Dto.Models.Emails;
 using LT.DigitalOffice.Models.Broker.Enums;
 using System;
 using System.Collections.Generic;

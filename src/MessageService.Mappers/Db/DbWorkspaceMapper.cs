@@ -1,11 +1,11 @@
-﻿using LT.DigitalOffice.MessageService.Mappers.WorkspaceMappers.Interfaces;
+﻿using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.Models.Broker.Requests.Message;
 using System;
 using System.Linq;
 
-namespace LT.DigitalOffice.MessageService.Mappers.Db
+namespace LT.DigitalOffice.MessageService.Mappers.Db.Workspace
 {
     public class DbWorkspaceMapper : IDbWorkspaceMapper
     {
