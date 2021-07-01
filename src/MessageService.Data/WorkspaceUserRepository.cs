@@ -12,8 +12,7 @@ namespace LT.DigitalOffice.MessageService.Data
     {
         private readonly IDataProvider _provider;
 
-        public WorkspaceUserRepository(
-            IDataProvider provider)
+        public WorkspaceUserRepository(IDataProvider provider)
         {
             _provider = provider;
         }

@@ -9,6 +9,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     public interface IWorkspaceUserRepository
     {
         void AddRange(IEnumerable<DbWorkspaceUser> workspaceUsers);
+
         List<DbWorkspaceUser> GetAdmins(Guid workspaceId);
     }
 }
