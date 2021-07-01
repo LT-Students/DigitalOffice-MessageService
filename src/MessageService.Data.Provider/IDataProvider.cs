@@ -15,5 +15,6 @@ namespace LT.DigitalOffice.MessageService.Data.Provider
         DbSet<DbWorkspaceAdmin> WorkspaceAdmins { get; set; }
         DbSet<DbEmailTemplate> EmailTemplates { get; set; }
         DbSet<DbUnsentEmail> UnsentEmails { get; set; }
+        DbSet<DbSMTP> SMTP { get; set; }
     }
 }

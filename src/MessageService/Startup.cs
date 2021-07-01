@@ -5,6 +5,7 @@ using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Broker.Helpers;
+using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
 using MassTransit;
@@ -99,7 +100,11 @@ namespace LT.DigitalOffice.MessageService
                 .GetSection(EmailEngineConfig.SectionName)
                 .Get<EmailEngineConfig>().ResendIntervalInMinutes;
 
-            var resender = new EmailResender(connStr);
+            var optionsBuilder = new DbContextOptionsBuilder<MessageServiceDbContext>();
+            optionsBuilder.UseSqlServer(connStr);
+            IDataProvider dataProvider = new MessageServiceDbContext(optionsBuilder.Options);
+
+            var resender = new EmailResender(dataProvider);
 
             Task.Run(() => resender.StartResend(resendIntervalMinutes));
 
@@ -113,6 +118,7 @@ namespace LT.DigitalOffice.MessageService
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<SendEmailConsumer>();
+                x.AddConsumer<CreateSMTPConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -125,6 +131,11 @@ namespace LT.DigitalOffice.MessageService
                     cfg.ReceiveEndpoint(_rabbitMqConfig.SendEmailEndpoint, ep =>
                     {
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.CreateSMTPEndpoint, ep =>
+                    {
+                        ep.ConfigureConsumer<CreateSMTPConsumer>(context);
                     });
                 });
 
