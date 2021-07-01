@@ -34,8 +34,12 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public DbSMTP Get()
         {
-            return _provider.SMTP.First()
-                ?? throw new NotFoundException("SMTP data not found");
+            if (!_provider.SMTP.Any())
+            {
+                throw new NotFoundException("SMTP data not found");
+            }
+
+            return _provider.SMTP.First();
         }
     }
 }
