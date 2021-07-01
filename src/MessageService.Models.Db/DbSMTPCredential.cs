@@ -4,9 +4,9 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Models.Db
 {
-    public class DbSMTP
+    public class DbSMTPCredential
     {
-        public const string TableName = "SMTP";
+        public const string TableName = "SMTPCredential";
 
         public Guid Id { get; set; }
         public string Host { get; set; }
@@ -16,12 +16,12 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         public string Password { get; set; }
     }
 
-    public class DbSMTPConfiguration : IEntityTypeConfiguration<DbSMTP>
+    public class DbSMTPConfiguration : IEntityTypeConfiguration<DbSMTPCredential>
     {
-        public void Configure(EntityTypeBuilder<DbSMTP> builder)
+        public void Configure(EntityTypeBuilder<DbSMTPCredential> builder)
         {
             builder
-                .ToTable(DbSMTP.TableName);
+                .ToTable(DbSMTPCredential.TableName);
 
             builder
                 .HasKey(x => x.Id);

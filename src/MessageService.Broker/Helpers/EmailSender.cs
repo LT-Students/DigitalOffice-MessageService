@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 
         public EmailSender(
             ILogger<EmailSender> logger,
-            ISMTPRepository smtpRepository,
+            ISMTPCredentialRepository smtpRepository,
             IEmailRepository emailRepository,
             IUnsentEmailRepository unsentEmailRepository)
             : base(smtpRepository, logger)

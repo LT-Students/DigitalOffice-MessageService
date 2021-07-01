@@ -7,16 +7,16 @@ using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
-    public class SMTPRepository : ISMTPRepository
+    public class SMTPCredentialRepository : ISMTPCredentialRepository
     {
         private readonly IDataProvider _provider;
 
-        public SMTPRepository(IDataProvider dataProvider)
+        public SMTPCredentialRepository(IDataProvider dataProvider)
         {
             _provider = dataProvider;
         }
 
-        public void Create(DbSMTP dbSMTP)
+        public void Create(DbSMTPCredential dbSMTP)
         {
             if (dbSMTP == null)
             {
@@ -32,7 +32,7 @@ namespace LT.DigitalOffice.MessageService.Data
             _provider.Save();
         }
 
-        public DbSMTP Get()
+        public DbSMTPCredential Get()
         {
             if (!_provider.SMTP.Any())
             {

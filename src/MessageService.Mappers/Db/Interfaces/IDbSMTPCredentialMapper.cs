@@ -5,8 +5,8 @@ using LT.DigitalOffice.Models.Broker.Requests.Message;
 namespace LT.DigitalOffice.MessageService.Mappers.Db.Interfaces
 {
     [AutoInject]
-    public interface IDbSMTPMapper
+    public interface IDbSMTPCredentialMapper
     {
-        DbSMTP Map(ICreateSMTPRequest request);
+        DbSMTPCredential Map(ICreateSMTPRequest request);
     }
 }

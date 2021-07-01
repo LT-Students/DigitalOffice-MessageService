@@ -9,8 +9,8 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 {
     public class CreateSMTPConsumer : IConsumer<ICreateSMTPRequest>
     {
-        private readonly ISMTPRepository _repository;
-        private readonly IDbSMTPMapper _mapper;
+        private readonly ISMTPCredentialRepository _repository;
+        private readonly IDbSMTPCredentialMapper _mapper;
 
         private object CreateSMTP(ICreateSMTPRequest request)
         {
@@ -20,8 +20,8 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
         }
 
         public CreateSMTPConsumer(
-            ISMTPRepository repository,
-            IDbSMTPMapper mapper)
+            ISMTPCredentialRepository repository,
+            IDbSMTPCredentialMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

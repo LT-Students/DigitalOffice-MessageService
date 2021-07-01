@@ -26,7 +26,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         private IRequestClient<ICreateSMTPRequest> _requestClient;
 
         private object _request;
-        private DbSMTP _smtp;
+        private DbSMTPCredential _smtp;
 
         [SetUp]
         public void SetUp()
@@ -50,7 +50,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                 email,
                 password);
 
-            _smtp = new DbSMTP
+            _smtp = new DbSMTPCredential
             {
                 Id = Guid.NewGuid(),
                 Host = host,
@@ -61,7 +61,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             };
 
             _mocker
-                .Setup<IDbSMTPMapper, DbSMTP>(x => x.Map(It.IsAny<ICreateSMTPRequest>()))
+                .Setup<IDbSMTPCredentialMapper, DbSMTPCredential>(x => x.Map(It.IsAny<ICreateSMTPRequest>()))
                 .Returns(_smtp);
         }
 
@@ -69,7 +69,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         public async Task ShouldThrowExceptionWhenRepositoryThrow()
         {
             _mocker
-                .Setup<ISMTPRepository>(x => x.Create(It.IsAny<DbSMTP>()))
+                .Setup<ISMTPCredentialRepository>(x => x.Create(It.IsAny<DbSMTPCredential>()))
                 .Throws(new Exception());
 
             await _harness.Start();
@@ -87,7 +87,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                 Assert.True(_consumerTestHarness.Consumed.Select<ICreateSMTPRequest>().Any());
                 Assert.True(_harness.Sent.Select<IOperationResult<bool>>().Any());
                 _mocker
-                    .Verify<ISMTPRepository>(x => x.Create(_smtp), Times.Once);
+                    .Verify<ISMTPCredentialRepository>(x => x.Create(_smtp), Times.Once);
             }
             finally
             {
@@ -113,7 +113,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                 Assert.True(_consumerTestHarness.Consumed.Select<ICreateSMTPRequest>().Any());
                 Assert.True(_harness.Sent.Select<IOperationResult<bool>>().Any());
                 _mocker
-                    .Verify<ISMTPRepository>(x => x.Create(_smtp), Times.Once);
+                    .Verify<ISMTPCredentialRepository>(x => x.Create(_smtp), Times.Once);
             }
             finally
             {
