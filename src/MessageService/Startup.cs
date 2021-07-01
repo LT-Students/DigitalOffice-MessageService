@@ -118,7 +118,7 @@ namespace LT.DigitalOffice.MessageService
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<SendEmailConsumer>();
-                x.AddConsumer<CreateSMTPConsumer>();
+                x.AddConsumer<CreateSMTPCredentialsConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -135,7 +135,7 @@ namespace LT.DigitalOffice.MessageService
 
                     cfg.ReceiveEndpoint(_rabbitMqConfig.CreateSMTPEndpoint, ep =>
                     {
-                        ep.ConfigureConsumer<CreateSMTPConsumer>(context);
+                        ep.ConfigureConsumer<CreateSMTPCredentialsConsumer>(context);
                     });
                 });
 

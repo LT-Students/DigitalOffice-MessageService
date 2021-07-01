@@ -9,12 +9,12 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 {
     public abstract class BaseEmailSender
     {
-        private readonly ISMTPCredentialRepository _repository;
+        private readonly ISMTPCredentialsRepository _repository;
         protected readonly ILogger _logger;
 
         protected bool Send(DbEmail email)
         {
-            DbSMTPCredential smtpData = _repository.Get();
+            DbSMTPCredentials smtpData = _repository.Get();
 
             var message = new MailMessage(
                 smtpData.Email,
@@ -53,7 +53,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
         }
 
         public BaseEmailSender(
-            ISMTPCredentialRepository repository,
+            ISMTPCredentialsRepository repository,
             ILogger logger = null)
         {
             _repository = repository;

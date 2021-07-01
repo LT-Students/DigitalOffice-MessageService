@@ -5,9 +5,9 @@ using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
-    public class DbSMTPCredentialMapper : IDbSMTPCredentialMapper
+    public class DbSMTPCredentialsMapper : IDbSMTPCredentialsMapper
     {
-        public DbSMTPCredential Map(ICreateSMTPRequest request)
+        public DbSMTPCredentials Map(ICreateSMTPRequest request)
         {
             if (request == null)
             {

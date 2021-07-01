@@ -4,10 +4,10 @@ using LT.DigitalOffice.MessageService.Models.Db;
 namespace LT.DigitalOffice.MessageService.Data.Interfaces
 {
     [AutoInject]
-    public interface ISMTPCredentialRepository
+    public interface ISMTPCredentialsRepository
     {
-        void Create(DbSMTPCredential dbSMTP);
+        void Create(DbSMTPCredentials dbSMTP);
 
-        DbSMTPCredential Get();
+        DbSMTPCredentials Get();
     }
 }

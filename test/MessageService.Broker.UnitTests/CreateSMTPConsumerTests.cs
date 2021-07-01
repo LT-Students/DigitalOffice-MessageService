@@ -21,12 +21,12 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
     public class CreateSMTPConsumerTests
     {
         private InMemoryTestHarness _harness;
-        private ConsumerTestHarness<CreateSMTPConsumer> _consumerTestHarness;
+        private ConsumerTestHarness<CreateSMTPCredentialsConsumer> _consumerTestHarness;
         private AutoMocker _mocker;
         private IRequestClient<ICreateSMTPRequest> _requestClient;
 
         private object _request;
-        private DbSMTPCredential _smtp;
+        private DbSMTPCredentials _smtp;
 
         [SetUp]
         public void SetUp()
@@ -35,7 +35,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
 
             _harness = new InMemoryTestHarness();
             _consumerTestHarness = _harness.Consumer(() =>
-                _mocker.CreateInstance<CreateSMTPConsumer>());
+                _mocker.CreateInstance<CreateSMTPCredentialsConsumer>());
 
             string host = "host";
             int port = 123;
@@ -50,7 +50,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                 email,
                 password);
 
-            _smtp = new DbSMTPCredential
+            _smtp = new DbSMTPCredentials
             {
                 Id = Guid.NewGuid(),
                 Host = host,
@@ -61,7 +61,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             };
 
             _mocker
-                .Setup<IDbSMTPCredentialMapper, DbSMTPCredential>(x => x.Map(It.IsAny<ICreateSMTPRequest>()))
+                .Setup<IDbSMTPCredentialsMapper, DbSMTPCredentials>(x => x.Map(It.IsAny<ICreateSMTPRequest>()))
                 .Returns(_smtp);
         }
 
@@ -69,7 +69,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         public async Task ShouldThrowExceptionWhenRepositoryThrow()
         {
             _mocker
-                .Setup<ISMTPCredentialRepository>(x => x.Create(It.IsAny<DbSMTPCredential>()))
+                .Setup<ISMTPCredentialsRepository>(x => x.Create(It.IsAny<DbSMTPCredentials>()))
                 .Throws(new Exception());
 
             await _harness.Start();
@@ -87,7 +87,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                 Assert.True(_consumerTestHarness.Consumed.Select<ICreateSMTPRequest>().Any());
                 Assert.True(_harness.Sent.Select<IOperationResult<bool>>().Any());
                 _mocker
-                    .Verify<ISMTPCredentialRepository>(x => x.Create(_smtp), Times.Once);
+                    .Verify<ISMTPCredentialsRepository>(x => x.Create(_smtp), Times.Once);
             }
             finally
             {
@@ -113,7 +113,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                 Assert.True(_consumerTestHarness.Consumed.Select<ICreateSMTPRequest>().Any());
                 Assert.True(_harness.Sent.Select<IOperationResult<bool>>().Any());
                 _mocker
-                    .Verify<ISMTPCredentialRepository>(x => x.Create(_smtp), Times.Once);
+                    .Verify<ISMTPCredentialsRepository>(x => x.Create(_smtp), Times.Once);
             }
             finally
             {

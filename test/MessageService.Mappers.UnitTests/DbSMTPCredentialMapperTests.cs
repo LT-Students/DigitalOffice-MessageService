@@ -11,12 +11,12 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 {
     public class DbSMTPCredentialMapperTests
     {
-        private IDbSMTPCredentialMapper _mapper;
+        private IDbSMTPCredentialsMapper _mapper;
 
         [SetUp]
         public void SetUp()
         {
-            _mapper = new DbSMTPCredentialMapper();
+            _mapper = new DbSMTPCredentialsMapper();
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 
             var result = _mapper.Map(request.Object);
 
-            var expected = new DbSMTPCredential
+            var expected = new DbSMTPCredentials
             {
                 Id = result.Id,
                 Email = email,

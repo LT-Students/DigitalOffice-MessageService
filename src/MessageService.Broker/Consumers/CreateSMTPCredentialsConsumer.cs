@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Broker.Consumers
 {
-    public class CreateSMTPConsumer : IConsumer<ICreateSMTPRequest>
+    public class CreateSMTPCredentialsConsumer : IConsumer<ICreateSMTPRequest>
     {
-        private readonly ISMTPCredentialRepository _repository;
-        private readonly IDbSMTPCredentialMapper _mapper;
+        private readonly ISMTPCredentialsRepository _repository;
+        private readonly IDbSMTPCredentialsMapper _mapper;
 
         private object CreateSMTP(ICreateSMTPRequest request)
         {
@@ -19,9 +19,9 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
             return true;
         }
 
-        public CreateSMTPConsumer(
-            ISMTPCredentialRepository repository,
-            IDbSMTPCredentialMapper mapper)
+        public CreateSMTPCredentialsConsumer(
+            ISMTPCredentialsRepository repository,
+            IDbSMTPCredentialsMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
         {
             migrationBuilder
                 .CreateTable(
-                    name: DbSMTPCredential.TableName,
+                    name: DbSMTPCredentials.TableName,
                     columns: table => new
                     {
                         Id = table.Column<Guid>(nullable: false),
@@ -25,14 +25,14 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
                     },
                     constraints: table =>
                     {
-                        table.PrimaryKey("PK_SMTPCredential", x => x.Id);
+                        table.PrimaryKey("PK_SMTPCredentials", x => x.Id);
                     }
                 );
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(DbSMTPCredential.TableName);
+            migrationBuilder.DropTable(DbSMTPCredentials.TableName);
         }
     }
 }

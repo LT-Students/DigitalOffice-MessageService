@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
     public class SMTPCredentialRepositoryTests
     {
         private IDataProvider _provider;
-        private ISMTPCredentialRepository _repository;
+        private ISMTPCredentialsRepository _repository;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -27,7 +27,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 .Options;
             _provider = new MessageServiceDbContext(dbOptions);
 
-            _repository = new SMTPCredentialRepository(_provider);
+            _repository = new SMTPCredentialsRepository(_provider);
         }
 
         [TearDown]
@@ -44,7 +44,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldCreateSMTPSuccessfully()
         {
-            DbSMTPCredential smtp = new()
+            DbSMTPCredentials smtp = new()
             {
                 Id = Guid.NewGuid()
             };
@@ -57,12 +57,12 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldThrowBadRequestExceptionWhenSMTPExists()
         {
-            DbSMTPCredential smtp1 = new()
+            DbSMTPCredentials smtp1 = new()
             {
                 Id = Guid.NewGuid()
             };
 
-            DbSMTPCredential smtp2 = new()
+            DbSMTPCredentials smtp2 = new()
             {
                 Id = Guid.NewGuid()
             };
@@ -79,7 +79,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldGetSMTPSuccessfully()
         {
-            DbSMTPCredential smtp = new()
+            DbSMTPCredentials smtp = new()
             {
                 Id = Guid.NewGuid(),
                 Email = "email",

@@ -35,7 +35,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
         }
 
         public EmailResender(IDataProvider dataProvider)
-            : base(new SMTPCredentialRepository(dataProvider))
+            : base(new SMTPCredentialsRepository(dataProvider))
         {
             _unsentEmailRepository = new UnsentEmailRepository(dataProvider);
         }
