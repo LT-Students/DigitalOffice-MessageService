@@ -19,7 +19,9 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef
         public DbSet<DbEmail> Emails { get; set; }
         public DbSet<DbWorkspace> Workspaces { get; set; }
         public DbSet<DbEmailTemplate> EmailTemplates { get; set; }
-        public DbSet<DbWorkspaceAdmin> WorkspaceAdmins { get; set; }
+        public DbSet<DbWorkspaceUser> WorkspaceUsers { get; set; }
+        public DbSet<DbChannelUser> ChannelUsers { get; set; }
+        public DbSet<DbChannel> Channels { get; set; }
         public DbSet<DbUnsentEmail> UnsentEmails { get; set; }
 
         void IBaseDataProvider.Save()

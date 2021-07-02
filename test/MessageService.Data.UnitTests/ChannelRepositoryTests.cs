@@ -9,26 +9,14 @@ using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Data.UnitTests
 {
-    class UserRepositoryTests
+    public class ChannelRepositoryTests
     {
+        private IChannelRepository _repository;
         private IDataProvider _provider;
-        private IUserRepository _repository;
-
-        private DbWorkspaceAdmin _dbWorkspaceAdmin;
-
-        private Guid _workspaceId = Guid.NewGuid();
-        private Guid _userId = Guid.NewGuid();
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _dbWorkspaceAdmin = new DbWorkspaceAdmin
-            {
-                Id = Guid.NewGuid(),
-                UserId = _userId,
-                WorkspaceId = _workspaceId
-            };
-
             CreateMemoryDb();
         }
 
@@ -39,14 +27,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                    .Options;
             _provider = new MessageServiceDbContext(dbOptions);
 
-            _repository = new UserRepository(_provider);
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            _provider.WorkspaceAdmins.Add(_dbWorkspaceAdmin);
-            _provider.Save();
+            _repository = new ChannelRepository(_provider);
         }
 
         [TearDown]
@@ -58,11 +39,24 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             }
         }
 
+        #region Add Tests
+
         [Test]
-        public void ShouldCorrectlyReturnAdminListOfWorkspace()
+        public void ShouldAddSuccesfuly()
         {
-            var coll = _repository.GetAdmins(_workspaceId);
-            Assert.IsNotNull(_repository.GetAdmins(_workspaceId).FirstOrDefault(a => a.UserId == _userId));
+            DbChannel channel = new DbChannel();
+
+            _repository.Add(channel);
+
+            Assert.IsTrue(_provider.Channels.Contains(channel));
         }
+
+        [Test]
+        public void ShouldThrowArgumentNullExceptionWhenAddedChannelIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => _repository.Add(null));
+        }
+
+        #endregion
     }
 }

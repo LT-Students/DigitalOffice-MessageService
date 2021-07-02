@@ -15,8 +15,17 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? DeactivatedAt { get; set; }
 
-        public ICollection<DbWorkspaceAdmin> Admins { get; set; }
+        public ICollection<DbWorkspaceUser> Users { get; set; }
+        public ICollection<DbChannel> Channels { get; set; }
+
+        public DbWorkspace()
+        {
+            Users = new HashSet<DbWorkspaceUser>();
+            Channels = new HashSet<DbChannel>();
+        }
     }
 
     public class DbWorkspaceConfiguration : IEntityTypeConfiguration<DbWorkspace>
@@ -34,8 +43,12 @@ namespace LT.DigitalOffice.MessageService.Models.Db
                 .IsRequired();
 
             builder
-                .HasMany(w => w.Admins)
+                .HasMany(w => w.Users)
                 .WithOne(wa => wa.Workspace);
+
+            builder
+                .HasMany(w => w.Channels)
+                .WithOne(ch => ch.Workspace);
         }
     }
 }
