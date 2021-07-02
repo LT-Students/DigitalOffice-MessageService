@@ -6,6 +6,7 @@ using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
@@ -94,12 +95,14 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
                 imageId = AddImageContent(workspace.Image, ownerId, errors);
             }
 
-            var id = _repository.CreateWorkspace(_mapper.Map(workspace, ownerId, imageId));
+            DbWorkspace dbWorkspace = _mapper.Map(workspace, ownerId, imageId);
+
+            _repository.Add(dbWorkspace);
 
             return new OperationResultResponse<Guid>
             {
                 Status = errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess,
-                Body = id,
+                Body = dbWorkspace.Id,
                 Errors = errors
             };
         }

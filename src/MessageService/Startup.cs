@@ -119,6 +119,7 @@ namespace LT.DigitalOffice.MessageService
             {
                 x.AddConsumer<SendEmailConsumer>();
                 x.AddConsumer<CreateSMTPCredentialsConsumer>();
+                x.AddConsumer<CreateWorkspaceConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -136,6 +137,11 @@ namespace LT.DigitalOffice.MessageService
                     cfg.ReceiveEndpoint(_rabbitMqConfig.CreateSMTPEndpoint, ep =>
                     {
                         ep.ConfigureConsumer<CreateSMTPCredentialsConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.CreateWorkspaceEndpoint, ep =>
+                    {
+                        ep.ConfigureConsumer<CreateWorkspaceConsumer>(context);
                     });
                 });
 

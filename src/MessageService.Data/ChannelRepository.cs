@@ -1,25 +1,22 @@
 ﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
-    public class UserRepository : IUserRepository
+    public class ChannelRepository : IChannelRepository
     {
         private readonly IDataProvider _provider;
 
-        public UserRepository(
-            IDataProvider provider)
+        public ChannelRepository(IDataProvider provider)
         {
             _provider = provider;
         }
 
-        public List<DbWorkspaceAdmin> GetAdmins(Guid workspaceId)
+        public void Add(DbChannel channel)
         {
-            return _provider.WorkspaceAdmins.Where(wa => wa.WorkspaceId == workspaceId).ToList();
+            _provider.Channels.Add(channel);
+            _provider.Save();
         }
     }
 }

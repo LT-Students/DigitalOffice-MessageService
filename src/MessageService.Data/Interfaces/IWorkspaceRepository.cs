@@ -11,14 +11,9 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     [AutoInject]
     public interface IWorkspaceRepository
     {
-        /// <summary>
-        /// Adds new workspace to the database.
-        /// </summary>
-        /// <param name="workspace">Workspace to add.</param>
-        /// <returns>Guid of added workspace.</returns>
-        Guid CreateWorkspace(DbWorkspace workspace);
+        void Add(DbWorkspace workspace);
 
-        DbWorkspace GetWorkspace(Guid workspaceId);
+        DbWorkspace Get(Guid workspaceId);
 
         bool SwitchActiveStatus(Guid workspaceId, bool status);
     }

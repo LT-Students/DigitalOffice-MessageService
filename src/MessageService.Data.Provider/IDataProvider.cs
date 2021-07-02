@@ -12,7 +12,9 @@ namespace LT.DigitalOffice.MessageService.Data.Provider
         DbSet<DbMessage> Messages { get; set; }
         DbSet<DbEmail> Emails { get; set; }
         DbSet<DbWorkspace> Workspaces { get; set; }
-        DbSet<DbWorkspaceAdmin> WorkspaceAdmins { get; set; }
+        DbSet<DbWorkspaceUser> WorkspaceUsers { get; set; }
+        DbSet<DbChannel> Channels { get; set; }
+        DbSet<DbChannelUser> ChannelUsers { get; set; }
         DbSet<DbEmailTemplate> EmailTemplates { get; set; }
         DbSet<DbUnsentEmail> UnsentEmails { get; set; }
         DbSet<DbSMTPCredentials> SMTP { get; set; }
