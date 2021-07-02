@@ -1,5 +1,4 @@
-﻿using LT.DigitalOffice.Kernel.Constants;
-using LT.DigitalOffice.Kernel.Helpers;
+﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,14 +9,15 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 {
     public abstract class BaseEmailSender
     {
+        private readonly ISMTPCredentialsRepository _repository;
         protected readonly ILogger _logger;
 
         protected bool Send(DbEmail email)
         {
-            string senderEmail = GetEnvironmentVariableHelper.Get(ConstStrings.Email);
+            DbSMTPCredentials smtpData = _repository.Get();
 
             var message = new MailMessage(
-                senderEmail,
+                smtpData.Email,
                 email.Receiver)
             {
                 Subject = email.Subject,
@@ -25,13 +25,13 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
             };
 
             var smtp = new SmtpClient(
-                GetEnvironmentVariableHelper.Get(ConstStrings.Host),
-                int.Parse(GetEnvironmentVariableHelper.Get(ConstStrings.Port)))
+                smtpData.Host,
+                smtpData.Port)
             {
                 Credentials = new NetworkCredential(
-                                    senderEmail,
-                                    GetEnvironmentVariableHelper.Get(ConstStrings.Password)),
-                EnableSsl = true
+                                    smtpData.Email,
+                                    smtpData.Password),
+                EnableSsl = smtpData.EnableSsl
             };
 
             try
@@ -53,8 +53,10 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
         }
 
         public BaseEmailSender(
+            ISMTPCredentialsRepository repository,
             ILogger logger = null)
         {
+            _repository = repository;
             _logger = logger;
         }
     }

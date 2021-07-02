@@ -1,8 +1,6 @@
 ﻿using LT.DigitalOffice.MessageService.Data;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
-using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
@@ -36,12 +34,9 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
             }
         }
 
-        public EmailResender(
-            string sqlConnectionString)
+        public EmailResender(IDataProvider dataProvider)
+            : base(new SMTPCredentialsRepository(dataProvider))
         {
-            var optionsBuilder = new DbContextOptionsBuilder<MessageServiceDbContext>();
-            optionsBuilder.UseSqlServer(sqlConnectionString);
-            IDataProvider dataProvider = new MessageServiceDbContext(optionsBuilder.Options);
             _unsentEmailRepository = new UnsentEmailRepository(dataProvider);
         }
     }
