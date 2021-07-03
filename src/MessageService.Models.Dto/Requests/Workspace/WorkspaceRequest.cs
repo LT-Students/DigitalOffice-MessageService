@@ -2,7 +2,7 @@
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace
 {
-    public class WorkspaceRequest
+    public record WorkspaceRequest
     {
         public string Name { get; set; }
         public string Description { get; set; }

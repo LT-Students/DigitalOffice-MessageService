@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate
 {
-    public class EditEmailTemplateRequest
+    public record EditEmailTemplateRequest
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

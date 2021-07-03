@@ -1,6 +1,6 @@
 ﻿namespace LT.DigitalOffice.MessageService.Models.Dto.Models.Emails
 {
-    public class EmailTemplateTextInfo
+    public record EmailTemplateTextInfo
     {
         public string Subject { get; set; }
         public string Text { get; set; }

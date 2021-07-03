@@ -2,7 +2,7 @@
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Models.Emails
 {
-    public class UnsentEmailInfo
+    public record UnsentEmailInfo
     {
         public Guid Id { get; set; }
         public EmailInfo Email { get; set; }
