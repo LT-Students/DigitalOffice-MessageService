@@ -2,7 +2,7 @@
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Models.Emails
 {
-    public class EmailInfo
+    public record EmailInfo
     {
         public Guid Id { get; set; }
         public string Receiver { get; set; }
