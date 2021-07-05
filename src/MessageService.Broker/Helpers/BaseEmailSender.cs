@@ -1,5 +1,10 @@
-﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
+﻿using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Helpers;
+using LT.DigitalOffice.Models.Broker.Requests.Company;
+using LT.DigitalOffice.Models.Broker.Responses.Company;
+using MassTransit;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
@@ -9,15 +14,49 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 {
     public abstract class BaseEmailSender
     {
-        private readonly ISMTPCredentialsRepository _repository;
+        private readonly IRequestClient<IGetSmtpCredentialsRequest> _rcGetSmtpCredentials;
+        private readonly ISmtpCredentialsMapper _mapper;
         protected readonly ILogger _logger;
+
+        private static SmtpCredentials _smtp;
+
+        private bool GetSmtpCredentials()
+        {
+            string logMessage = "Cannot get smtp credentials.";
+
+            try
+            {
+                var result = _rcGetSmtpCredentials.GetResponse<IOperationResult<IGetSmtpCredentialsResponse>>(
+                    IGetSmtpCredentialsRequest.CreateObj()).Result.Message;
+
+                if (result.IsSuccess)
+                {
+                    _smtp = _mapper.Map(result.Body);
+
+                    return true;
+                }
+
+                _logger.LogWarning(logMessage);
+
+                return false;
+            }
+            catch(Exception exc)
+            {
+                _logger.LogError(exc, logMessage);
+            }
+
+            return false;
+        }
 
         protected bool Send(DbEmail email)
         {
-            DbSMTPCredentials smtpData = _repository.Get();
+            if (_smtp == null && !GetSmtpCredentials())
+            {
+                return false;
+            }
 
             var message = new MailMessage(
-                smtpData.Email,
+                _smtp.Email,
                 email.Receiver)
             {
                 Subject = email.Subject,
@@ -25,13 +64,13 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
             };
 
             var smtp = new SmtpClient(
-                smtpData.Host,
-                smtpData.Port)
+                _smtp.Host,
+                _smtp.Port)
             {
                 Credentials = new NetworkCredential(
-                                    smtpData.Email,
-                                    smtpData.Password),
-                EnableSsl = smtpData.EnableSsl
+                    _smtp.Email,
+                    _smtp.Password),
+                EnableSsl = _smtp.EnableSsl
             };
 
             try
@@ -41,10 +80,10 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
             catch (Exception exc)
             {
                 _logger?.LogWarning(exc,
-                            "Errors while sending email to {to} with subject: {subject} and body: {body}. Email replaced to resend queue.",
-                            email.Receiver,
-                            email.Subject,
-                            email.Body);
+                    "Errors while sending email to {to} with subject: {subject} and body: {body}. Email replaced to resend queue.",
+                    email.Receiver,
+                    email.Subject,
+                    email.Body);
 
                 return false;
             }
@@ -53,10 +92,12 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
         }
 
         public BaseEmailSender(
-            ISMTPCredentialsRepository repository,
+            IRequestClient<IGetSmtpCredentialsRequest> rcGetSmtpCredentials,
+            ISmtpCredentialsMapper mapper,
             ILogger logger = null)
         {
-            _repository = repository;
+            _rcGetSmtpCredentials = rcGetSmtpCredentials;
+            _mapper = mapper;
             _logger = logger;
         }
     }

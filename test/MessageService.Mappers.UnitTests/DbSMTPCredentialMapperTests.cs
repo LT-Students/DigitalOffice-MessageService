@@ -1,5 +1,5 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Db;
-using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.Models.Broker.Requests.Message;
 using LT.DigitalOffice.UnitTestKernel;
@@ -11,12 +11,12 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests
 {
     public class DbSMTPCredentialMapperTests
     {
-        private IDbSMTPCredentialsMapper _mapper;
+        private ISmtpCredentialsMapper _mapper;
 
         [SetUp]
         public void SetUp()
         {
-            _mapper = new DbSMTPCredentialsMapper();
+            _mapper = new SmtpCredentialsMapper();
         }
 
         [Test]

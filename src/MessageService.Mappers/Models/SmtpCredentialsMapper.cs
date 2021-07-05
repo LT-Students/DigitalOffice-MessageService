@@ -1,13 +1,13 @@
-﻿using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.Models.Broker.Requests.Message;
+﻿using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Dto.Helpers;
+using LT.DigitalOffice.Models.Broker.Responses.Company;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
-    public class DbSMTPCredentialsMapper : IDbSMTPCredentialsMapper
+    public class SmtpCredentialsMapper : ISmtpCredentialsMapper
     {
-        public DbSMTPCredentials Map(ICreateSMTPRequest request)
+        public SmtpCredentials Map(IGetSmtpCredentialsResponse request)
         {
             if (request == null)
             {

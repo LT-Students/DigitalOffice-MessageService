@@ -1,7 +1,7 @@
 ﻿using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.Models.Broker.Requests.Message;
 using LT.DigitalOffice.UnitTestKernel;
@@ -61,7 +61,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             };
 
             _mocker
-                .Setup<IDbSMTPCredentialsMapper, DbSMTPCredentials>(x => x.Map(It.IsAny<ICreateSMTPRequest>()))
+                .Setup<ISmtpCredentialsMapper, DbSMTPCredentials>(x => x.Map(It.IsAny<ICreateSMTPRequest>()))
                 .Returns(_smtp);
         }
 

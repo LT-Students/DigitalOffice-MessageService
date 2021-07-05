@@ -1,6 +1,9 @@
 ﻿using LT.DigitalOffice.MessageService.Data;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
+using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
+using LT.DigitalOffice.Models.Broker.Requests.Company;
+using MassTransit;
 using System;
 using System.Threading.Tasks;
 
@@ -34,8 +37,11 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
             }
         }
 
-        public EmailResender(IDataProvider dataProvider)
-            : base(new SMTPCredentialsRepository(dataProvider))
+        public EmailResender(
+            IDataProvider dataProvider,
+            IRequestClient<IGetSmtpCredentialsRequest> rcGetSmtpCredentials,
+            ISmtpCredentialsMapper mapper)
+            : base(rcGetSmtpCredentials, mapper)
         {
             _unsentEmailRepository = new UnsentEmailRepository(dataProvider);
         }
