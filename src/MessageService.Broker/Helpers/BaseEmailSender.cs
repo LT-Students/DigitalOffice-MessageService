@@ -1,5 +1,4 @@
 ﻿using LT.DigitalOffice.Kernel.Broker;
-using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Helpers;
 using LT.DigitalOffice.Models.Broker.Requests.Company;
@@ -15,10 +14,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
     public abstract class BaseEmailSender
     {
         private readonly IRequestClient<IGetSmtpCredentialsRequest> _rcGetSmtpCredentials;
-        private readonly ISmtpCredentialsMapper _mapper;
         protected readonly ILogger _logger;
-
-        private static SmtpCredentials _smtp;
 
         private bool GetSmtpCredentials()
         {
@@ -31,7 +27,11 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 
                 if (result.IsSuccess)
                 {
-                    _smtp = _mapper.Map(result.Body);
+                    SmtpCredentials.Host = result.Body.Host;
+                    SmtpCredentials.Port = result.Body.Port;
+                    SmtpCredentials.Email = result.Body.Email;
+                    SmtpCredentials.Password = result.Body.Password;
+                    SmtpCredentials.EnableSsl = result.Body.EnableSsl;
 
                     return true;
                 }
@@ -50,13 +50,13 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 
         protected bool Send(DbEmail email)
         {
-            if (_smtp == null && !GetSmtpCredentials())
+            if (!SmtpCredentials.HasValue && !GetSmtpCredentials())
             {
                 return false;
             }
 
             var message = new MailMessage(
-                _smtp.Email,
+                SmtpCredentials.Email,
                 email.Receiver)
             {
                 Subject = email.Subject,
@@ -64,13 +64,13 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
             };
 
             var smtp = new SmtpClient(
-                _smtp.Host,
-                _smtp.Port)
+                SmtpCredentials.Host,
+                SmtpCredentials.Port)
             {
                 Credentials = new NetworkCredential(
-                    _smtp.Email,
-                    _smtp.Password),
-                EnableSsl = _smtp.EnableSsl
+                    SmtpCredentials.Email,
+                    SmtpCredentials.Password),
+                EnableSsl = SmtpCredentials.EnableSsl
             };
 
             try
@@ -93,11 +93,9 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 
         public BaseEmailSender(
             IRequestClient<IGetSmtpCredentialsRequest> rcGetSmtpCredentials,
-            ISmtpCredentialsMapper mapper,
             ILogger logger = null)
         {
             _rcGetSmtpCredentials = rcGetSmtpCredentials;
-            _mapper = mapper;
             _logger = logger;
         }
     }

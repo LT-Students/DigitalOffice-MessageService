@@ -9,6 +9,7 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Configurations
     {
         public string CreateWorkspaceEndpoint { get; set; }
         public string SendEmailEndpoint { get; set; }
+        public string UpdateSmtpCredentialsEndpoint { get; set; }
 
         [AutoInjectRequest(typeof(IGetSmtpCredentialsRequest))]
         public string GetSmtpCredentialsEndpoint { get; set; }

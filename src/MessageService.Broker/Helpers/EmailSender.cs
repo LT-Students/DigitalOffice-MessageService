@@ -1,5 +1,4 @@
 ﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.Models.Broker.Requests.Company;
 using MassTransit;
@@ -16,10 +15,9 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
         public EmailSender(
             ILogger<EmailSender> logger,
             IRequestClient<IGetSmtpCredentialsRequest> rcGetSmtpCredentials,
-            ISmtpCredentialsMapper mapper,
             IEmailRepository emailRepository,
             IUnsentEmailRepository unsentEmailRepository)
-            : base(rcGetSmtpCredentials, mapper, logger)
+            : base(rcGetSmtpCredentials, logger)
         {
             _emailRepository = emailRepository;
             _unsentEmailRepository = unsentEmailRepository;

@@ -95,7 +95,7 @@ namespace LT.DigitalOffice.MessageService
 
             services.AddTransient<EmailSender>();
 
-            ConfigureMassTransit(services, out IRequestClient<IGetSmtpCredentialsRequest> requestClient);
+            ConfigureMassTransit(services);
 
             #region Start EmailResender
 
@@ -114,14 +114,13 @@ namespace LT.DigitalOffice.MessageService
             #endregion
         }
 
-        private void ConfigureMassTransit(IServiceCollection services, out IRequestClient<IGetSmtpCredentialsRequest> request)
+        private void ConfigureMassTransit(IServiceCollection services)
         {
-            IRequestClient<IGetSmtpCredentialsRequest> requestClient = null;
-
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<SendEmailConsumer>();
                 x.AddConsumer<CreateWorkspaceConsumer>();
+                x.AddConsumer<UpdateSmtpCredentialsConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -143,14 +142,17 @@ namespace LT.DigitalOffice.MessageService
                     {
                         ep.ConfigureConsumer<CreateWorkspaceConsumer>(context);
                     });
+
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.UpdateSmtpCredentialsEndpoint, ep =>
+                    {
+                        ep.ConfigureConsumer<UpdateSmtpCredentialsConsumer>(context);
+                    });
                 });
 
                 x.AddRequestClients(_rabbitMqConfig);
             });
 
             services.AddMassTransitHostedService();
-
-            request = requestClient;
         }
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)

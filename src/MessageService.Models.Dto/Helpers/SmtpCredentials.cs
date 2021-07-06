@@ -1,11 +1,24 @@
-﻿namespace LT.DigitalOffice.MessageService.Models.Dto.Helpers
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("LT.DigitalOffice.MessageService.Broker")]
+namespace LT.DigitalOffice.MessageService.Models.Dto.Helpers
 {
-    public record SmtpCredentials
+    internal static class SmtpCredentials
     {
-        public string Host { get; set; }
-        public int Port { get; set; }
-        public bool EnableSsl { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public static string Host { get; set; }
+        public static int Port { get; set; }
+        public static bool EnableSsl { get; set; }
+        public static string Email { get; set; }
+        public static string Password { get; set; }
+
+        public static bool HasValue
+        {
+            get
+            {
+                return !(string.IsNullOrEmpty(Host)
+                     || string.IsNullOrEmpty(Email)
+                     || string.IsNullOrEmpty(Password));
+            }
+        }
     }
 }
