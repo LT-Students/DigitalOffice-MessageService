@@ -124,9 +124,6 @@ namespace LT.DigitalOffice.MessageService
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    //TODO Rework???
-                    //requestClient = context.CreateRequestClient<IGetSmtpCredentialsRequest>();
-
                     cfg.Host(_rabbitMqConfig.Host, "/", host =>
                     {
                         host.Username($"{_serviceInfoConfig.Name}_{_serviceInfoConfig.Id}");
