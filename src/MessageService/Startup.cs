@@ -8,6 +8,7 @@ using LT.DigitalOffice.MessageService.Broker.Helpers;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
+using LT.DigitalOffice.Models.Broker.Requests.Company;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -94,23 +95,23 @@ namespace LT.DigitalOffice.MessageService
 
             services.AddTransient<EmailSender>();
 
+            ConfigureMassTransit(services);
+
             #region Start EmailResender
 
-            int resendIntervalMinutes = Configuration
-                .GetSection(EmailEngineConfig.SectionName)
-                .Get<EmailEngineConfig>().ResendIntervalInMinutes;
+            //int resendIntervalMinutes = Configuration
+            //    .GetSection(EmailEngineConfig.SectionName)
+            //    .Get<EmailEngineConfig>().ResendIntervalInMinutes;
 
-            var optionsBuilder = new DbContextOptionsBuilder<MessageServiceDbContext>();
-            optionsBuilder.UseSqlServer(connStr);
-            IDataProvider dataProvider = new MessageServiceDbContext(optionsBuilder.Options);
+            //var optionsBuilder = new DbContextOptionsBuilder<MessageServiceDbContext>();
+            //optionsBuilder.UseSqlServer(connStr);
+            //IDataProvider dataProvider = new MessageServiceDbContext(optionsBuilder.Options);
 
-            var resender = new EmailResender(dataProvider);
+            //var resender = new EmailResender(dataProvider, requestClient);
 
-            Task.Run(() => resender.StartResend(resendIntervalMinutes));
+            //Task.Run(() => resender.StartResend(resendIntervalMinutes));
 
             #endregion
-
-            ConfigureMassTransit(services);
         }
 
         private void ConfigureMassTransit(IServiceCollection services)
@@ -118,8 +119,8 @@ namespace LT.DigitalOffice.MessageService
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<SendEmailConsumer>();
-                x.AddConsumer<CreateSMTPCredentialsConsumer>();
                 x.AddConsumer<CreateWorkspaceConsumer>();
+                x.AddConsumer<UpdateSmtpCredentialsConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -134,14 +135,14 @@ namespace LT.DigitalOffice.MessageService
                         ep.ConfigureConsumer<SendEmailConsumer>(context);
                     });
 
-                    cfg.ReceiveEndpoint(_rabbitMqConfig.CreateSMTPEndpoint, ep =>
-                    {
-                        ep.ConfigureConsumer<CreateSMTPCredentialsConsumer>(context);
-                    });
-
                     cfg.ReceiveEndpoint(_rabbitMqConfig.CreateWorkspaceEndpoint, ep =>
                     {
                         ep.ConfigureConsumer<CreateWorkspaceConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.UpdateSmtpCredentialsEndpoint, ep =>
+                    {
+                        ep.ConfigureConsumer<UpdateSmtpCredentialsConsumer>(context);
                     });
                 });
 

@@ -1,15 +1,17 @@
-﻿using LT.DigitalOffice.MessageService.Models.Db;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
 {
-    [DbContext(typeof(MessageServiceDbContext))]
-    [Migration("20210701095500_AddSMTP")]
-    public class AddSMTP : Migration
+    [Migration("20210705113900_DeleteSmtpCredentialsTable")]
+    public class DeleteSmtpCredentialsTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable("SMTPCredentials");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder
                 .CreateTable(
@@ -28,11 +30,6 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
                         table.PrimaryKey("PK_SMTPCredentials", x => x.Id);
                     }
                 );
-        }
-
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable("SMTPCredentials");
         }
     }
 }

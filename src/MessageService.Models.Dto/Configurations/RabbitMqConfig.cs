@@ -1,17 +1,21 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.Kernel.Configurations;
+using LT.DigitalOffice.Models.Broker.Requests.Company;
 using LT.DigitalOffice.Models.Broker.Requests.File;
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Configurations
 {
     public class RabbitMqConfig : BaseRabbitMqConfig
     {
+        public string CreateWorkspaceEndpoint { get; set; }
         public string SendEmailEndpoint { get; set; }
-        public string CreateSMTPEndpoint { get; set; }
+        public string UpdateSmtpCredentialsEndpoint { get; set; }
+
+        [AutoInjectRequest(typeof(IGetSmtpCredentialsRequest))]
+        public string GetSmtpCredentialsEndpoint { get; set; }
 
         [AutoInjectRequest(typeof(IAddImageRequest))]
         public string AddImageEndpoint { get; set; }
 
-        public string CreateWorkspaceEndpoint { get; set; }
     }
 }
