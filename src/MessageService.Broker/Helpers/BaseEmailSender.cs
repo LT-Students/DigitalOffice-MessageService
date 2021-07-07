@@ -36,13 +36,11 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
                     return true;
                 }
 
-                _logger.LogWarning(logMessage);
-
-                return false;
+                _logger?.LogWarning(logMessage);
             }
             catch(Exception exc)
             {
-                _logger.LogError(exc, logMessage);
+                _logger?.LogError(exc, logMessage);
             }
 
             return false;
@@ -79,7 +77,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
             }
             catch (Exception exc)
             {
-                _logger?.LogWarning(exc,
+                _logger?.LogError(exc,
                     "Errors while sending email to {to} with subject: {subject} and body: {body}. Email replaced to resend queue.",
                     email.Receiver,
                     email.Subject,
