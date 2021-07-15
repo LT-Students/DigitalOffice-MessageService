@@ -43,9 +43,19 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public IEnumerable<DbUnsentEmail> Find(int skipCount, int takeCount, out int totalCount)
         {
+            if (skipCount < 0)
+            {
+                throw new BadRequestException("Skip count can't be less than 0.");
+            }
+
+            if (takeCount <= 0)
+            {
+                throw new BadRequestException("Take count can't be equal or less than 0.");
+            }
+
             totalCount = _provider.UnsentEmails.Count();
 
-            return _provider.UnsentEmails.Include(u => u.Email).Skip(skipCount * takeCount).Take(takeCount).ToList();
+            return _provider.UnsentEmails.Include(u => u.Email).Skip(skipCount).Take(takeCount).ToList();
         }
 
         public bool Remove(DbUnsentEmail email)
