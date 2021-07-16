@@ -1,5 +1,4 @@
-﻿using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate;
+﻿using LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate;
 using LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
@@ -8,7 +7,6 @@ using LT.DigitalOffice.MessageService.Models.Dto.Models.Emails;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using LT.DigitalOffice.Models.Broker.Enums;
 using LT.DigitalOffice.UnitTestKernel;
-using Moq;
 using Moq.AutoMock;
 using NUnit.Framework;
 using System;
