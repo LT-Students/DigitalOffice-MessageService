@@ -2,7 +2,6 @@
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Emails;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using LT.DigitalOffice.Models.Broker.Enums;
 using LT.DigitalOffice.UnitTestKernel;
@@ -30,9 +29,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
                 Name = "Pattern name",
                 Type = EmailTemplateType.Greeting,
                 AuthorId = Guid.NewGuid(),
-                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                EmailTemplateTexts = new List<EmailTemplateTextRequest>
                 {
-                    new EmailTemplateTextInfo
+                    new EmailTemplateTextRequest
                     {
                         Subject = "Subject",
                         Text = "Email text",

@@ -1,13 +1,13 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Emails;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
     public class DbEmailTemplateTextMapper : IDbEmailTemplateTextMapper
     {
-        public DbEmailTemplateText Map(EmailTemplateTextInfo templateText)
+        public DbEmailTemplateText Map(EmailTemplateTextRequest templateText)
         {
             if (templateText == null)
             {
