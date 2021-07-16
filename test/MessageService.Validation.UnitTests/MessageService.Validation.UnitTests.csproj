@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />
+    <ProjectReference Include="..\..\src\MessageService.Validation\MessageService.Validation.csproj" />
+  </ItemGroup>
+
+</Project>
