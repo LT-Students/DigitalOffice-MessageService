@@ -94,18 +94,18 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             }
         }
 
-        #region RemoveEmailTemplate
+        #region Remove
         [Test]
         public void ShouldThrowExceptionWhenEmailTemplateDoesNotExist()
         {
-            Assert.Throws<NotFoundException>(() => _repository.DisableEmailTemplate(Guid.NewGuid()));
+            Assert.Throws<NotFoundException>(() => _repository.Disable(Guid.NewGuid()));
             Assert.AreEqual(_provider.EmailTemplates, new List<DbEmailTemplate> { _dbEmailTemplate });
         }
 
         [Test]
         public void ShouldRemoveEmailTemplateSuccessfully()
         {
-            _repository.DisableEmailTemplate(_emailTemplateId);
+            _repository.Disable(_emailTemplateId);
 
             Assert.IsTrue(_provider.EmailTemplates.Find(_emailTemplateId).IsActive == false);
             Assert.AreEqual(_provider.EmailTemplates, new List<DbEmailTemplate> { _dbEmailTemplate });
@@ -114,33 +114,33 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenEmailTemplateIdNull()
         {
-            Assert.Throws<NotFoundException>(() => _repository.DisableEmailTemplate(Guid.Empty));
+            Assert.Throws<NotFoundException>(() => _repository.Disable(Guid.Empty));
             Assert.AreEqual(_provider.EmailTemplates, new List<DbEmailTemplate> { _dbEmailTemplate });
         }
         #endregion
 
-        #region AddEmailTemplate
+        #region Add
         [Test]
         public void ShouldAddEmailTemplateCorrectly()
         {
-            Assert.AreEqual(_dbEmailTemplateToAdd.Id, _repository.AddEmailTemplate(_dbEmailTemplateToAdd));
+            Assert.AreEqual(_dbEmailTemplateToAdd.Id, _repository.Add(_dbEmailTemplateToAdd));
             Assert.AreEqual(_dbEmailTemplateToAdd, _provider.EmailTemplates.Find(_dbEmailTemplateToAdd.Id));
         }
         #endregion
 
-        #region GetEmail
+        #region Get
         [Test]
         public void ShouldThrowExceptionWhenEmailTemplateIdNotFound()
         {
             var emailTemplaiId = Guid.NewGuid();
 
-            Assert.Throws<NotFoundException>(() => _repository.GetEmailTemplateById(emailTemplaiId));
+            Assert.Throws<NotFoundException>(() => _repository.Get(emailTemplaiId));
         }
 
         [Test]
         public void ShouldGetEmailTemplateByIdSuccessful()
         {
-            var newDbEmailTemplate = _repository.GetEmailTemplateById(_dbEmailTemplate.Id);
+            var newDbEmailTemplate = _repository.Get(_dbEmailTemplate.Id);
 
             _provider.MakeEntityDetached(_dbEmailTemplate);
             newDbEmailTemplate.EmailTemplateTexts.ElementAt(0).EmailTemplate = null;
@@ -151,13 +151,13 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenEmailTemplateTypeNotFound()
         {
-            Assert.Throws<NotFoundException>(() => _repository.GetEmailTemplateByType((int)EmailTemplateType.Warning));
+            Assert.Throws<NotFoundException>(() => _repository.Get((int)EmailTemplateType.Warning));
         }
 
         [Test]
         public void ShouldGetEmailTemplateByTypeSuccessful()
         {
-            var newDbEmailTemplate = _repository.GetEmailTemplateByType((int)EmailTemplateType.Greeting);
+            var newDbEmailTemplate = _repository.Get((int)EmailTemplateType.Greeting);
 
             _provider.MakeEntityDetached(_dbEmailTemplate);
             newDbEmailTemplate.EmailTemplateTexts.ElementAt(0).EmailTemplate = null;
@@ -166,7 +166,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         }
         #endregion
 
-        #region EditEmailTemplate
+        #region Edit
         [Test]
         public void ShouldThrowExceptionWhenEditEmailTemplateIdNotFound()
         {
@@ -178,7 +178,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 CreatedAt = _editDbEmailTemplate.CreatedAt
             };
 
-            Assert.Throws<NotFoundException>(() => _repository.EditEmailTemplate(newdbEmailTemplate));
+            Assert.Throws<NotFoundException>(() => _repository.Edit(newdbEmailTemplate));
         }
 
         //[Test]
@@ -190,6 +190,37 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 
         //    SerializerAssert.AreEqual(_editDbEmailTemplate, _repository.GetEmailTemplateById(_editDbEmailTemplate.Id));
         //}
+        #endregion
+
+        #region Find
+
+        [Test]
+        public void ShouldThrowBadRequestExceptionWhenSkipCountLessThanZero()
+        {
+            Assert.Throws<BadRequestException>(() => _repository.Find(-1, 5, true, out int totalCount));
+        }
+
+        [Test]
+        public void ShouldThrowBadRequestExceptionWhenTakeCountLessOrEqualThanZero()
+        {
+            Assert.Throws<BadRequestException>(() => _repository.Find(0, -5, true, out int totalCount));
+            Assert.Throws<BadRequestException>(() => _repository.Find(0, 0, true, out int totalCount));
+        }
+
+        [Test]
+        public void ShouldReturnTemplatesSuccessfuly()
+        {
+            DbEmailTemplate response = _repository.Find(0, 1, true, out int total)[0];
+
+            Assert.AreEqual(1, total);
+            Assert.AreEqual(_dbEmailTemplate.Id, response.Id);
+            Assert.AreEqual(_dbEmailTemplate.Name, response.Name);
+            Assert.AreEqual(_dbEmailTemplate.IsActive, response.IsActive);
+            Assert.AreEqual(_dbEmailTemplate.AuthorId, response.AuthorId);
+            Assert.AreEqual(_dbEmailTemplate.CreatedAt, response.CreatedAt);
+            Assert.AreEqual(_dbEmailTemplate.Type, response.Type);
+        }
+
         #endregion
     }
 }

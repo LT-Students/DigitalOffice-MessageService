@@ -47,7 +47,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
 
             _validator.ValidateAndThrowCustom(editEmailTemplate);
 
-            var dbEmailTemplate = _repository.GetEmailTemplateById(editEmailTemplate.Id);
+            var dbEmailTemplate = _repository.Get(editEmailTemplate.Id);
 
             var editDbEmailTemplate = _mapperEmailTemplate.Map(editEmailTemplate);
 
@@ -74,7 +74,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
                 editDbEmailTemplate.EmailTemplateTexts.Add(newDbEmailTemplateTexts);
             }
 
-            var isSuccess = _repository.EditEmailTemplate(editDbEmailTemplate);
+            var isSuccess = _repository.Edit(editDbEmailTemplate);
 
             return new OperationResultResponse<bool>
             {
