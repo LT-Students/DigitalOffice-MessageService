@@ -2,7 +2,7 @@
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Requests.ParseEntity
 {
-    public class AddKeywordRequest
+    public record AddKeywordRequest
     {
         public string Keyword { get; set; }
         public ServiceName ServiceName { get; set; }
