@@ -3,6 +3,7 @@ using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.Models.Broker.Requests.Company;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -16,8 +17,6 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
         {
             while (true)
             {
-                Task.Delay(TimeSpan.FromMinutes(intervalInMinutes)).Wait();
-
                 var unsentEmails = _unsentEmailRepository.GetAll();
 
                 foreach (var email in unsentEmails)
@@ -37,11 +36,11 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
         }
 
         public EmailResender(
-            IDataProvider dataProvider,
+            IUnsentEmailRepository unsentEmailRepository,
             IRequestClient<IGetSmtpCredentialsRequest> rcGetSmtpCredentials)
-            : base(rcGetSmtpCredentials)
+            : base(rcGetSmtpCredentials, null)
         {
-            _unsentEmailRepository = new UnsentEmailRepository(dataProvider);
+            _unsentEmailRepository = unsentEmailRepository;
         }
     }
 }

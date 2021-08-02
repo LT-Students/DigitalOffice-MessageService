@@ -9,8 +9,10 @@ using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Broker.Helpers;
 using LT.DigitalOffice.MessageService.Broker.Helpers.ParseEntity;
+using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
+using LT.DigitalOffice.Models.Broker.Requests.Company;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -21,6 +23,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService
 {
@@ -84,18 +87,38 @@ namespace LT.DigitalOffice.MessageService
             context.Database.Migrate();
         }
 
+        private void StartResender(IApplicationBuilder app)
+        {
+            int resendIntervalMinutes = Configuration
+                .GetSection(EmailEngineConfig.SectionName)
+                .Get<EmailEngineConfig>().ResendIntervalInMinutes;
+
+            IServiceProvider serviceProvider = app.ApplicationServices.GetRequiredService<IServiceProvider>();
+
+            var scope = app.ApplicationServices.CreateScope();
+
+            IUnsentEmailRepository repository = scope.ServiceProvider.GetRequiredService<IUnsentEmailRepository>();
+
+            IRequestClient<IGetSmtpCredentialsRequest> rcGetSmtpCredentials = serviceProvider.CreateRequestClient<IGetSmtpCredentialsRequest>(
+                new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.GetSmtpCredentialsEndpoint}"), default);
+
+            var resender = new EmailResender(repository, rcGetSmtpCredentials);
+
+            Task.Run(() => resender.StartResend(resendIntervalMinutes));
+        }
+
         private void FindParseProperties(IApplicationBuilder app)
         {
             IServiceProvider serviceProvider = app.ApplicationServices.GetRequiredService<IServiceProvider>();
 
             foreach(KeyValuePair<string, string> pair in _rabbitMqConfig.FindUserParseEntitiesEndpoint)
             {
-                IRequestClient<IFindParseEntitiesRequest> x = serviceProvider.CreateRequestClient<IFindParseEntitiesRequest>(
-                new Uri($"{_rabbitMqConfig.BaseUrl}/{pair.Value}"), default);
+                IRequestClient<IFindParseEntitiesRequest> rcFindParseEntities = serviceProvider.CreateRequestClient<IFindParseEntitiesRequest>(
+                    new Uri($"{_rabbitMqConfig.BaseUrl}/{pair.Value}"), default);
 
                 try
                 {
-                    var result = x.GetResponse<IOperationResult<IFindParseEntitiesResponse>>(IFindParseEntitiesRequest.CreateObj()).Result.Message;
+                    var result = rcFindParseEntities.GetResponse<IOperationResult<IFindParseEntitiesResponse>>(IFindParseEntitiesRequest.CreateObj()).Result.Message;
 
                     if (result.IsSuccess)
                     {
@@ -177,22 +200,6 @@ namespace LT.DigitalOffice.MessageService
             services.AddTransient<EmailSender>();
 
             ConfigureMassTransit(services);
-
-            #region Start EmailResender
-
-            //int resendIntervalMinutes = Configuration
-            //    .GetSection(EmailEngineConfig.SectionName)
-            //    .Get<EmailEngineConfig>().ResendIntervalInMinutes;
-
-            //var optionsBuilder = new DbContextOptionsBuilder<MessageServiceDbContext>();
-            //optionsBuilder.UseSqlServer(connStr);
-            //IDataProvider dataProvider = new MessageServiceDbContext(optionsBuilder.Options);
-
-            //var resender = new EmailResender(dataProvider, requestClient);
-
-            //Task.Run(() => resender.StartResend(resendIntervalMinutes));
-
-            #endregion
         }
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
@@ -200,6 +207,8 @@ namespace LT.DigitalOffice.MessageService
             UpdateDatabase(app);
 
             FindParseProperties(app);
+
+            StartResender(app);
 
             app.UseForwardedHeaders();
 
