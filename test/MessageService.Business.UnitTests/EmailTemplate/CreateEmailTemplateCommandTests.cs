@@ -10,7 +10,6 @@ using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Emails;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
 using LT.DigitalOffice.Models.Broker.Enums;
@@ -43,9 +42,9 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 Name = "Pattern name",
                 Type = EmailTemplateType.Greeting,
                 AuthorId = Guid.NewGuid(),
-                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                EmailTemplateTexts = new List<EmailTemplateTextRequest>
                 {
-                    new EmailTemplateTextInfo
+                    new EmailTemplateTextRequest
                     {
                         Subject = "Subject",
                         Text = "Email text",
@@ -103,7 +102,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 .Returns(true);
 
             _repositoryMock
-                .Setup(x => x.AddEmailTemplate(It.IsAny<DbEmailTemplate>()))
+                .Setup(x => x.Add(It.IsAny<DbEmailTemplate>()))
                 .Returns(emailId);
 
             _mapperMock
@@ -140,7 +139,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
             Assert.Throws<Exception>(() => _command.Execute(emailTemplate));
 
             _mapperMock.Verify();
-            _repositoryMock.Verify(repository => repository.AddEmailTemplate(It.IsAny<DbEmailTemplate>()), Times.Never());
+            _repositoryMock.Verify(repository => repository.Add(It.IsAny<DbEmailTemplate>()), Times.Never());
         }
 
         [Test]

@@ -41,7 +41,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
 
             _validator.ValidateAndThrowCustom(emailTemplate);
 
-            var id = _repository.AddEmailTemplate(_mapper.Map(emailTemplate));
+            var id = _repository.Add(_mapper.Map(emailTemplate));
 
             return new OperationResultResponse<Guid>
             {
