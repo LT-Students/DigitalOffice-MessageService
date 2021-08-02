@@ -5,7 +5,7 @@ using MassTransit;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace LT.DigitalOffice.MessageService.Broker.Helpers
+namespace LT.DigitalOffice.MessageService.Broker.Helpers.Email
 {
     public class EmailSender : BaseEmailSender
     {

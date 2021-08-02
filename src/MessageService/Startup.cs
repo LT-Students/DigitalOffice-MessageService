@@ -7,7 +7,7 @@ using LT.DigitalOffice.Kernel.Middlewares.ParseEntities.Models.Requests;
 using LT.DigitalOffice.Kernel.Middlewares.ParseEntities.Models.Responses;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
-using LT.DigitalOffice.MessageService.Broker.Helpers;
+using LT.DigitalOffice.MessageService.Broker.Helpers.Email;
 using LT.DigitalOffice.MessageService.Broker.Helpers.ParseEntity;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;

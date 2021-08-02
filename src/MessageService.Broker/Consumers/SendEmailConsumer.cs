@@ -1,6 +1,6 @@
 ﻿using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
-using LT.DigitalOffice.MessageService.Broker.Helpers;
+using LT.DigitalOffice.MessageService.Broker.Helpers.Email;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.Models.Broker.Requests.Message;

@@ -9,7 +9,7 @@ using System;
 using System.Net;
 using System.Net.Mail;
 
-namespace LT.DigitalOffice.MessageService.Broker.Helpers
+namespace LT.DigitalOffice.MessageService.Broker.Helpers.Email
 {
     public abstract class BaseEmailSender
     {
@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 
                 _logger?.LogWarning(logMessage);
             }
-            catch(Exception exc)
+            catch (Exception exc)
             {
                 _logger?.LogError(exc, logMessage);
             }

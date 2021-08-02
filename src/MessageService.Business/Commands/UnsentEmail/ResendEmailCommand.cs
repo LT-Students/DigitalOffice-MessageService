@@ -2,7 +2,7 @@
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Broker.Helpers;
+using LT.DigitalOffice.MessageService.Broker.Helpers.Email;
 using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail.Interfaces;
 using System;
 

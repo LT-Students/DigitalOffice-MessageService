@@ -1,4 +1,4 @@
-﻿using LT.DigitalOffice.MessageService.Broker.Helpers;
+﻿using LT.DigitalOffice.MessageService.Broker.Helpers.Email;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using Moq;

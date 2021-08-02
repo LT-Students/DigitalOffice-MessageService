@@ -6,7 +6,7 @@ using MassTransit;
 using System;
 using System.Threading.Tasks;
 
-namespace LT.DigitalOffice.MessageService.Broker.Helpers
+namespace LT.DigitalOffice.MessageService.Broker.Helpers.Email
 {
     public class EmailResender : BaseEmailSender
     {
