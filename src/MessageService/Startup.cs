@@ -1,14 +1,16 @@
 using HealthChecks.UI.Client;
+using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
+using LT.DigitalOffice.Kernel.Middlewares.ParseEntities.Models.Requests;
+using LT.DigitalOffice.Kernel.Middlewares.ParseEntities.Models.Responses;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Broker.Helpers;
-using LT.DigitalOffice.MessageService.Data.Provider;
+using LT.DigitalOffice.MessageService.Broker.Helpers.ParseEntity;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
-using LT.DigitalOffice.Models.Broker.Requests.Company;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -19,7 +21,6 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService
 {
@@ -31,6 +32,86 @@ namespace LT.DigitalOffice.MessageService
         private readonly BaseServiceInfoConfig _serviceInfoConfig;
 
         public IConfiguration Configuration { get; }
+
+        #region private methods
+
+        private void ConfigureMassTransit(IServiceCollection services)
+        {
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<SendEmailConsumer>();
+                x.AddConsumer<CreateWorkspaceConsumer>();
+                x.AddConsumer<UpdateSmtpCredentialsConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(_rabbitMqConfig.Host, "/", host =>
+                    {
+                        host.Username($"{_serviceInfoConfig.Name}_{_serviceInfoConfig.Id}");
+                        host.Password(_serviceInfoConfig.Id);
+                    });
+
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.SendEmailEndpoint, ep =>
+                    {
+                        ep.ConfigureConsumer<SendEmailConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.CreateWorkspaceEndpoint, ep =>
+                    {
+                        ep.ConfigureConsumer<CreateWorkspaceConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint(_rabbitMqConfig.UpdateSmtpCredentialsEndpoint, ep =>
+                    {
+                        ep.ConfigureConsumer<UpdateSmtpCredentialsConsumer>(context);
+                    });
+                });
+
+                x.AddRequestClients(_rabbitMqConfig);
+            });
+
+            services.AddMassTransitHostedService();
+        }
+
+        private void UpdateDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+
+            using var context = serviceScope.ServiceProvider.GetService<MessageServiceDbContext>();
+
+            context.Database.Migrate();
+        }
+
+        private void FindParseProperties(IApplicationBuilder app)
+        {
+            IServiceProvider serviceProvider = app.ApplicationServices.GetRequiredService<IServiceProvider>();
+
+            foreach(KeyValuePair<string, string> pair in _rabbitMqConfig.FindUserParseEntitiesEndpoint)
+            {
+                IRequestClient<IFindParseEntitiesRequest> x = serviceProvider.CreateRequestClient<IFindParseEntitiesRequest>(
+                new Uri($"{_rabbitMqConfig.BaseUrl}/{pair.Value}"), default);
+
+                try
+                {
+                    var result = x.GetResponse<IOperationResult<IFindParseEntitiesResponse>>(IFindParseEntitiesRequest.CreateObj()).Result.Message;
+
+                    if (result.IsSuccess)
+                    {
+                        AllParseEntities.Entities.Add(pair.Key, result.Body.Entities);
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        #endregion
+
+        #region public methods
 
         public Startup(IConfiguration configuration)
         {
@@ -44,7 +125,7 @@ namespace LT.DigitalOffice.MessageService
                 .GetSection(BaseRabbitMqConfig.SectionName)
                 .Get<RabbitMqConfig>();
 
-            Version = "1.2.6";
+            Version = "1.3.0";
             Description = "MessageService, is intended to work with the messages, emails and email templates.";
             StartTime = DateTime.UtcNow;
             ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
@@ -114,47 +195,11 @@ namespace LT.DigitalOffice.MessageService
             #endregion
         }
 
-        private void ConfigureMassTransit(IServiceCollection services)
-        {
-            services.AddMassTransit(x =>
-            {
-                x.AddConsumer<SendEmailConsumer>();
-                x.AddConsumer<CreateWorkspaceConsumer>();
-                x.AddConsumer<UpdateSmtpCredentialsConsumer>();
-
-                x.UsingRabbitMq((context, cfg) =>
-                {
-                    cfg.Host(_rabbitMqConfig.Host, "/", host =>
-                    {
-                        host.Username($"{_serviceInfoConfig.Name}_{_serviceInfoConfig.Id}");
-                        host.Password(_serviceInfoConfig.Id);
-                    });
-
-                    cfg.ReceiveEndpoint(_rabbitMqConfig.SendEmailEndpoint, ep =>
-                    {
-                        ep.ConfigureConsumer<SendEmailConsumer>(context);
-                    });
-
-                    cfg.ReceiveEndpoint(_rabbitMqConfig.CreateWorkspaceEndpoint, ep =>
-                    {
-                        ep.ConfigureConsumer<CreateWorkspaceConsumer>(context);
-                    });
-
-                    cfg.ReceiveEndpoint(_rabbitMqConfig.UpdateSmtpCredentialsEndpoint, ep =>
-                    {
-                        ep.ConfigureConsumer<UpdateSmtpCredentialsConsumer>(context);
-                    });
-                });
-
-                x.AddRequestClients(_rabbitMqConfig);
-            });
-
-            services.AddMassTransitHostedService();
-        }
-
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             UpdateDatabase(app);
+
+            FindParseProperties(app);
 
             app.UseForwardedHeaders();
 
@@ -186,15 +231,6 @@ namespace LT.DigitalOffice.MessageService
             });
         }
 
-        private void UpdateDatabase(IApplicationBuilder app)
-        {
-            using var serviceScope = app.ApplicationServices
-                .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope();
-
-            using var context = serviceScope.ServiceProvider.GetService<MessageServiceDbContext>();
-
-            context.Database.Migrate();
-        }
+        #endregion
     }
 }
