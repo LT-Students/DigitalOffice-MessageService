@@ -43,10 +43,10 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
                     image.Content,
                     image.Extension,
                     ownerId);
-                var imageResponse = _requestClient.GetResponse<IOperationResult<IAddImageResponse>>(imageRequest).Result;
+                var imageResponse = _requestClient.GetResponse<IOperationResult<Guid>>(imageRequest).Result;
                 if (imageResponse.Message.IsSuccess)
                 {
-                    imageId = imageResponse.Message.Body.Id;
+                    imageId = imageResponse.Message.Body;
                 }
                 else
                 {
