@@ -74,7 +74,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
         public async Task ShouldThrowExceptionWhenEmailTemplateByIdWasNotFound()
         {
             _mocker
-                .Setup<IEmailTemplateRepository, DbEmailTemplate>(x => x.GetEmailTemplateById(_dbEmailTemplate.Id))
+                .Setup<IEmailTemplateRepository, DbEmailTemplate>(x => x.Get(_dbEmailTemplate.Id))
                 .Returns(new DbEmailTemplate());
 
             var language = "en";
@@ -109,7 +109,7 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                 Assert.True(_consumerTestHarness.Consumed.Select<ISendEmailRequest>().Any());
                 Assert.True(_harness.Sent.Select<IOperationResult<bool>>().Any());
                 _mocker
-                    .Verify<IEmailTemplateRepository, DbEmailTemplate>(x => x.GetEmailTemplateById(_dbEmailTemplate.Id), Times.Once);
+                    .Verify<IEmailTemplateRepository, DbEmailTemplate>(x => x.Get(_dbEmailTemplate.Id), Times.Once);
             }
             finally
             {

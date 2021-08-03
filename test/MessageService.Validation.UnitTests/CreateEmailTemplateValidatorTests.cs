@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.TestHelper;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Emails;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using LT.DigitalOffice.Models.Broker.Enums;
 using NUnit.Framework;
@@ -49,7 +48,7 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenTemplateTextsIsNull()
         {
-            IEnumerable<EmailTemplateTextInfo> templateTexts= null;
+            IEnumerable<EmailTemplateTextRequest> templateTexts= null;
 
             _validator.ShouldHaveValidationErrorFor(x => x.EmailTemplateTexts, templateTexts);
         }
@@ -57,7 +56,7 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenTemplateTextIsNull()
         {
-            List<EmailTemplateTextInfo> templateTexts = null;
+            List<EmailTemplateTextRequest> templateTexts = null;
 
             _validator.ShouldHaveValidationErrorFor(x => x.EmailTemplateTexts, templateTexts);
         }
@@ -65,9 +64,9 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenSubjectIsEmpty()
         {
-            _emailTemplateRequest.EmailTemplateTexts = new List<EmailTemplateTextInfo>
+            _emailTemplateRequest.EmailTemplateTexts = new List<EmailTemplateTextRequest>
             {
-                new EmailTemplateTextInfo
+                new EmailTemplateTextRequest
                 {
                     Subject = "",
                     Language = "ru",
@@ -81,9 +80,9 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenLanguageIsEmpty()
         {
-            _emailTemplateRequest.EmailTemplateTexts = new List<EmailTemplateTextInfo>
+            _emailTemplateRequest.EmailTemplateTexts = new List<EmailTemplateTextRequest>
             {
-                new EmailTemplateTextInfo
+                new EmailTemplateTextRequest
                 {
                     Subject = "subject",
                     Language = "",
@@ -97,9 +96,9 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenLanguageMoreThenTwoChars()
         {
-            _emailTemplateRequest.EmailTemplateTexts = new List<EmailTemplateTextInfo>
+            _emailTemplateRequest.EmailTemplateTexts = new List<EmailTemplateTextRequest>
             {
-                new EmailTemplateTextInfo
+                new EmailTemplateTextRequest
                 {
                     Subject = "subject",
                     Language = "english",
@@ -113,9 +112,9 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         [Test]
         public void ShouldThrowExceptionWhenTextIsEmpty()
         {
-            _emailTemplateRequest.EmailTemplateTexts = new List<EmailTemplateTextInfo>
+            _emailTemplateRequest.EmailTemplateTexts = new List<EmailTemplateTextRequest>
             {
-                new EmailTemplateTextInfo
+                new EmailTemplateTextRequest
                 {
                     Subject = "subject",
                     Language = "en",
@@ -129,9 +128,9 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         [Test]
         public void ShouldNotHaveAnyValidationErrorsWhenRequestIsValid()
         {
-            _emailTemplateRequest.EmailTemplateTexts = new List<EmailTemplateTextInfo>
+            _emailTemplateRequest.EmailTemplateTexts = new List<EmailTemplateTextRequest>
             {
-                new EmailTemplateTextInfo
+                new EmailTemplateTextRequest
                 {
                     Subject = "Subject",
                     Text = "Email text",

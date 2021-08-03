@@ -10,7 +10,6 @@ using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Emails;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
 using LT.DigitalOffice.Models.Broker.Enums;
@@ -34,7 +33,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
         private Guid _emailTemplateId;
         private DbEmailTemplate _dbEmailTemplate;
         private DbEmailTemplateText _editDbEmailTemplateText;
-        private EmailTemplateTextInfo _editEmailTemplateTextInfo;
+        private EmailTemplateTextRequest _editEmailTemplateTextInfo;
         private DbEmailTemplate _newDbEmailTemplate;
         private EditEmailTemplateRequest _newEmailTemplate;
 
@@ -43,7 +42,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
         {
             _emailTemplateId = Guid.NewGuid();
 
-            _editEmailTemplateTextInfo = new EmailTemplateTextInfo
+            _editEmailTemplateTextInfo = new EmailTemplateTextRequest
             {
                 Subject = "New subject",
                 Text = "New email text",
@@ -55,7 +54,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 Id = _emailTemplateId,
                 Name = "New pattern name",
                 Type = EmailTemplateType.Greeting,
-                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                EmailTemplateTexts = new List<EmailTemplateTextRequest>
                 {
                     _editEmailTemplateTextInfo
                 }
@@ -175,7 +174,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 .Returns(true);
 
             _repositoryMock
-                .Setup(x => x.GetEmailTemplateById(_newEmailTemplate.Id))
+                .Setup(x => x.Get(_newEmailTemplate.Id))
                 .Throws(new NullReferenceException());
 
             Assert.Throws<NullReferenceException>(() => _command.Execute(_newEmailTemplate));
@@ -192,7 +191,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 .Returns(true);
 
             _repositoryMock
-                .Setup(x => x.GetEmailTemplateById(_newEmailTemplate.Id))
+                .Setup(x => x.Get(_newEmailTemplate.Id))
                 .Returns(_newDbEmailTemplate);
 
             _mapperEmailTemplateMock
@@ -222,7 +221,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 .Returns(true);
 
             _repositoryMock
-                .Setup(x => x.GetEmailTemplateById(_newEmailTemplate.Id))
+                .Setup(x => x.Get(_newEmailTemplate.Id))
                 .Returns(_dbEmailTemplate);
 
             _mapperEmailTemplateMock
@@ -234,7 +233,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 .Returns(_editDbEmailTemplateText);
 
             _repositoryMock
-                .Setup(x => x.EditEmailTemplate(_newDbEmailTemplate))
+                .Setup(x => x.Edit(_newDbEmailTemplate))
                 .Throws(new NullReferenceException());
 
             Assert.Throws<NullReferenceException>(() => _command.Execute(_newEmailTemplate));
@@ -252,11 +251,11 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 .Returns(true);
 
             _repositoryMock
-                .Setup(x => x.GetEmailTemplateById(_newEmailTemplate.Id))
+                .Setup(x => x.Get(_newEmailTemplate.Id))
                 .Returns(_dbEmailTemplate);
 
             _repositoryMock
-                .Setup(x => x.EditEmailTemplate(_newDbEmailTemplate))
+                .Setup(x => x.Edit(_newDbEmailTemplate))
                 .Returns(true);
 
             _mapperEmailTemplateMock
@@ -276,8 +275,8 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
             SerializerAssert.AreEqual(expectedResponse, _command.Execute(_newEmailTemplate));
 
             _mapperEmailTemplateMock.Verify();
-            _repositoryMock.Verify(repository => repository.GetEmailTemplateById(_dbEmailTemplate.Id), Times.Once);
-            _repositoryMock.Verify(repository => repository.EditEmailTemplate(It.IsAny<DbEmailTemplate>()), Times.Once);
+            _repositoryMock.Verify(repository => repository.Get(_dbEmailTemplate.Id), Times.Once);
+            _repositoryMock.Verify(repository => repository.Edit(It.IsAny<DbEmailTemplate>()), Times.Once);
         }
     }
 }

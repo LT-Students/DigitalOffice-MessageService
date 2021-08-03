@@ -37,11 +37,11 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
             DbEmailTemplate dbEmailTemplate;
             if (request.TemplateId != null)
             {
-                dbEmailTemplate = _templateRepository.GetEmailTemplateById(request.TemplateId.Value);
+                dbEmailTemplate = _templateRepository.Get(request.TemplateId.Value);
             }
             else
             {
-                dbEmailTemplate = _templateRepository.GetEmailTemplateByType((int)request.Type);
+                dbEmailTemplate = _templateRepository.Get((int)request.Type);
             }
 
             var dbEmailTemplateText = dbEmailTemplate?.EmailTemplateTexts.FirstOrDefault(ett => ett.Language == request.Language);

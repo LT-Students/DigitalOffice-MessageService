@@ -40,7 +40,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
                 .Returns(true);
 
             _repositoryMock
-                .Setup(x => x.DisableEmailTemplate(It.IsAny<Guid>()))
+                .Setup(x => x.Disable(It.IsAny<Guid>()))
                 .Returns(true);
 
             var expectedResponse = new OperationResultResponse<bool>
@@ -57,7 +57,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
         [Test]
         public void ShouldThrowExceptionWhenRepositoryThrowsIt()
         {
-            _repositoryMock.Setup(x => x.DisableEmailTemplate(It.IsAny<Guid>())).Throws(new Exception());
+            _repositoryMock.Setup(x => x.Disable(It.IsAny<Guid>())).Throws(new Exception());
 
             Assert.Throws<Exception>(() => _command.Execute(_emailTemplateId));
             _repositoryMock.Verify();

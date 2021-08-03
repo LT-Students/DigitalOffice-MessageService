@@ -1,6 +1,7 @@
 ﻿using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -32,6 +33,16 @@ namespace LT.DigitalOffice.MessageService.Controllers
             [FromBody] EditEmailTemplateRequest emailTemplate)
         {
             return command.Execute(emailTemplate);
+        }
+
+        [HttpGet("find")]
+        public EmailTemplatesResponse Find(
+            [FromServices] IFindEmailTemplateCommand command,
+            [FromQuery] int skipCount,
+            [FromQuery] int takeCount,
+            [FromQuery] bool? includeDeactivated)
+        {
+            return command.Execute(skipCount, takeCount, includeDeactivated);
         }
     }
 }
