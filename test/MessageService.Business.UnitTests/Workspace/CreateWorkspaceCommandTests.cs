@@ -37,9 +37,8 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
         private Mock<IRequestClient<IAddImageRequest>> _requestBrokerMock;
         private Mock<Request<IRequestClient<IAddImageRequest>>> _requestMock;
 
-        private Mock<IAddImageResponse> _responseMock;
-        private Mock<IOperationResult<IAddImageResponse>> _operationResultMock;
-        private Mock<Response<IOperationResult<IAddImageResponse>>> _brokerResponseMock;
+        private Mock<IOperationResult<Guid>> _operationResultMock;
+        private Mock<Response<IOperationResult<Guid>>> _brokerResponseMock;
 
         private ICreateWorkspaceCommand _command;
 
@@ -53,12 +52,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
 
         private void BrokerSetUp()
         {
-            _responseMock = new Mock<IAddImageResponse>();
-            _responseMock
-                .Setup(x => x.Id)
-                .Returns(_imageId);
-
-            _operationResultMock = new Mock<IOperationResult<IAddImageResponse>>();
+            _operationResultMock = new Mock<IOperationResult<Guid>>();
             _operationResultMock
                 .Setup(x => x.IsSuccess)
                 .Returns(true);
@@ -67,16 +61,16 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 .Returns(new List<string>());
             _operationResultMock
                 .Setup(x => x.Body)
-                .Returns(_responseMock.Object);
+                .Returns(_imageId);
 
-            _brokerResponseMock = new Mock<Response<IOperationResult<IAddImageResponse>>>();
+            _brokerResponseMock = new Mock<Response<IOperationResult<Guid>>>();
             _brokerResponseMock
                 .Setup(x => x.Message)
                 .Returns(_operationResultMock.Object);
 
             _requestBrokerMock = new Mock<IRequestClient<IAddImageRequest>>();
             _requestBrokerMock
-                .Setup(x => x.GetResponse<IOperationResult<IAddImageResponse>>(
+                .Setup(x => x.GetResponse<IOperationResult<Guid>>(
                     It.IsAny<object>(), default, default))
                 .Returns(Task.FromResult(_brokerResponseMock.Object));
 
@@ -207,7 +201,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
         public void ShouldCreateWorkspaceCorrectlyWhenAddImageRequestFailed()
         {
             _requestBrokerMock
-                .Setup(x => x.GetResponse<IOperationResult<IAddImageResponse>>(
+                .Setup(x => x.GetResponse<IOperationResult<Guid>>(
                     It.IsAny<object>(), default, default))
                 .Throws(new Exception());
 

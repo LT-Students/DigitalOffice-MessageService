@@ -66,7 +66,7 @@ namespace LT.DigitalOffice.MessageService.Data
         public DbEmailTemplate Get(int type)
         {
             var dbEmailTemplate = _provider.EmailTemplates.Include(et => et.EmailTemplateTexts)
-                .FirstOrDefault(et => et.Type == type);
+                .FirstOrDefault(et => et.Type == type && et.IsActive);
 
             if (dbEmailTemplate == null)
             {
