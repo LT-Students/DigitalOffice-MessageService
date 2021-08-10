@@ -29,7 +29,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
                 throw new ForbiddenException("Not enough rights.");
             }
 
-            var isSuccess = _repository.DisableEmailTemplate(emailTemplateId);
+            var isSuccess = _repository.Disable(emailTemplateId);
 
             return new OperationResultResponse<bool>
             {

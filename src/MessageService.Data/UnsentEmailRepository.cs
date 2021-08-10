@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
         public IEnumerable<DbUnsentEmail> GetAll()
         {
-            return _provider.UnsentEmails.Include(u => u.Email);
+            return _provider.UnsentEmails.Include(u => u.Email).ToList();
         }
 
         public IEnumerable<DbUnsentEmail> Find(int skipCount, int takeCount, out int totalCount)

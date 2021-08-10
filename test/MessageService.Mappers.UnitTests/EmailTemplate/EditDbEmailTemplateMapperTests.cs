@@ -2,7 +2,6 @@
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Emails;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using LT.DigitalOffice.Models.Broker.Enums;
 using LT.DigitalOffice.UnitTestKernel;
@@ -18,7 +17,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
 
         private EmailTemplateRequest _emailTemplate;
         private DbEmailTemplate _expectedDbEmailTemplate;
-        private EmailTemplateTextInfo _emailTemplateTextInfo;
+        private EmailTemplateTextRequest _emailTemplateTextInfo;
         private EditEmailTemplateRequest _editEmailTemplateRequest;
 
         [OneTimeSetUp]
@@ -31,9 +30,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
                 Name = "Pattern name",
                 Type = EmailTemplateType.Greeting,
                 AuthorId = Guid.NewGuid(),
-                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                EmailTemplateTexts = new List<EmailTemplateTextRequest>
                 {
-                    new EmailTemplateTextInfo
+                    new EmailTemplateTextRequest
                     {
                         Subject = "Subject",
                         Text = "Email text",
@@ -42,7 +41,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
                 }
             };
 
-            _emailTemplateTextInfo = new EmailTemplateTextInfo()
+            _emailTemplateTextInfo = new EmailTemplateTextRequest()
             {
                 Subject = "New subject",
                 Text = "New email text",
@@ -53,9 +52,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
             {
                 Name = "New pattern name",
                 Type = EmailTemplateType.Greeting,
-                EmailTemplateTexts = new List<EmailTemplateTextInfo>
+                EmailTemplateTexts = new List<EmailTemplateTextRequest>
                 {
-                    new EmailTemplateTextInfo
+                    new EmailTemplateTextRequest
                     {
                         Subject = _emailTemplateTextInfo.Subject,
                         Text = _emailTemplateTextInfo.Text,

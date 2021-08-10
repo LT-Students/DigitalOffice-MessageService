@@ -4,6 +4,7 @@ using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Data
@@ -17,7 +18,7 @@ namespace LT.DigitalOffice.MessageService.Data
             _provider = provider;
         }
 
-        public bool DisableEmailTemplate(Guid templateId)
+        public bool Disable(Guid templateId)
         {
             var dbEmailTemplateText = _provider.EmailTemplates
                 .FirstOrDefault(templateText => templateText.Id == templateId);
@@ -35,7 +36,7 @@ namespace LT.DigitalOffice.MessageService.Data
             return true;
         }
 
-        public Guid AddEmailTemplate(DbEmailTemplate emailTemplate)
+        public Guid Add(DbEmailTemplate emailTemplate)
         {
             if (emailTemplate == null)
             {
@@ -48,7 +49,7 @@ namespace LT.DigitalOffice.MessageService.Data
             return emailTemplate.Id;
         }
 
-        public DbEmailTemplate GetEmailTemplateById(Guid id)
+        public DbEmailTemplate Get(Guid id)
         {
             var dbEmailTemplate = _provider.EmailTemplates
                 .Include(et => et.EmailTemplateTexts)
@@ -62,10 +63,10 @@ namespace LT.DigitalOffice.MessageService.Data
             return dbEmailTemplate;
         }
 
-        public DbEmailTemplate GetEmailTemplateByType(int type)
+        public DbEmailTemplate Get(int type)
         {
             var dbEmailTemplate = _provider.EmailTemplates.Include(et => et.EmailTemplateTexts)
-                .FirstOrDefault(et => et.Type == type);
+                .FirstOrDefault(et => et.Type == type && et.IsActive);
 
             if (dbEmailTemplate == null)
             {
@@ -75,7 +76,7 @@ namespace LT.DigitalOffice.MessageService.Data
             return dbEmailTemplate;
         }
 
-        public bool EditEmailTemplate(DbEmailTemplate dbEmailTemplateToEdit)
+        public bool Edit(DbEmailTemplate dbEmailTemplateToEdit)
         {
             var dbTemplate = _provider.EmailTemplates
                 .AsNoTracking()
@@ -90,6 +91,33 @@ namespace LT.DigitalOffice.MessageService.Data
             _provider.Save();
 
             return true;
+        }
+
+        public List<DbEmailTemplate> Find(int skipCount, int takeCount, bool? includeDeactivated, out int totalCount)
+        {
+            if (skipCount < 0)
+            {
+                throw new BadRequestException("Skip count can't be less than 0.");
+            }
+
+            if (takeCount <= 0)
+            {
+                throw new BadRequestException("Take count can't be equal or less than 0.");
+            }
+
+            var dbEmails = _provider.EmailTemplates.AsQueryable();
+
+            if (includeDeactivated.HasValue && includeDeactivated.Value)
+            {
+                totalCount = _provider.EmailTemplates.Count();
+            }
+            else
+            {
+                dbEmails = dbEmails.Where(e => e.IsActive);
+                totalCount = _provider.EmailTemplates.Count(e => e.IsActive);
+            }
+
+            return dbEmails.Skip(skipCount).Take(takeCount).Include(e => e.EmailTemplateTexts).ToList();
         }
     }
 }
