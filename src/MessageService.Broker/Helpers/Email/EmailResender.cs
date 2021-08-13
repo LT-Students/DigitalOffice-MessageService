@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
     {
         private readonly IUnsentEmailRepository _unsentEmailRepository;
 
-        public void StartResend(double intervalInMinutes)
+        public async Task StartResend(int intervalInMinutes)
         {
             while (true)
             {
@@ -32,6 +32,8 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
                         _unsentEmailRepository.IncrementTotalCount(email);
                     }
                 }
+
+                await Task.Delay(TimeSpan.FromMinutes(intervalInMinutes));
             }
         }
 
