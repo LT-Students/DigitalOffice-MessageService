@@ -208,7 +208,7 @@ namespace LT.DigitalOffice.MessageService
 
             FindParseProperties(app);
 
-            StartResender(app);
+            //StartResender(app);
 
             app.UseForwardedHeaders();
 
