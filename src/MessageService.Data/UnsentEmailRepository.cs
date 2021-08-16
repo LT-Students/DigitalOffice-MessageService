@@ -36,9 +36,13 @@ namespace LT.DigitalOffice.MessageService.Data
                 ?? throw new NotFoundException($"There is not unsent email with id {id}");
         }
 
-        public IEnumerable<DbUnsentEmail> GetAll()
+        public IEnumerable<DbUnsentEmail> GetAll(int totalSendingCountIsLessThen)
         {
-            return _provider.UnsentEmails.Include(u => u.Email).ToList();
+            return _provider
+                .UnsentEmails
+                .Where(u => u.TotalSendingCount < totalSendingCountIsLessThen)
+                .Include(u => u.Email)
+                .ToList();
         }
 
         public IEnumerable<DbUnsentEmail> Find(int skipCount, int takeCount, out int totalCount)
