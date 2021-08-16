@@ -209,7 +209,7 @@ namespace LT.DigitalOffice.MessageService
         {
             UpdateDatabase(app);
 
-            //FindParseProperties(app);
+            FindParseProperties(app);
 
             StartResender(app);
 
