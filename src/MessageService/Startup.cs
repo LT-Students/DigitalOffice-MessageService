@@ -89,9 +89,9 @@ namespace LT.DigitalOffice.MessageService
 
         private void StartResender(IApplicationBuilder app)
         {
-            int resendIntervalMinutes = Configuration
+            EmailEngineConfig emailEngineConfig = Configuration
                 .GetSection(EmailEngineConfig.SectionName)
-                .Get<EmailEngineConfig>().ResendIntervalInMinutes;
+                .Get<EmailEngineConfig>();
 
             IServiceProvider serviceProvider = app.ApplicationServices.GetRequiredService<IServiceProvider>();
 
@@ -99,12 +99,15 @@ namespace LT.DigitalOffice.MessageService
 
             IUnsentEmailRepository repository = scope.ServiceProvider.GetRequiredService<IUnsentEmailRepository>();
 
+            ILoggerFactory loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
+            ILogger<EmailResender> logger = loggerFactory.CreateLogger<EmailResender>();
+
             IRequestClient<IGetSmtpCredentialsRequest> rcGetSmtpCredentials = serviceProvider.CreateRequestClient<IGetSmtpCredentialsRequest>(
                 new Uri($"{_rabbitMqConfig.BaseUrl}/{_rabbitMqConfig.GetSmtpCredentialsEndpoint}"), default);
 
-            var resender = new EmailResender(repository, rcGetSmtpCredentials);
+            var resender = new EmailResender(repository, logger, rcGetSmtpCredentials);
 
-            Task.Run(() => resender.StartResend(resendIntervalMinutes));
+            Task.Run(() => resender.StartResend(emailEngineConfig.ResendIntervalInMinutes, emailEngineConfig.MaxResendingCount));
         }
 
         private void FindParseProperties(IApplicationBuilder app)

@@ -77,7 +77,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldGetAllUnsentEmails()
         {
-            var response = _repository.GetAll();
+            var response = _repository.GetAll(5);
 
             foreach (var email in response)
             {

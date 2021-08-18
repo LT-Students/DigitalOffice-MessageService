@@ -53,35 +53,34 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
                 return false;
             }
 
-            var message = new MailMessage(
-                SmtpCredentials.Email,
-                email.Receiver)
-            {
-                Subject = email.Subject,
-                Body = email.Body
-            };
-
-            var smtp = new SmtpClient(
-                SmtpCredentials.Host,
-                SmtpCredentials.Port)
-            {
-                Credentials = new NetworkCredential(
-                    SmtpCredentials.Email,
-                    SmtpCredentials.Password),
-                EnableSsl = SmtpCredentials.EnableSsl
-            };
-
             try
             {
+                var message = new MailMessage(
+                SmtpCredentials.Email,
+                email.Receiver)
+                {
+                    Subject = email.Subject,
+                    Body = email.Body
+                };
+
+                var smtp = new SmtpClient(
+                    SmtpCredentials.Host,
+                    SmtpCredentials.Port)
+                {
+                    Credentials = new NetworkCredential(
+                        SmtpCredentials.Email,
+                        SmtpCredentials.Password),
+                    EnableSsl = SmtpCredentials.EnableSsl
+                };
+
                 smtp.Send(message);
             }
             catch (Exception exc)
             {
                 _logger?.LogError(exc,
-                    "Errors while sending email to {to} with subject: {subject} and body: {body}. Email replaced to resend queue.",
-                    email.Receiver,
-                    email.Subject,
-                    email.Body);
+                    "Errors while sending email with id {emailId} to {to}. Email replaced to resend queue.",
+                    email.Id,
+                    email.Receiver);
 
                 return false;
             }
@@ -91,7 +90,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 
         public BaseEmailSender(
             IRequestClient<IGetSmtpCredentialsRequest> rcGetSmtpCredentials,
-            ILogger logger = null)
+            ILogger logger)
         {
             _rcGetSmtpCredentials = rcGetSmtpCredentials;
             _logger = logger;
