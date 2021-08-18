@@ -1,6 +1,4 @@
-﻿using LT.DigitalOffice.MessageService.Data;
-using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Data.Provider;
+﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.Models.Broker.Requests.Company;
 using MassTransit;
 using Microsoft.Extensions.Logging;
@@ -13,11 +11,11 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
     {
         private readonly IUnsentEmailRepository _unsentEmailRepository;
 
-        public async Task StartResend(int intervalInMinutes)
+        public async Task StartResend(int intervalInMinutes, int maxResendingCount)
         {
             while (true)
             {
-                var unsentEmails = _unsentEmailRepository.GetAll();
+                var unsentEmails = _unsentEmailRepository.GetAll(maxResendingCount);
 
                 foreach (var email in unsentEmails)
                 {
@@ -39,8 +37,9 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
 
         public EmailResender(
             IUnsentEmailRepository unsentEmailRepository,
+            ILogger<EmailResender> logger,
             IRequestClient<IGetSmtpCredentialsRequest> rcGetSmtpCredentials)
-            : base(rcGetSmtpCredentials, null)
+            : base(rcGetSmtpCredentials, logger)
         {
             _unsentEmailRepository = unsentEmailRepository;
         }
