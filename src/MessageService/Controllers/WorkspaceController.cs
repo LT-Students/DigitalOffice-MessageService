@@ -1,6 +1,8 @@
 ﻿using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -16,6 +18,14 @@ namespace LT.DigitalOffice.MessageService.Controllers
             [FromBody] WorkspaceRequest request)
         {
             return command.Execute(request);
+        }
+
+        [HttpGet("find")]
+        public FindResultResponse<WorkspaceInfo> Find(
+            [FromServices] IFindWorkspaceCommand command,
+            [FromQuery] FindWorkspaceFilter filter)
+        {
+            return command.Execute(filter);
         }
 
         [HttpDelete("remove")]

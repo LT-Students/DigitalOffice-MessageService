@@ -6,6 +6,6 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public ImageInfo Image { get; set; }
+        public CreateImageRequest Image { get; set; }
     }
 }

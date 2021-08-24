@@ -52,7 +52,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 Name = "name",
                 IsActive = true,
                 ImageId = null,
-                OwnerId = _ownerId,
+                CreatedBy = _ownerId,
                 Description = "description"
             };
 

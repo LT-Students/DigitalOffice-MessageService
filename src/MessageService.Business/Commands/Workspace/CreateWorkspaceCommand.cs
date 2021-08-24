@@ -7,7 +7,7 @@ using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
 using LT.DigitalOffice.Models.Broker.Requests.File;
@@ -30,7 +30,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRequestClient<IAddImageRequest> _requestClient;
 
-        private Guid? AddImageContent(ImageInfo image, Guid ownerId, List<string> errors)
+        private Guid? AddImageContent(CreateImageRequest image, Guid ownerId, List<string> errors)
         {
             Guid? imageId = null;
 
@@ -43,10 +43,10 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
                     image.Content,
                     image.Extension,
                     ownerId);
-                var imageResponse = _requestClient.GetResponse<IOperationResult<IAddImageResponse>>(imageRequest).Result;
+                var imageResponse = _requestClient.GetResponse<IOperationResult<Guid>>(imageRequest).Result;
                 if (imageResponse.Message.IsSuccess)
                 {
-                    imageId = imageResponse.Message.Body.Id;
+                    imageId = imageResponse.Message.Body;
                 }
                 else
                 {

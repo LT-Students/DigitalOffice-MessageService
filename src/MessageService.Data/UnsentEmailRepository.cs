@@ -69,7 +69,7 @@ namespace LT.DigitalOffice.MessageService.Data
             }
 
             email.TotalSendingCount++;
-            email.LastSendAt = DateTime.UtcNow;
+            email.LastSendAtUtc = DateTime.UtcNow;
             _provider.Save();
         }
     }

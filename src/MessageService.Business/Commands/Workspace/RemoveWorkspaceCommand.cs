@@ -30,7 +30,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         {
             var requesterId = _httpContextAccessor.HttpContext.GetUserId();
 
-            if (requesterId != _workspaceRepository.Get(workspaceId).OwnerId
+            if (requesterId != _workspaceRepository.Get(workspaceId).CreatedBy
                 && _userRepository.GetAdmins(workspaceId).FirstOrDefault(wa => wa.UserId == requesterId) == null)
             {
                 throw new ForbiddenException("Not enough rights.");

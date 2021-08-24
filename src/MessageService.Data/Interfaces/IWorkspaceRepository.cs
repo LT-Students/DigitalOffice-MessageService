@@ -1,6 +1,8 @@
 ﻿using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
 using System;
+using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Data.Interfaces
 {
@@ -14,6 +16,8 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
         void Add(DbWorkspace workspace);
 
         DbWorkspace Get(Guid workspaceId);
+
+        List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount);
 
         bool SwitchActiveStatus(Guid workspaceId, bool status);
     }

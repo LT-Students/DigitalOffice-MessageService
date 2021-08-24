@@ -11,13 +11,14 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
 		public Guid Id { get; set; }
 		public Guid WorkspaceId { get; set; }
-        public Guid OwnerId { get; set; }
         public Guid? ImageId { get; set; }
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public bool IsPrivate { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? DeactivatedAt { get; set; }
+        public Guid CreatedBy { get; set; }
+        public DateTime CreatedAtUtc { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? ModifiedAtUtc { get; set; }
 
         public ICollection<DbChannelUser> Users { get; set; }
 		public DbWorkspace Workspace { get; set; }

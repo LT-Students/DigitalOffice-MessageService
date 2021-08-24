@@ -51,9 +51,9 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             _dbEmailTemplateToAdd = new DbEmailTemplate
             {
                 Id = Guid.NewGuid(),
-                AuthorId = Guid.NewGuid(),
+                CreatedBy = Guid.NewGuid(),
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAtUtc = DateTime.UtcNow,
                 EmailTemplateTexts = new List<DbEmailTemplateText>
                 {
                     dbEmailTemplateText
@@ -63,10 +63,10 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             _dbEmailTemplate = new DbEmailTemplate
             {
                 Id = _emailTemplateId,
-                AuthorId = Guid.NewGuid(),
+                CreatedBy = Guid.NewGuid(),
                 IsActive = true,
                 Type = (int)EmailTemplateType.Greeting,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAtUtc = DateTime.UtcNow,
                 EmailTemplateTexts = new List<DbEmailTemplateText>
                 {
                     dbEmailTemplateText
@@ -76,9 +76,9 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             _editDbEmailTemplate = new DbEmailTemplate
             {
                 Id = _dbEmailTemplate.Id,
-                AuthorId = _dbEmailTemplate.AuthorId,
+                CreatedBy = _dbEmailTemplate.CreatedBy,
                 IsActive = _dbEmailTemplate.IsActive,
-                CreatedAt = _dbEmailTemplate.CreatedAt
+                CreatedAtUtc = _dbEmailTemplate.CreatedAtUtc
             };
 
             _provider.EmailTemplates.Add(_dbEmailTemplate);
@@ -173,9 +173,9 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             var newdbEmailTemplate = new DbEmailTemplate
             {
                 Id = Guid.NewGuid(),
-                AuthorId = _editDbEmailTemplate.AuthorId,
+                CreatedBy = _editDbEmailTemplate.CreatedBy,
                 IsActive = _editDbEmailTemplate.IsActive,
-                CreatedAt = _editDbEmailTemplate.CreatedAt
+                CreatedAtUtc = _editDbEmailTemplate.CreatedAtUtc
             };
 
             Assert.Throws<NotFoundException>(() => _repository.Edit(newdbEmailTemplate));
@@ -216,8 +216,8 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             Assert.AreEqual(_dbEmailTemplate.Id, response.Id);
             Assert.AreEqual(_dbEmailTemplate.Name, response.Name);
             Assert.AreEqual(_dbEmailTemplate.IsActive, response.IsActive);
-            Assert.AreEqual(_dbEmailTemplate.AuthorId, response.AuthorId);
-            Assert.AreEqual(_dbEmailTemplate.CreatedAt, response.CreatedAt);
+            Assert.AreEqual(_dbEmailTemplate.CreatedBy, response.CreatedBy);
+            Assert.AreEqual(_dbEmailTemplate.CreatedAtUtc, response.CreatedAtUtc);
             Assert.AreEqual(_dbEmailTemplate.Type, response.Type);
         }
 

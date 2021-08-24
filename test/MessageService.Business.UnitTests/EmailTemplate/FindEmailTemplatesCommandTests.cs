@@ -71,9 +71,9 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
             DbEmailTemplate dbEmailTemplate = new DbEmailTemplate
             {
                 Id = Guid.NewGuid(),
-                AuthorId = Guid.NewGuid(),
+                CreatedBy = Guid.NewGuid(),
                 Name = "Name",
-                CreatedAt = DateTime.UtcNow,
+                CreatedAtUtc = DateTime.UtcNow,
                 IsActive = true,
                 Type = (int)EmailTemplateType.Greeting,
                 EmailTemplateTexts = new List<DbEmailTemplateText>()
@@ -102,9 +102,9 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
             EmailTemplateInfo emailTemplateInfo = new EmailTemplateInfo
             {
                 Id = dbEmailTemplate.Id,
-                AuthorId = dbEmailTemplate.AuthorId,
+                AuthorId = dbEmailTemplate.CreatedBy,
                 Name = dbEmailTemplate.Name,
-                CreatedAt = dbEmailTemplate.CreatedAt,
+                CreatedAtUtc = dbEmailTemplate.CreatedAtUtc,
                 IsActive = dbEmailTemplate.IsActive,
                 Type = EmailTemplateType.Greeting.ToString(),
                 Texts = new List<EmailTemplateTextInfo>()
