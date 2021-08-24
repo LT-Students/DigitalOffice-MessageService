@@ -2,6 +2,7 @@
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Models.Broker.Requests.Company;
 using LT.DigitalOffice.Models.Broker.Requests.File;
+using LT.DigitalOffice.Models.Broker.Requests.Image;
 using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Configurations
@@ -18,6 +19,15 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Configurations
 
         [AutoInjectRequest(typeof(IAddImageRequest))]
         public string AddImageEndpoint { get; set; }
+
+        [AutoInjectRequest(typeof(ICreateImagesMessageRequest))]
+        public string CreateImagesMessageEndpoint { get; set; }
+
+        [AutoInjectRequest(typeof(IGetImagesMessageRequest))]
+        public string GetImagesMessageEndpoint { get; set; }
+
+        [AutoInjectRequest(typeof(IDeleteImagesMessageRequest))]
+        public string DeleteImagesMessageEndpoint { get; set; }
 
     }
 }
