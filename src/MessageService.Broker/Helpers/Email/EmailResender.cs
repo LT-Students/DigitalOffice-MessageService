@@ -1,8 +1,7 @@
-﻿using LT.DigitalOffice.MessageService.Data;
-using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Data.Provider;
+﻿using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.Models.Broker.Requests.Company;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -12,13 +11,11 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
     {
         private readonly IUnsentEmailRepository _unsentEmailRepository;
 
-        public void StartResend(double intervalInMinutes)
+        public async Task StartResend(int intervalInMinutes, int maxResendingCount)
         {
             while (true)
             {
-                Task.Delay(TimeSpan.FromMinutes(intervalInMinutes)).Wait();
-
-                var unsentEmails = _unsentEmailRepository.GetAll();
+                var unsentEmails = _unsentEmailRepository.GetAll(maxResendingCount);
 
                 foreach (var email in unsentEmails)
                 {
@@ -33,15 +30,18 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
                         _unsentEmailRepository.IncrementTotalCount(email);
                     }
                 }
+
+                await Task.Delay(TimeSpan.FromMinutes(intervalInMinutes));
             }
         }
 
         public EmailResender(
-            IDataProvider dataProvider,
+            IUnsentEmailRepository unsentEmailRepository,
+            ILogger<EmailResender> logger,
             IRequestClient<IGetSmtpCredentialsRequest> rcGetSmtpCredentials)
-            : base(rcGetSmtpCredentials)
+            : base(rcGetSmtpCredentials, logger)
         {
-            _unsentEmailRepository = new UnsentEmailRepository(dataProvider);
+            _unsentEmailRepository = unsentEmailRepository;
         }
     }
 }

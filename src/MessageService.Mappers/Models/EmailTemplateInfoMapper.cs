@@ -26,7 +26,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
             return new EmailTemplateInfo
             {
                 Id = template.Id,
-                AuthorId = template.CreatedBy,
+                CreatedBy = template.CreatedBy,
                 Name = template.Name,
                 Type = ((EmailTemplateType)template.Type).ToString(),
                 CreatedAtUtc = template.CreatedAtUtc,

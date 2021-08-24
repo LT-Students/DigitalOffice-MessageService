@@ -6,7 +6,7 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Models.Emails
     public record EmailTemplateInfo
     {
         public Guid Id { get; set; }
-        public Guid AuthorId { get; set; }
+        public Guid CreatedBy { get; set; }
         public string Name { get; set; }
         public DateTime CreatedAtUtc { get; set; }
         public string Type { get; set; }

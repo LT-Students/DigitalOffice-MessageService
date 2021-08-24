@@ -8,7 +8,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     [AutoInject]
     public interface IUnsentEmailRepository
     {
-        IEnumerable<DbUnsentEmail> GetAll();
+        IEnumerable<DbUnsentEmail> GetAll(int totalSendingCountIsLessThen);
 
         IEnumerable<DbUnsentEmail> Find(int skipCount, int takeCount, out int totalCount);
 

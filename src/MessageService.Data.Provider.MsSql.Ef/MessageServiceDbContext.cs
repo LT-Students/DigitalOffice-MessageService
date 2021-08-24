@@ -23,6 +23,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef
         public DbSet<DbChannelUser> ChannelUsers { get; set; }
         public DbSet<DbChannel> Channels { get; set; }
         public DbSet<DbUnsentEmail> UnsentEmails { get; set; }
+        public DbSet<DbKeyword> ParseEntities { get; set; }
 
         void IBaseDataProvider.Save()
         {

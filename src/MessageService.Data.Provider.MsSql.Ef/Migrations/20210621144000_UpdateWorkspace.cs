@@ -65,7 +65,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
                         CreatedAt = table.Column<DateTime>(nullable: false),
                         DeactivatedAt = table.Column<DateTime?>(nullable: true)
                     },
-                    constraints: table => 
+                    constraints: table =>
                     {
                         table.PrimaryKey("PK_WorkspaceUsers", x => x.Id);
                     });

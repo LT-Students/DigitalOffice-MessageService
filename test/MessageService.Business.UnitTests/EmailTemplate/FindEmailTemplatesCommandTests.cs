@@ -102,7 +102,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
             EmailTemplateInfo emailTemplateInfo = new EmailTemplateInfo
             {
                 Id = dbEmailTemplate.Id,
-                AuthorId = dbEmailTemplate.CreatedBy,
+                CreatedBy = dbEmailTemplate.CreatedBy,
                 Name = dbEmailTemplate.Name,
                 CreatedAtUtc = dbEmailTemplate.CreatedAtUtc,
                 IsActive = dbEmailTemplate.IsActive,
