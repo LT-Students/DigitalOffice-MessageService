@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Workspace
         private const string DefaultChannelName = "General";
         private const string DefaultChannelDescription = "";
 
-        public DbWorkspace Map(WorkspaceRequest value, Guid ownerId, Guid? imageId)
+        public DbWorkspace Map(CreateWorkspaceRequest value, Guid ownerId, Guid? imageId)
         {
             if (value == null)
             {

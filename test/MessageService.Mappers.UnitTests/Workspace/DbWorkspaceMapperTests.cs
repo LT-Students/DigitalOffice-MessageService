@@ -45,7 +45,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.Workspace
                 Extension = "jpg"
             };
 
-            var workspace = new WorkspaceRequest
+            var workspace = new CreateWorkspaceRequest
             {
                 Name = "Name",
                 Description = "Description",

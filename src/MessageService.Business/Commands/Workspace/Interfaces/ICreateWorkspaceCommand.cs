@@ -17,6 +17,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces
         /// </summary>
         /// <param name="workspace">Workspace data.</param>
         /// <returns>Guid of the added workspace.</returns>
-        OperationResultResponse<Guid> Execute(WorkspaceRequest workspace);
+        OperationResultResponse<Guid> Execute(CreateWorkspaceRequest workspace);
     }
 }

@@ -46,7 +46,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
         private Guid _workspaceId;
         private Guid _userId;
         private Guid _imageId;
-        private WorkspaceRequest _workspace;
+        private CreateWorkspaceRequest _workspace;
         private DbWorkspace _dbWorkspace;
         private ValidationResult _validationResultError;
         private Mock<ValidationResult> _validationResultIsValidMock;
@@ -107,7 +107,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 Extension = "jpg"
             };
 
-            _workspace = new WorkspaceRequest
+            _workspace = new CreateWorkspaceRequest
             {
                 Name = "Name",
                 Image = image,
@@ -142,7 +142,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
         {
             _mapperMock = new Mock<IDbWorkspaceMapper>();
             _mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<WorkspaceRequest>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+                .Setup(mapper => mapper.Map(It.IsAny<CreateWorkspaceRequest>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
                 .Returns(_dbWorkspace);
 
             _validatorMock = new Mock<ICreateWorkspaceValidator>();
@@ -225,7 +225,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 .Verifiable();
 
             _mapperMock
-                .Setup(mapper => mapper.Map(It.IsAny<WorkspaceRequest>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+                .Setup(mapper => mapper.Map(It.IsAny<CreateWorkspaceRequest>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
                 .Throws<BadRequestException>();
 
             Assert.Throws<BadRequestException>(() => _command.Execute(_workspace));

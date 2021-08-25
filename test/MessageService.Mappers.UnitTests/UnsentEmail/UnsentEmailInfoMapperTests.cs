@@ -81,8 +81,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.UnsentEmail
             {
                 Id = _dbUnsentEmail.Id,
                 Email = _emailInfo,
-                LastSendAt = _dbUnsentEmail.LastSendAtUtc,
-                CreatedAt = _dbUnsentEmail.CreatedAtUtc,
+                LastSendAtUtc = _dbUnsentEmail.LastSendAtUtc,
+                CreatedAtUtc = _dbUnsentEmail.CreatedAtUtc,
                 TotalSendingCount = _dbUnsentEmail.TotalSendingCount
             };
 

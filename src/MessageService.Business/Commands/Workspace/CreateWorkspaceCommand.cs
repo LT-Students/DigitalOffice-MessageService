@@ -81,7 +81,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public OperationResultResponse<Guid> Execute(WorkspaceRequest workspace)
+        public OperationResultResponse<Guid> Execute(CreateWorkspaceRequest workspace)
         {
             List<string> errors = new();
 

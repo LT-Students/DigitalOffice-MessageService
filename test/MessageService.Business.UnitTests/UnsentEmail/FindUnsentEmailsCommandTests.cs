@@ -100,8 +100,8 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
             UnsentEmailInfo info1 = new UnsentEmailInfo
             {
                 Id = emails[0].Id,
-                CreatedAt = emails[0].CreatedAtUtc,
-                LastSendAt = emails[0].LastSendAtUtc,
+                CreatedAtUtc = emails[0].CreatedAtUtc,
+                LastSendAtUtc = emails[0].LastSendAtUtc,
                 TotalSendingCount = emails[0].TotalSendingCount,
                 Email = new EmailInfo
                 {
@@ -115,8 +115,8 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
             UnsentEmailInfo info2 = new UnsentEmailInfo
             {
                 Id = emails[0].Id,
-                CreatedAt = emails[0].CreatedAtUtc,
-                LastSendAt = emails[0].LastSendAtUtc,
+                CreatedAtUtc = emails[0].CreatedAtUtc,
+                LastSendAtUtc = emails[0].LastSendAtUtc,
                 TotalSendingCount = emails[0].TotalSendingCount,
                 Email = new EmailInfo
                 {
