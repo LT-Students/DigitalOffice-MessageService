@@ -1,47 +1,78 @@
-﻿using LT.DigitalOffice.Kernel.Responses;
+﻿using System;
+using System.Net;
+using LT.DigitalOffice.Kernel.Enums;
+using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace LT.DigitalOffice.MessageService.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class WorkspaceController : ControllerBase
-    {
-        [HttpPost("create")]
-        public OperationResultResponse<Guid> Create(
-            [FromServices] ICreateWorkspaceCommand command,
-            [FromBody] CreateWorkspaceRequest request)
-        {
-            return command.Execute(request);
-        }
+  [Route("[controller]")]
+  [ApiController]
+  public class WorkspaceController : ControllerBase
+  {
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-        [HttpGet("find")]
-        public FindResultResponse<ShortWorkspaceInfo> Find(
-            [FromServices] IFindWorkspaceCommand command,
-            [FromQuery] FindWorkspaceFilter filter)
-        {
-            return command.Execute(filter);
-        }
+    public WorkspaceController(IHttpContextAccessor httpContextAccessor)
+    {
+      _httpContextAccessor = httpContextAccessor;
+    }
+
+    [HttpPost("create")]
+    public OperationResultResponse<Guid> Create(
+        [FromServices] ICreateWorkspaceCommand command,
+        [FromBody] CreateWorkspaceRequest request)
+    {
+      var result = command.Execute(request);
+
+      if (result.Status != OperationResultStatusType.Failed)
+      {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+      }
+
+      return result;
+    }
+
+    [HttpGet("find")]
+    public FindResultResponse<ShortWorkspaceInfo> Find(
+        [FromServices] IFindWorkspaceCommand command,
+        [FromQuery] FindWorkspaceFilter filter)
+    {
+      return command.Execute(filter);
+    }
 
     [HttpGet("get")]
     public OperationResultResponse<WorkspaceInfo> Get(
             [FromServices] IGetWorkspaceCommand command,
             [FromQuery] GetWorkspaceFilter filter)
     {
-      return command.Execute(filter);
+      var result = command.Execute(filter);
+
+      if (result.Status == OperationResultStatusType.Failed)
+      {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+      }
+
+      return result;
     }
 
     [HttpDelete("remove")]
-        public OperationResultResponse<bool> Remove(
+    public OperationResultResponse<bool> Remove(
             [FromServices] IRemoveWorkspaceCommand command,
             [FromQuery] Guid workspaceId)
-        {
-            return command.Execute(workspaceId);
-        }
+    {
+      var result = command.Execute(workspaceId);
+
+      if (result.Status == OperationResultStatusType.Failed)
+      {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+      }
+
+      return result;
     }
+  }
 }
