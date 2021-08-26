@@ -57,8 +57,8 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
             {
                 Id = emailId,
                 Name = emailTemplate.Name,
-                CreatedAt = DateTime.UtcNow,
-                AuthorId = emailTemplate.AuthorId,
+                CreatedAtUtc = DateTime.UtcNow,
+                CreatedBy = emailTemplate.AuthorId,
                 IsActive = true
             };
 

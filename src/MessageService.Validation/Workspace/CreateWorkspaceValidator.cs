@@ -4,7 +4,7 @@ using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
 
 namespace LT.DigitalOffice.MessageService.Validation.Workspace
 {
-    public class CreateWorkspaceValidator : AbstractValidator<WorkspaceRequest>, ICreateWorkspaceValidator
+    public class CreateWorkspaceValidator : AbstractValidator<CreateWorkspaceRequest>, ICreateWorkspaceValidator
     {
         public CreateWorkspaceValidator()
         {

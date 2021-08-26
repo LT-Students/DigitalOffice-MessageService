@@ -22,9 +22,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
                 Id = templateId,
                 Name = emailTemplate.Name,
                 Type = (int)emailTemplate.Type,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAtUtc = DateTime.UtcNow,
                 IsActive = true,
-                AuthorId = emailTemplate.AuthorId,
+                CreatedBy = emailTemplate.AuthorId,
                 EmailTemplateTexts = emailTemplate.EmailTemplateTexts.Select(x =>
                     new DbEmailTemplateText
                     {

@@ -63,10 +63,10 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
             _dbEmailTemplate = new DbEmailTemplate
             {
                 Id = _emailTemplateId,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAtUtc = DateTime.UtcNow,
                 Name = "Other pattern name",
                 Type = 2,
-                AuthorId = Guid.NewGuid(),
+                CreatedBy = Guid.NewGuid(),
                 IsActive = true,
                 EmailTemplateTexts = new List<DbEmailTemplateText>
                 {
@@ -92,10 +92,10 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
             _newDbEmailTemplate = new()
             {
                 Id = _emailTemplateId,
-                CreatedAt = _dbEmailTemplate.CreatedAt,
+                CreatedAtUtc = _dbEmailTemplate.CreatedAtUtc,
                 Name = _newEmailTemplate.Name,
                 Type = (int)_newEmailTemplate.Type,
-                AuthorId = _dbEmailTemplate.AuthorId,
+                CreatedBy = _dbEmailTemplate.CreatedBy,
                 IsActive = _dbEmailTemplate.IsActive
             };
 

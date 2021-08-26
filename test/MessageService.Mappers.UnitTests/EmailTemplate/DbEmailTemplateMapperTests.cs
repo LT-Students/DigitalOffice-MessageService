@@ -43,8 +43,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
             _expectedDbEmailTemplate = new DbEmailTemplate
             {
                 Name = _emailTemplate.Name,
-                CreatedAt = DateTime.UtcNow,
-                AuthorId = _emailTemplate.AuthorId,
+                CreatedAtUtc = DateTime.UtcNow,
+                CreatedBy = _emailTemplate.AuthorId,
                 Type = (int)_emailTemplate.Type,
                 IsActive = true
             };
@@ -75,7 +75,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
         {
             var resultDbEmailTemplate = _mapper.Map(_emailTemplate);
             _expectedDbEmailTemplate.Id = resultDbEmailTemplate.Id;
-            _expectedDbEmailTemplate.CreatedAt = resultDbEmailTemplate.CreatedAt;
+            _expectedDbEmailTemplate.CreatedAtUtc = resultDbEmailTemplate.CreatedAtUtc;
             _expectedDbEmailTemplate.EmailTemplateTexts.ElementAt(0).Id =
                 resultDbEmailTemplate.EmailTemplateTexts.ElementAt(0).Id;
             _expectedDbEmailTemplate.EmailTemplateTexts.ElementAt(0).EmailTemplateId =

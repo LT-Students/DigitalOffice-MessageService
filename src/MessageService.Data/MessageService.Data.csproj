@@ -4,6 +4,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MessageService.Data.Provider\MessageService.Data.Provider.csproj" />
+    <ProjectReference Include="..\MessageService.Models.Dto\MessageService.Models.Dto.csproj" />
   </ItemGroup>
 
 </Project>

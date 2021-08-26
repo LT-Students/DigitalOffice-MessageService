@@ -26,10 +26,10 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
             return new EmailTemplateInfo
             {
                 Id = template.Id,
-                AuthorId = template.AuthorId,
+                CreatedBy = template.CreatedBy,
                 Name = template.Name,
                 Type = ((EmailTemplateType)template.Type).ToString(),
-                CreatedAt = template.CreatedAt,
+                CreatedAtUtc = template.CreatedAtUtc,
                 IsActive = template.IsActive,
                 Texts = template.EmailTemplateTexts?.Select(_mapper.Map).ToList()
             };

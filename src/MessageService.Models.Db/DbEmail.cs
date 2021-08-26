@@ -11,7 +11,7 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         public Guid Id { get; set; }
         public Guid? SenderId { get; set; }
         public string Receiver { get; set; }
-        public DateTime Time { get; set; }
+        public DateTime CreatedAtUtc { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
 

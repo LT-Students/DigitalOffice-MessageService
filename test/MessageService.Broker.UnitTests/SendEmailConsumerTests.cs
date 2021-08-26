@@ -48,10 +48,10 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
             _dbEmailTemplate = new DbEmailTemplate
             {
                 Id = emailId,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAtUtc = DateTime.UtcNow,
                 Name = "Pattern name",
                 Type = 2,
-                AuthorId = Guid.NewGuid(),
+                CreatedBy = Guid.NewGuid(),
                 IsActive = true,
                 EmailTemplateTexts = new List<DbEmailTemplateText>
                 {
