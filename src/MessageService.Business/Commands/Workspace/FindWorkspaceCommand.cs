@@ -31,7 +31,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         {
             if (imageIds == null || imageIds.Count == 0)
             {
-                return new();
+                return null;
             }
 
             string errorMessage = "Cannot get images now. Please try again later.";
@@ -56,7 +56,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
             errors.Add(errorMessage);
 
-            return new();
+            return null;
         }
 
         public FindWorkspaceCommand(

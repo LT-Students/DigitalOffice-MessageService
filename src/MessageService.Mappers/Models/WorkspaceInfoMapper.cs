@@ -27,11 +27,11 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
             {
                 Id = workspace.Id,
                 Name = workspace.Name,
-                Image = images.FirstOrDefault(i => i.Id == workspace.ImageId),
+                Image = images?.FirstOrDefault(i => i.Id == workspace.ImageId),
                 Description = workspace.Description,
                 IsActive = workspace.IsActive,
                 Channels = workspace.Channels.Select(
-                    ch => _shortChannelInfoMapper.Map(ch, images.FirstOrDefault(i => i.Id == ch.ImageId))).ToList()
+                    ch => _shortChannelInfoMapper.Map(ch, images?.FirstOrDefault(i => i.Id == ch.ImageId))).ToList()
             };
         }
     }
