@@ -50,9 +50,11 @@ namespace LT.DigitalOffice.MessageService.Data
         workspaces = workspaces.Where(w => w.IsActive);
       }
 
+      Guid userId = _httpContextAccessor.HttpContext.GetUserId();
+
       workspaces = workspaces
-        .Include(w => w.Users.Where(u => u.Id == _httpContextAccessor.HttpContext.GetUserId()))
-        .Where(w => w.Users.Any());
+        .Include(w => w.Users.Where(u => u.Id == userId))
+        .Where(w => w.Users.Any() || w.CreatedBy == userId);
 
       totalCount = workspaces.Count();
 
