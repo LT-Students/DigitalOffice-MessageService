@@ -113,6 +113,16 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     {
       DbWorkspace workspace = _workspaceRepository.Get(filter);
 
+      if (workspace == null)
+      {
+        return new OperationResultResponse<WorkspaceInfo>
+        {
+          Status = OperationResultStatusType.Failed,
+          Body = null,
+          Errors = new() { $"Workspace with id: '{filter.WorkspaceId}' doesn't exist." }
+        };
+      }
+
       List<Guid> usersIds = workspace.Users?.Select(u => u.Id).ToList() ?? new();
       usersIds.Add(workspace.CreatedBy);
 

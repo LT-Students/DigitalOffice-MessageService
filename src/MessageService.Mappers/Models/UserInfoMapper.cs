@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
     {
       if (user == null)
       {
-        throw new ArgumentNullException(nameof(user));
+        return null;
       }
 
       return new UserInfo

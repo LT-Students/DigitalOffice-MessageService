@@ -63,13 +63,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
     public DbWorkspace Get(Guid workspaceId)
     {
-      var result = _provider.Workspaces.FirstOrDefault(w => w.Id == workspaceId);
-      if (result == null)
-      {
-        throw new NotFoundException($"Workspace with ID '{workspaceId}' was not found.");
-      }
-
-      return result;
+      return _provider.Workspaces.FirstOrDefault(w => w.Id == workspaceId);
     }
 
     public DbWorkspace Get(GetWorkspaceFilter filter)
@@ -86,8 +80,7 @@ namespace LT.DigitalOffice.MessageService.Data
         workspace = workspace.Include(w => w.Users);
       }
 
-      return workspace.FirstOrDefault(w => w.Id == filter.WorkspaceId)
-        ?? throw new NotFoundException($"Workspace with id: '{filter.WorkspaceId}' doesn't exist.");
+      return workspace.FirstOrDefault(w => w.Id == filter.WorkspaceId);
     }
 
     public bool SwitchActiveStatus(Guid workspaceId, bool status)
@@ -95,7 +88,7 @@ namespace LT.DigitalOffice.MessageService.Data
       DbWorkspace dbWorkspace = _provider.Workspaces.FirstOrDefault(w => w.Id == workspaceId);
       if (dbWorkspace == null)
       {
-        throw new NotFoundException($"Workspace with ID '{workspaceId}' was not found.");
+        return false;
       }
 
       dbWorkspace.IsActive = status;

@@ -25,7 +25,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
     {
       if (workspace == null)
       {
-        throw new ArgumentNullException(nameof(workspace));
+        return null;
       }
 
       UserData user = users?.FirstOrDefault(u => u.Id == workspace.CreatedBy);
