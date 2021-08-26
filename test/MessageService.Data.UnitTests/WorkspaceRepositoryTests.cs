@@ -102,11 +102,11 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
     }
 
     [Test]
-    public void ShouldThrowNotFountExcWhenDoesNotExistWorkspaceWithThisId()
+    public void ShouldReturnNullWhenDoesNotExistWorkspaceWithThisId()
     {
       var incorrectId = Guid.NewGuid();
 
-      Assert.Throws<NotFoundException>(() => _repository.Get(incorrectId));
+      Assert.IsNull(_repository.Get(incorrectId));
     }
     #endregion
 
@@ -127,7 +127,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
     {
       var id = Guid.NewGuid();
 
-      Assert.Throws<NotFoundException>(() => _repository.SwitchActiveStatus(id, false));
+      Assert.IsFalse(_repository.SwitchActiveStatus(id, false));
     }
     #endregion
   }

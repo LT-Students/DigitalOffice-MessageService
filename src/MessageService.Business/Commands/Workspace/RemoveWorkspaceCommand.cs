@@ -53,7 +53,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
       return new OperationResultResponse<bool>
       {
-        Status = result ? OperationResultStatusType.Failed : OperationResultStatusType.FullSuccess,
+        Status = result ? OperationResultStatusType.FullSuccess : OperationResultStatusType.Failed,
         Body = result
       };
     }
