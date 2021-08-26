@@ -1,4 +1,4 @@
-using HealthChecks.UI.Client;
+﻿using HealthChecks.UI.Client;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
@@ -151,7 +151,7 @@ namespace LT.DigitalOffice.MessageService
                 .GetSection(BaseRabbitMqConfig.SectionName)
                 .Get<RabbitMqConfig>();
 
-            Version = "1.3.0";
+            Version = "1.3.0.0";
             Description = "MessageService, is intended to work with the messages, emails and email templates.";
             StartTime = DateTime.UtcNow;
             ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
@@ -209,7 +209,7 @@ namespace LT.DigitalOffice.MessageService
         {
             UpdateDatabase(app);
 
-            FindParseProperties(app);
+            //FindParseProperties(app);
 
             StartResender(app);
 

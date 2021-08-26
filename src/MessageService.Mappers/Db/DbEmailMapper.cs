@@ -21,7 +21,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Email
                 Id = Guid.NewGuid(),
                 SenderId = request.SenderId,
                 Receiver = request.Email,
-                Time = DateTime.UtcNow
+                CreatedAtUtc = DateTime.UtcNow
             };
         }
     }

@@ -31,7 +31,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
                 Body = body,
                 Subject = subject,
                 Receiver = to,
-                Time = DateTime.UtcNow
+                CreatedAtUtc = DateTime.UtcNow
             };
 
             _emailRepository.SaveEmail(email);
@@ -45,8 +45,8 @@ namespace LT.DigitalOffice.MessageService.Broker.Helpers
                 new DbUnsentEmail
                 {
                     Id = Guid.NewGuid(),
-                    CreatedAt = email.Time,
-                    LastSendAt = email.Time,
+                    CreatedAtUtc = email.CreatedAtUtc,
+                    LastSendAtUtc = email.CreatedAtUtc,
                     EmailId = email.Id,
                     TotalSendingCount = 1
                 });

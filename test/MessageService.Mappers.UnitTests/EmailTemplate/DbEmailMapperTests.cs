@@ -48,7 +48,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
            var result = _mapper.Map(_emailMock.Object);
 
             _dbEmail.Id = result.Id;
-            _dbEmail.Time = result.Time;
+            _dbEmail.CreatedAtUtc = result.CreatedAtUtc;
 
            SerializerAssert.AreEqual(_dbEmail, result);
         }

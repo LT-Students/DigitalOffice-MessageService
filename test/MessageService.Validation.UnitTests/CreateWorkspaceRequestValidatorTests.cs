@@ -8,15 +8,15 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
 {
     public class CreateWorkspaceRequestValidatorTests
     {
-        private IValidator<WorkspaceRequest> _validator;
-        private WorkspaceRequest _workspace;
+        private IValidator<CreateWorkspaceRequest> _validator;
+        private CreateWorkspaceRequest _workspace;
 
         [SetUp]
         public void SetUp()
         {
             _validator = new CreateWorkspaceValidator();
 
-            _workspace = new WorkspaceRequest
+            _workspace = new CreateWorkspaceRequest
             {
                 Name = "Name",
                 Description = "Description"

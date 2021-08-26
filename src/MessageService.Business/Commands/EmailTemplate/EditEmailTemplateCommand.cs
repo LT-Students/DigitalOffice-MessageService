@@ -51,9 +51,9 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
 
             var editDbEmailTemplate = _mapperEmailTemplate.Map(editEmailTemplate);
 
-            editDbEmailTemplate.CreatedAt = dbEmailTemplate.CreatedAt;
+            editDbEmailTemplate.CreatedAtUtc = dbEmailTemplate.CreatedAtUtc;
             editDbEmailTemplate.IsActive = dbEmailTemplate.IsActive;
-            editDbEmailTemplate.AuthorId = dbEmailTemplate.AuthorId;
+            editDbEmailTemplate.CreatedBy = dbEmailTemplate.CreatedBy;
 
             foreach (var emailTemplateText in editEmailTemplate.EmailTemplateTexts)
             {

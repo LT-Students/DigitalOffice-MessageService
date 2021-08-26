@@ -1,7 +1,6 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Db;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using LT.DigitalOffice.Models.Broker.Enums;
 using LT.DigitalOffice.UnitTestKernel;
@@ -66,8 +65,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
             _expectedDbEmailTemplate = new DbEmailTemplate
             {
                 Name = _emailTemplate.Name,
-                CreatedAt = DateTime.UtcNow,
-                AuthorId = _emailTemplate.AuthorId,
+                CreatedAtUtc = DateTime.UtcNow,
+                CreatedBy = _emailTemplate.AuthorId,
                 Type = (int)_emailTemplate.Type,
                 IsActive = true
             };

@@ -10,11 +10,13 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         public const string TableName = "EmailTemplates";
 
         public Guid Id { get; set; }
-        public Guid AuthorId { get; set; }
         public string Name { get; set; }
-        public DateTime CreatedAt { get; set; }
         public int Type { get; set; }
         public bool IsActive { get; set; }
+        public Guid CreatedBy { get; set; }
+        public DateTime CreatedAtUtc { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? ModifiedAtUtc { get; set; }
 
         public ICollection<DbEmailTemplateText> EmailTemplateTexts { get; set; }
 

@@ -6,8 +6,8 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Models.Emails
     {
         public Guid Id { get; set; }
         public EmailInfo Email { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime LastSendAt { get; set; }
+        public DateTime CreatedAtUtc { get; set; }
+        public DateTime LastSendAtUtc { get; set; }
         public uint TotalSendingCount { get; set; }
     }
 }
