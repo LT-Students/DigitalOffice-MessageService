@@ -5,9 +5,9 @@ using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces
 {
-    [AutoInject]
-    public interface IFindWorkspaceCommand
-    {
-        FindResultResponse<ShortWorkspaceInfo> Execute(FindWorkspaceFilter filter);
-    }
+  [AutoInject]
+  public interface IGetWorkspaceCommand
+  {
+    OperationResultResponse<WorkspaceInfo> Execute(GetWorkspaceFilter filter);
+  }
 }

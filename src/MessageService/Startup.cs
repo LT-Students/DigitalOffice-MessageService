@@ -1,4 +1,4 @@
-using HealthChecks.UI.Client;
+﻿using HealthChecks.UI.Client;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
@@ -209,7 +209,7 @@ namespace LT.DigitalOffice.MessageService
         {
             UpdateDatabase(app);
 
-            FindParseProperties(app);
+            //FindParseProperties(app);
 
             StartResender(app);
 

@@ -21,14 +21,22 @@ namespace LT.DigitalOffice.MessageService.Controllers
         }
 
         [HttpGet("find")]
-        public FindResultResponse<WorkspaceInfo> Find(
+        public FindResultResponse<ShortWorkspaceInfo> Find(
             [FromServices] IFindWorkspaceCommand command,
             [FromQuery] FindWorkspaceFilter filter)
         {
             return command.Execute(filter);
         }
 
-        [HttpDelete("remove")]
+    [HttpGet("get")]
+    public OperationResultResponse<WorkspaceInfo> Get(
+            [FromServices] IGetWorkspaceCommand command,
+            [FromQuery] GetWorkspaceFilter filter)
+    {
+      return command.Execute(filter);
+    }
+
+    [HttpDelete("remove")]
         public OperationResultResponse<bool> Remove(
             [FromServices] IRemoveWorkspaceCommand command,
             [FromQuery] Guid workspaceId)
