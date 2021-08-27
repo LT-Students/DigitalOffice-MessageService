@@ -40,7 +40,10 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         CreatedBy = _userInfoMapper.Map(user, images?.FirstOrDefault(i => i.Id == user.ImageId)),
         IsActive = workspace.IsActive,
         Channels = workspace.Channels?.Select(ch => _channelInfoMapper.Map(ch, images?.FirstOrDefault(i => i.Id == ch.ImageId))).ToList(),
-        Users = users?.Select(u => _userInfoMapper.Map(u, images?.FirstOrDefault(i => i.Id == u.ImageId))).ToList()
+        Users = users?
+          .Where(u => workspace.Users.Any(wu => wu.UserId == u.Id))
+          .Select(u => _userInfoMapper.Map(u, images?.FirstOrDefault(i => i.Id == u.ImageId)))
+          .ToList()
       };
     }
   }
