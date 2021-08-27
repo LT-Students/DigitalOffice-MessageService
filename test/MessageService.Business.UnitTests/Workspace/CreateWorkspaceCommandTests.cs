@@ -192,7 +192,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
             {
                 Status = OperationResultStatusType.PartialSuccess,
                 Body = _workspaceId,
-                Errors = new List<string> { $"Can not add image to user with id {_userId}. Please try again later." }
+                Errors = new List<string> { $"Can not add image to the workspace. Please try again later." }
             };
 
             SerializerAssert.AreEqual(expectedResponse, _command.Execute(_workspace));
@@ -210,7 +210,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
             {
                 Status = OperationResultStatusType.PartialSuccess,
                 Body = _workspaceId,
-                Errors = new List<string> { $"Can not add image to user with id {_userId}. Please try again later." }
+                Errors = new List<string> { $"Can not add image to the workspace. Please try again later." }
             };
 
             SerializerAssert.AreEqual(expectedResponse, _command.Execute(_workspace));
