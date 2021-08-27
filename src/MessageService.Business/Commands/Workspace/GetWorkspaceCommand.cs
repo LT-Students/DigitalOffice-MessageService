@@ -123,7 +123,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         };
       }
 
-      List<Guid> usersIds = workspace.Users?.Select(u => u.Id).ToList() ?? new();
+      List<Guid> usersIds = workspace.Users?.Select(u => u.UserId).ToList() ?? new();
       usersIds.Add(workspace.CreatedBy);
 
       List<string> errors = new();
