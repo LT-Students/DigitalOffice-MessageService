@@ -48,6 +48,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
           return imageResponse.Message.Body;
         }
 
+        errors.AddRange(imageResponse.Message.Errors);
         _logger.LogWarning(errorMessage);
       }
       catch (Exception exception)
