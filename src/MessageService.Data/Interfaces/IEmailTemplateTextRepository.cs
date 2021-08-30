@@ -8,8 +8,8 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
   [AutoInject]
   public interface IEmailTemplateTextRepository
   {
-    public Guid? Create(DbEmailTemplateText request);
+    Guid? Create(DbEmailTemplateText request);
 
-    public bool Edit(Guid emailTemplateTextId, JsonPatchDocument<DbEmailTemplateText> patch);
+    bool Edit(Guid emailTemplateTextId, JsonPatchDocument<DbEmailTemplateText> patch);
   }
 }

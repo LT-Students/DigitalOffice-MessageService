@@ -44,9 +44,7 @@ namespace LT.DigitalOffice.MessageService.Data
         return false;
       }
 
-      DbEmailTemplate dbEmailTemplate =
-        _provider
-        .EmailTemplates
+      DbEmailTemplate dbEmailTemplate = _provider.EmailTemplates
         .FirstOrDefault(et => et.Id == emailTemplateId);
 
       if (dbEmailTemplate == null)

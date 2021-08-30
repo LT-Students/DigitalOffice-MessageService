@@ -34,7 +34,6 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
       builder
           .Property(ett => ett.Language)
-          .HasMaxLength(2)
           .IsRequired();
 
       builder

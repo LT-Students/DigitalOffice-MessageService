@@ -41,15 +41,15 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
       Guid emailTemplateId,
       JsonPatchDocument<EditEmailTemplateRequest> patch)
     {
-      OperationResultResponse<bool> response = new();
-
       if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveEmailTemplates)))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-        response.Status = OperationResultStatusType.Failed;
-        response.Errors.Add("Not enough rights.");
-        return response;
+        return new OperationResultResponse<bool>
+        {
+          Status = OperationResultStatusType.Failed,
+          Errors = new() { "Not enough rights." }
+        };
       }
 
       List<string> errors = new();
@@ -58,10 +58,13 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-        response.Status = OperationResultStatusType.Failed;
-        response.Errors.AddRange(errors);
-        return response;
+        return new OperationResultResponse<bool>
+        {
+          Status = OperationResultStatusType.Failed,
+          Errors = errors
+        };
       }
+      OperationResultResponse<bool> response = new();
 
       response.Body = _repository.Edit(emailTemplateId, _mapper.Map(patch));
 

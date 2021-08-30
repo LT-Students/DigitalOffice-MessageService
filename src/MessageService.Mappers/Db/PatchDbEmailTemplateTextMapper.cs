@@ -25,6 +25,5 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
 
       return dbPatch;
     }
-
   }
 }

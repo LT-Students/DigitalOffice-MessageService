@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
-using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 
 namespace LT.DigitalOffice.MessageService.Data
@@ -38,9 +36,7 @@ namespace LT.DigitalOffice.MessageService.Data
         return false;
       }
 
-      DbEmailTemplateText dbEmailTemplateText =
-        _provider
-        .EmailTemplateTexts
+      DbEmailTemplateText dbEmailTemplateText = _provider.EmailTemplateTexts
         .FirstOrDefault(et => et.Id == emailTemplateTextId);
 
       if (dbEmailTemplateText == null)

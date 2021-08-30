@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
@@ -15,17 +17,20 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplateText
 {
   public class CreateEmailTemplateTextCommand : ICreateEmailTemplateTextCommand
   {
+    private readonly IAccessValidator _accessValidator;
     private readonly ICreateEmailTemplateTextValidator _validator;
     private readonly IDbEmailTemplateTextMapper _mapper;
     private readonly IEmailTemplateTextRepository _repository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public CreateEmailTemplateTextCommand(
+      IAccessValidator accessValidator,
       ICreateEmailTemplateTextValidator validator,
       IDbEmailTemplateTextMapper mapper,
       IEmailTemplateTextRepository repository,
       IHttpContextAccessor httpContextAccessor)
     {
+      _accessValidator = accessValidator;
       _validator = validator;
       _mapper = mapper;
       _repository = repository;
@@ -34,7 +39,17 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplateText
 
     public OperationResultResponse<Guid?> Execute(EmailTemplateTextRequest request)
     {
-      OperationResultResponse<Guid?> response = new();
+
+      if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveEmailTemplates)))
+      {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+        return new OperationResultResponse<Guid?>
+        {
+          Status = OperationResultStatusType.Failed,
+          Errors = new() { "Not enough rights." }
+        };
+      }
 
       List<string> errors = new();
 
@@ -42,10 +57,14 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplateText
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-        response.Status = OperationResultStatusType.Failed;
-        response.Errors.AddRange(errors);
-        return response;
+        return new OperationResultResponse<Guid?>
+        {
+          Status = OperationResultStatusType.Failed,
+          Errors = errors
+        };
       }
+
+      OperationResultResponse<Guid?> response = new();
 
       response.Body = _repository.Create(_mapper.Map(request));
 
