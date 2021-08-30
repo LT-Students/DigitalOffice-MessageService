@@ -39,7 +39,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplateText
 
     public OperationResultResponse<Guid?> Execute(EmailTemplateTextRequest request)
     {
-
       if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveEmailTemplates)))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
