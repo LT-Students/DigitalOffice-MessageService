@@ -19,12 +19,6 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
         }
 
         [Test]
-        public void ShouldThrowArgumentNullExceptionWhenArgumentIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => _mapper.Map(null));
-        }
-
-        [Test]
         public void ShouldMapSuccessfuly()
         {
             DbEmailTemplateText dbEmailTemplate = new DbEmailTemplateText

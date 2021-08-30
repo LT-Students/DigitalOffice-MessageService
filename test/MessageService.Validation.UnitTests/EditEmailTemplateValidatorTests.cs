@@ -15,7 +15,7 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         private IValidator<EditEmailTemplateRequest> _validator;
         private EditEmailTemplateRequest _emailTemplateRequest;
 
-        [OneTimeSetUp]
+        /*[OneTimeSetUp]
         public void OneTimeSetUp()
         {
             _validator = new EditEmailTemplateValidator();
@@ -140,6 +140,6 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
             };
 
             _validator.TestValidate(_emailTemplateRequest).ShouldNotHaveAnyValidationErrors();
-        }
+        }*/
     }
 }
