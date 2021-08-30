@@ -61,21 +61,6 @@ namespace LT.DigitalOffice.MessageService.Controllers
       return result;
     }
 
-    [HttpDelete("remove")]
-    public OperationResultResponse<bool> Remove(
-            [FromServices] IRemoveWorkspaceCommand command,
-            [FromQuery] Guid workspaceId)
-    {
-      var result = command.Execute(workspaceId);
-
-      if (result.Status == OperationResultStatusType.Failed)
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
-      }
-
-      return result;
-    }
-
     [HttpPatch("edit")]
     public OperationResultResponse<bool> Edit(
             [FromServices] IEditWorkspaceCommand command,

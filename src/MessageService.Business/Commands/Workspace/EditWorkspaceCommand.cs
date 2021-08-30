@@ -29,6 +29,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IEditWorkspaceRequestValidator _validator;
     private readonly IPatchDbWorkspaceMapper _mapper;
     private readonly IWorkspaceRepository _repository;
+    private readonly IWorkspaceUserRepository _userRepository;
     private readonly IAccessValidator _accessValidator;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IRequestClient<IAddImageRequest> _rcAddImage;
@@ -70,6 +71,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       IEditWorkspaceRequestValidator validator,
       IPatchDbWorkspaceMapper mapper,
       IWorkspaceRepository repository,
+      IWorkspaceUserRepository userRepository,
       IAccessValidator accessValidator,
       IHttpContextAccessor httpContextAccessor,
       IRequestClient<IAddImageRequest> rcAddImage,
@@ -78,6 +80,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       _validator = validator;
       _mapper = mapper;
       _repository = repository;
+      _userRepository = userRepository;
       _accessValidator = accessValidator;
       _httpContextAccessor = httpContextAccessor;
       _rcAddImage = rcAddImage;
@@ -91,6 +94,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       Guid editorId = _httpContextAccessor.HttpContext.GetUserId();
 
       if (workspace.CreatedBy != editorId
+        && _userRepository.GetAdmins(workspaceId).FirstOrDefault(wa => wa.UserId == editorId) == null
         && !_accessValidator.IsAdmin())
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;

@@ -23,7 +23,5 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount);
 
     bool Edit(DbWorkspace workspace, JsonPatchDocument<DbWorkspace> request);
-
-    bool SwitchActiveStatus(Guid workspaceId, bool status);
   }
 }

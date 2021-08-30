@@ -96,22 +96,5 @@ namespace LT.DigitalOffice.MessageService.Data
 
       return workspace.FirstOrDefault(w => w.Id == filter.WorkspaceId);
     }
-
-    public bool SwitchActiveStatus(Guid workspaceId, bool status)
-    {
-      DbWorkspace dbWorkspace = _provider.Workspaces.FirstOrDefault(w => w.Id == workspaceId);
-      if (dbWorkspace == null)
-      {
-        return false;
-      }
-
-      dbWorkspace.IsActive = status;
-      dbWorkspace.ModifiedAtUtc = DateTime.UtcNow;
-
-      _provider.Workspaces.Update(dbWorkspace);
-      _provider.Save();
-
-      return true;
-    }
   }
 }
