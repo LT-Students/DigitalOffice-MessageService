@@ -19,7 +19,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
         private AutoMocker _mocker;
         private IFindEmailTemplateCommand _command;
 
-        [SetUp]
+        /*[SetUp]
         public void SetUp()
         {
             _mocker = new();
@@ -130,7 +130,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
             };
 
             SerializerAssert.AreEqual(response, _command.Execute(skip, take, includeDeactivated));
-        }
+        }*/
 
     }
 }
