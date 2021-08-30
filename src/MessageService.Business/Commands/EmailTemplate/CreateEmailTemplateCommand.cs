@@ -50,9 +50,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
         };
       }
 
-      List<string> errors = new();
-
-      if (!_validator.ValidateCustom(request, out errors))
+      if (!_validator.ValidateCustom(request, out List<string> errors))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
