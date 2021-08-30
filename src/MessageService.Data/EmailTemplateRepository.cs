@@ -76,17 +76,19 @@ namespace LT.DigitalOffice.MessageService.Data
         .FirstOrDefault(et => et.Type == type && et.IsActive);
     }
 
-    public List<DbEmailTemplate> Find(int skipCount, int takeCount, int totalCount, List<string> errors, bool includeDeactivated)
+    public List<DbEmailTemplate> Find(int skipCount, int takeCount, out int totalCount, List<string> errors, bool includeDeactivated)
     {
       if (skipCount < 0)
       {
         errors.Add("Skip count can't be less than 0.");
+        totalCount = 0;
         return null;
       }
 
       if (takeCount < 1)
       {
         errors.Add("Take count can't be equal or less than 0.");
+        totalCount = 0;
         return null;
       }
 

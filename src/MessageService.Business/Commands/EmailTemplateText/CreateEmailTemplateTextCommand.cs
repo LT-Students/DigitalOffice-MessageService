@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplateText
 
       List<string> errors = new();
 
-      if (_validator.ValidateCustom(request, out errors))
+      if (!_validator.ValidateCustom(request, out errors))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
@@ -56,6 +56,8 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplateText
         response.Status = OperationResultStatusType.Failed;
         return response;
       }
+
+      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
       response.Status = OperationResultStatusType.FullSuccess;
       return response;

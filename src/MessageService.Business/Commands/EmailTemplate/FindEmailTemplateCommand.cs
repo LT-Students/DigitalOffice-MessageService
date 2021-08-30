@@ -30,13 +30,15 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
 
       response.Body =
         _repository
-        .Find(skipCount, takeCount, response.TotalCount, response.Errors, includeDeactivated)
+        .Find(skipCount, takeCount, out int totalCount, response.Errors, includeDeactivated)
         .Select(_mapper.Map)
         .ToList();
 
       response.Status = response.Errors.Any() ?
         OperationResultStatusType.Failed :
         OperationResultStatusType.FullSuccess;
+
+      response.TotalCount = totalCount;
 
       return response;
     }

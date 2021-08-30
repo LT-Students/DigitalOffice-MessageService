@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
       return command.Execute(request);
     }
 
-    [HttpPost("edit")]
+    [HttpPatch("edit")]
     public OperationResultResponse<bool> Edit(
       [FromServices] IEditEmailTemplateTextCommand command,
       [FromQuery] Guid emailTemplateTextId,

@@ -29,6 +29,6 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     /// <param name="type">Email template type.</param>
     DbEmailTemplate Get(int type);
 
-    List<DbEmailTemplate> Find(int skipCount, int takeCount, int totalCount, List<string> errors, bool includeDeactivated = false);
+    List<DbEmailTemplate> Find(int skipCount, int takeCount, out int totalCount, List<string> errors, bool includeDeactivated = false);
   }
 }
