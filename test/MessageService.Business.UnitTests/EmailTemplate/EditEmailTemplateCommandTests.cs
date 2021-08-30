@@ -11,7 +11,7 @@ using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplate.Interfaces;
 using LT.DigitalOffice.Models.Broker.Enums;
 using LT.DigitalOffice.UnitTestKernel;
 using Moq;
@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests.EmailTemplate
 {
-    class EditEmailTemplateCommandTests
+  class EditEmailTemplateCommandTests
     {
         private IEditEmailTemplateCommand _command;
         private Mock<IAccessValidator> _accessValidatorMock;

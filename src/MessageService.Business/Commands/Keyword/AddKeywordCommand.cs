@@ -6,12 +6,12 @@ using LT.DigitalOffice.MessageService.Business.Commands.ParseEntity.Interface;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.ParseEntity;
-using LT.DigitalOffice.MessageService.Validation.ParseEntity.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Validators.ParseEntity.Interfaces;
 using System;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.ParseEntity
 {
-    public class AddKeywordCommand : IAddKeywordCommand
+  public class AddKeywordCommand : IAddKeywordCommand
     {
         private readonly IAccessValidator _accessValidator;
         private readonly IKeywordRepository _repository;

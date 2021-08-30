@@ -7,6 +7,7 @@ using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LT.DigitalOffice.MessageService.Controllers
@@ -73,6 +74,15 @@ namespace LT.DigitalOffice.MessageService.Controllers
       }
 
       return result;
+    }
+
+    [HttpPatch("edit")]
+    public OperationResultResponse<bool> Edit(
+            [FromServices] IEditWorkspaceCommand command,
+            [FromQuery] Guid workspaceId,
+            [FromBody] JsonPatchDocument<EditWorkspaceRequest> request)
+    {
+      return command.Execute(workspaceId, request);
     }
   }
 }

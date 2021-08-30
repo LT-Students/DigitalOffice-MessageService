@@ -12,7 +12,7 @@ using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
-using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
 using LT.DigitalOffice.Models.Broker.Requests.File;
 using LT.DigitalOffice.Models.Broker.Responses.File;
 using LT.DigitalOffice.UnitTestKernel;
@@ -27,10 +27,10 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
 {
-    public class CreateWorkspaceCommandTests
+  public class CreateWorkspaceCommandTests
     {
         private Mock<IWorkspaceRepository> _repositoryMock;
-        private Mock<ICreateWorkspaceValidator> _validatorMock;
+        private Mock<ICreateWorkspaceRequestValidator> _validatorMock;
         private Mock<IDbWorkspaceMapper> _mapperMock;
         private Mock<ILogger<CreateWorkspaceCommand>> _loggerMock;
         private Mock<IHttpContextAccessor> _httpContextAccessorMock;
@@ -145,7 +145,7 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
                 .Setup(mapper => mapper.Map(It.IsAny<CreateWorkspaceRequest>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
                 .Returns(_dbWorkspace);
 
-            _validatorMock = new Mock<ICreateWorkspaceValidator>();
+            _validatorMock = new Mock<ICreateWorkspaceRequestValidator>();
             _validatorMock
                 .Setup(x => x.Validate(It.IsAny<IValidationContext>()))
                 .Returns(_validationResultIsValidMock.Object);

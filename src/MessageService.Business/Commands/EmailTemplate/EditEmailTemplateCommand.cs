@@ -9,13 +9,13 @@ using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplate.Interfaces;
 using System;
 using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
 {
-    public class EditEmailTemplateCommand : IEditEmailTemplateCommand
+  public class EditEmailTemplateCommand : IEditEmailTemplateCommand
     {
         private readonly IAccessValidator _accessValidator;
         private readonly IEmailTemplateRepository _repository;

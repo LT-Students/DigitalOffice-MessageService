@@ -8,6 +8,7 @@ using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
@@ -29,6 +30,19 @@ namespace LT.DigitalOffice.MessageService.Data
     {
       _provider.Workspaces.Add(workspace);
       _provider.Save();
+    }
+
+    public bool Edit(DbWorkspace workspace, JsonPatchDocument<DbWorkspace> request)
+    {
+      if (workspace == null)
+      {
+        throw new ArgumentNullException(nameof(workspace));
+      }
+
+      request.ApplyTo(workspace);
+      _provider.Save();
+
+      return true;
     }
 
     public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount)
