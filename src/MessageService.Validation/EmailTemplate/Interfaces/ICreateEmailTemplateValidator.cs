@@ -4,8 +4,8 @@ using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 
 namespace LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces
 {
-    [AutoInject]
-    public interface ICreateEmailTemplateValidator : IValidator<EmailTemplateRequest>
-    {
-    }
+  [AutoInject]
+  public interface ICreateEmailTemplateValidator : IValidator<EmailTemplateRequest>
+  {
+  }
 }

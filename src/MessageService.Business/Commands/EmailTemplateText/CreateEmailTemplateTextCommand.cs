@@ -1,54 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.EmailTemplateText.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.EmailTemplateText.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
+namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplateText
 {
-  public class CreateEmailTemplateCommand : ICreateEmailTemplateCommand
+  public class CreateEmailTemplateTextCommand : ICreateEmailTemplateTextCommand
   {
-    private readonly IAccessValidator _accessValidator;
-    private readonly ICreateEmailTemplateValidator _validator;
-    private readonly IDbEmailTemplateMapper _mapper;
-    private readonly IEmailTemplateRepository _repository;
+    private readonly ICreateEmailTemplateTextValidator _validator;
+    private readonly IDbEmailTemplateTextMapper _mapper;
+    private readonly IEmailTemplateTextRepository _repository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CreateEmailTemplateCommand(
-      IAccessValidator accessValidator,
-      ICreateEmailTemplateValidator validator,
-      IDbEmailTemplateMapper mapper,
-      IEmailTemplateRepository repository,
+    public CreateEmailTemplateTextCommand(
+      ICreateEmailTemplateTextValidator validator,
+      IDbEmailTemplateTextMapper mapper,
+      IEmailTemplateTextRepository repository,
       IHttpContextAccessor httpContextAccessor)
     {
-      _accessValidator = accessValidator;
       _validator = validator;
       _mapper = mapper;
       _repository = repository;
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public OperationResultResponse<Guid?> Execute(EmailTemplateRequest request)
+    public OperationResultResponse<Guid?> Execute(EmailTemplateTextRequest request)
     {
       OperationResultResponse<Guid?> response = new();
-
-      if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveEmailTemplates)))
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-        response.Status = OperationResultStatusType.Failed;
-        response.Errors.Add("Not enough rights.");
-        return response;
-      }
 
       List<string> errors = new();
 

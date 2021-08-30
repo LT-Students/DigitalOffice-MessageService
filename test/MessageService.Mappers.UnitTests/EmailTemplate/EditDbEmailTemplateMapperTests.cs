@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _mapper = new EditDbEmailTemplateMapper();
+            _mapper = new PatchDbEmailTemplateMapper();
 
             _emailTemplate = new EmailTemplateRequest
             {
