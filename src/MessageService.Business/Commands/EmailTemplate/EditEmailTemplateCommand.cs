@@ -37,7 +37,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
       _mapper = mapper;
       _httpContextAccessor = httpContextAccessor;
     }
-
     public OperationResultResponse<bool> Execute(
       Guid emailTemplateId,
       JsonPatchDocument<EditEmailTemplateRequest> patch)
@@ -62,7 +61,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
         response.Status = OperationResultStatusType.Failed;
         response.Errors.AddRange(errors);
         return response;
-
       }
 
       response.Body = _repository.Edit(emailTemplateId, _mapper.Map(patch));

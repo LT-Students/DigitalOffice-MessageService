@@ -13,11 +13,11 @@ namespace LT.DigitalOffice.MessageService.Data
   {
     private readonly IDataProvider _provider;
 
-    public EmailTemplateTextRepository(
-      IDataProvider provider)
+    public EmailTemplateTextRepository(IDataProvider provider)
     {
       _provider = provider;
     }
+
     public Guid? Create(DbEmailTemplateText request)
     {
       if (request == null)

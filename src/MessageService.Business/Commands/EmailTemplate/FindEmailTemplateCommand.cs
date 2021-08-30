@@ -28,8 +28,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate
     {
       FindResultResponse<EmailTemplateInfo> response = new();
 
-      response.Body =
-        _repository
+      response.Body = _repository
         .Find(skipCount, takeCount, out int totalCount, response.Errors, includeDeactivated)
         .Select(_mapper.Map)
         .ToList();
