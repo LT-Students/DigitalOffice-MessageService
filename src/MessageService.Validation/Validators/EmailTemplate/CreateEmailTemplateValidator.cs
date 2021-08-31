@@ -9,13 +9,10 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplate
     public CreateEmailTemplateValidator()
     {
       RuleFor(et => et.Name)
-        .NotEmpty();
+        .NotEmpty().WithMessage("Email template name must not be empty.");
 
       RuleFor(et => et.Type)
-        .IsInEnum();
-
-      RuleFor(et => et.AuthorId)
-        .NotEmpty();
+        .IsInEnum().WithMessage("Incorrect Email template type.");
 
       RuleFor(et => et.EmailTemplateTexts)
         .NotNull();
@@ -25,14 +22,14 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplate
         .ChildRules(ett =>
         {
           ett.RuleFor(ett => ett.Subject)
-            .NotEmpty();
+            .NotEmpty().WithMessage("Subject must not be empty");
 
           ett.RuleFor(ett => ett.Text)
-            .NotEmpty();
+            .NotEmpty().WithMessage("Text must not be empty");
 
           ett.RuleFor(ett => ett.Language)
-            .NotEmpty()
-            .MaximumLength(2);
+            .NotEmpty().WithMessage("Language must not be empty")
+            .MaximumLength(2).WithMessage("Language is to long");
         });
     }
   }

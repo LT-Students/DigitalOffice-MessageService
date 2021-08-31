@@ -22,7 +22,6 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
             _emailTemplateRequest = new EmailTemplateRequest
             {
                 Name = "Pattern name",
-                AuthorId = Guid.NewGuid(),
                 Type = EmailTemplateType.Greeting,
             };
         }
@@ -37,12 +36,6 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         public void ShouldThrowExceptionWhenEmailTemplateTypeIsEmpty()
         {
             _validator.ShouldHaveValidationErrorFor(x => x.Type, (EmailTemplateType)4);
-        }
-
-        [Test]
-        public void ShouldThrowExceptionWhenEmailTemplateAuthorIsEmpty()
-        {
-            _validator.ShouldHaveValidationErrorFor(x => x.AuthorId, Guid.Empty);
         }
 
         [Test]

@@ -12,17 +12,17 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
 {
     class EditDbEmailTemplateMapperTests
     {
-        private IEditDbEmailTemplateMapper _mapper;
+        private IPatchDbEmailTemplateMapper _mapper;
 
         private EmailTemplateRequest _emailTemplate;
         private DbEmailTemplate _expectedDbEmailTemplate;
         private EmailTemplateTextRequest _emailTemplateTextInfo;
         private EditEmailTemplateRequest _editEmailTemplateRequest;
 
-        [OneTimeSetUp]
+        /*[OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _mapper = new EditDbEmailTemplateMapper();
+            _mapper = new PatchDbEmailTemplateMapper();
 
             _emailTemplate = new EmailTemplateRequest
             {
@@ -93,6 +93,6 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.EmailTemplate
             };
 
             SerializerAssert.AreEqual(expectedDbEmailTemplate, dbEmailTemplate);
-        }
+        }*/
     }
 }
