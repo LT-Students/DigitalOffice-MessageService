@@ -25,14 +25,14 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplate
         .ChildRules(ett =>
         {
           ett.RuleFor(ett => ett.Subject)
-                    .NotEmpty();
+            .NotEmpty();
 
           ett.RuleFor(ett => ett.Text)
-                    .NotEmpty();
+            .NotEmpty();
 
           ett.RuleFor(ett => ett.Language)
-                    .NotEmpty()
-                    .MaximumLength(2);
+            .NotEmpty()
+            .MaximumLength(2);
         });
     }
   }

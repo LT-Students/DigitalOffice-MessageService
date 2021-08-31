@@ -27,8 +27,8 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.ParseEntity
 
       RuleFor(x => x)
         .Must(x => AllParseEntities.Entities.ContainsKey(x.ServiceName.ToString())
-                && AllParseEntities.Entities[x.ServiceName.ToString()].ContainsKey("Db" + x.EntityName)
-                && AllParseEntities.Entities[x.ServiceName.ToString()]["Db" + x.EntityName].Contains(x.PropertyName))
+          && AllParseEntities.Entities[x.ServiceName.ToString()].ContainsKey("Db" + x.EntityName)
+          && AllParseEntities.Entities[x.ServiceName.ToString()]["Db" + x.EntityName].Contains(x.PropertyName))
         .WithMessage("No entity with requested property in the service.");
     }
   }
