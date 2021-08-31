@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
     public CreateWorkspaceRequestValidator()
     {
       RuleFor(workspace => workspace.Name)
-          .NotEmpty().WithMessage("Workspace name can not be empty.");
+        .NotEmpty().WithMessage("Workspace name can not be empty.");
     }
   }
 }

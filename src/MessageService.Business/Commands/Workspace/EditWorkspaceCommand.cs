@@ -44,10 +44,10 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       try
       {
         var imageRequest = IAddImageRequest.CreateObj(
-            image.Name,
-            image.Content,
-            image.Extension,
-            ownerId);
+          image.Name,
+          image.Content,
+          image.Extension,
+          ownerId);
         var imageResponse = _rcAddImage.GetResponse<IOperationResult<Guid>>(imageRequest).Result;
         if (imageResponse.Message.IsSuccess)
         {

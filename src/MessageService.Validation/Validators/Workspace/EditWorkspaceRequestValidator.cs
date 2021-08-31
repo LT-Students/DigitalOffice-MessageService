@@ -37,50 +37,50 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
       #region Name
 
       AddFailureForPropertyIf(
-          nameof(EditWorkspaceRequest.Name),
-          x => x == OperationType.Replace,
-          new()
-          {
-            { x => !string.IsNullOrEmpty(x.value.ToString()), "Name cannot be empty." },
-          });
+        nameof(EditWorkspaceRequest.Name),
+        x => x == OperationType.Replace,
+        new()
+        {
+          { x => !string.IsNullOrEmpty(x.value.ToString()), "Name cannot be empty." },
+        });
 
       #endregion
 
       #region Image
 
       AddFailureForPropertyIf(
-          nameof(EditWorkspaceRequest.Image),
-          x => x == OperationType.Replace,
-          new()
+        nameof(EditWorkspaceRequest.Image),
+        x => x == OperationType.Replace,
+        new()
+        {
           {
+            x =>
             {
-              x =>
+              try
               {
-                try
-                {
-                  _ = JsonConvert.DeserializeObject<CreateImageRequest>(x.value?.ToString());
-                  return true;
-                }
-                catch
-                {
-                  return false;
-                }
-              },
-              "Incorrect Image format"
-            }
-          });
+                _ = JsonConvert.DeserializeObject<CreateImageRequest>(x.value?.ToString());
+                return true;
+              }
+              catch
+              {
+                return false;
+              }
+            },
+            "Incorrect Image format"
+          }
+        });
 
       #endregion
 
       #region IsActive
 
       AddFailureForPropertyIf(
-          nameof(EditWorkspaceRequest.IsActive),
-          x => x == OperationType.Replace,
-          new()
-          {
-            { x => bool.TryParse(x.value?.ToString(), out _), "Incorrect IsActive format." },
-          });
+        nameof(EditWorkspaceRequest.IsActive),
+        x => x == OperationType.Replace,
+        new()
+        {
+          { x => bool.TryParse(x.value?.ToString(), out _), "Incorrect IsActive format." },
+        });
 
       #endregion
     }
@@ -88,7 +88,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
     public EditWorkspaceRequestValidator()
     {
       RuleForEach(x => x.Operations)
-         .Custom(HandleInternalPropertyValidation);
+        .Custom(HandleInternalPropertyValidation);
     }
   }
 }

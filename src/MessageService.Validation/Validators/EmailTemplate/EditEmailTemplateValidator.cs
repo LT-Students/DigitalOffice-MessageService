@@ -9,31 +9,31 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplate
     public EditEmailTemplateValidator()
     {
       RuleFor(et => et.Id)
-          .NotEmpty();
+        .NotEmpty();
 
       RuleFor(et => et.Name)
-          .NotEmpty();
+        .NotEmpty();
 
       RuleFor(et => et.Type)
-          .IsInEnum();
+        .IsInEnum();
 
       RuleFor(et => et.EmailTemplateTexts)
-          .NotNull();
+        .NotNull();
 
       RuleForEach(et => et.EmailTemplateTexts)
-          .Must(ett => ett != null)
-          .ChildRules(ett =>
-          {
-            ett.RuleFor(ett => ett.Subject)
-                      .NotEmpty();
+        .Must(ett => ett != null)
+        .ChildRules(ett =>
+        {
+          ett.RuleFor(ett => ett.Subject)
+                    .NotEmpty();
 
-            ett.RuleFor(ett => ett.Text)
-                      .NotEmpty();
+          ett.RuleFor(ett => ett.Text)
+                    .NotEmpty();
 
-            ett.RuleFor(ett => ett.Language)
-                      .NotEmpty()
-                      .MaximumLength(2);
-          });
+          ett.RuleFor(ett => ett.Language)
+                    .NotEmpty()
+                    .MaximumLength(2);
+        });
     }
   }
 }

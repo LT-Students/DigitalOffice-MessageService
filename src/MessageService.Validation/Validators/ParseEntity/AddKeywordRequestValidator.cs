@@ -11,25 +11,25 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.ParseEntity
     public AddKeywordRequestValidator(IKeywordRepository repository)
     {
       RuleFor(x => x.Keyword)
-          .NotEmpty()
-          .MaximumLength(50)
-          .Must(k => !repository.DoesKeywordExist(k))
-          .WithMessage("This keyword already exists.");
+        .NotEmpty()
+        .MaximumLength(50)
+        .Must(k => !repository.DoesKeywordExist(k))
+        .WithMessage("This keyword already exists.");
 
       RuleFor(x => x.ServiceName)
-          .IsInEnum();
+        .IsInEnum();
 
       RuleFor(x => x.EntityName)
-          .NotEmpty();
+        .NotEmpty();
 
       RuleFor(x => x.PropertyName)
-          .NotEmpty();
+        .NotEmpty();
 
       RuleFor(x => x)
-          .Must(x => AllParseEntities.Entities.ContainsKey(x.ServiceName.ToString())
-                  && AllParseEntities.Entities[x.ServiceName.ToString()].ContainsKey("Db" + x.EntityName)
-                  && AllParseEntities.Entities[x.ServiceName.ToString()]["Db" + x.EntityName].Contains(x.PropertyName))
-          .WithMessage("No entity with requested property in the service.");
+        .Must(x => AllParseEntities.Entities.ContainsKey(x.ServiceName.ToString())
+                && AllParseEntities.Entities[x.ServiceName.ToString()].ContainsKey("Db" + x.EntityName)
+                && AllParseEntities.Entities[x.ServiceName.ToString()]["Db" + x.EntityName].Contains(x.PropertyName))
+        .WithMessage("No entity with requested property in the service.");
     }
   }
 }
