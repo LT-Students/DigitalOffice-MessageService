@@ -4,36 +4,33 @@ using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
 
 namespace LT.DigitalOffice.MessageService.Validation
 {
-    public class CreateEmailTemplateValidator : AbstractValidator<EmailTemplateRequest>, ICreateEmailTemplateValidator
+  public class CreateEmailTemplateValidator : AbstractValidator<EmailTemplateRequest>, ICreateEmailTemplateValidator
+  {
+    public CreateEmailTemplateValidator()
     {
-        public CreateEmailTemplateValidator()
+      RuleFor(et => et.Name)
+        .NotEmpty().WithMessage("Email template name must not be empty.");
+
+      RuleFor(et => et.Type)
+        .IsInEnum().WithMessage("Incorrect Email template type.");
+
+      RuleFor(et => et.EmailTemplateTexts)
+        .NotNull();
+
+      RuleForEach(et => et.EmailTemplateTexts)
+        .Must(ett => ett != null)
+        .ChildRules(ett =>
         {
-            RuleFor(et => et.Name)
-                .NotEmpty();
+          ett.RuleFor(ett => ett.Subject)
+            .NotEmpty().WithMessage("Subject must not be empty");
 
-            RuleFor(et => et.Type)
-                .IsInEnum();
+          ett.RuleFor(ett => ett.Text)
+            .NotEmpty().WithMessage("Text must not be empty");
 
-            RuleFor(et => et.AuthorId)
-                .NotEmpty();
-
-            RuleFor(et => et.EmailTemplateTexts)
-                .NotNull();
-
-            RuleForEach(et => et.EmailTemplateTexts)
-                .Must(ett => ett != null)
-                .ChildRules(ett =>
-                {
-                    ett.RuleFor(ett => ett.Subject)
-                        .NotEmpty();
-
-                    ett.RuleFor(ett => ett.Text)
-                        .NotEmpty();
-
-                    ett.RuleFor(ett => ett.Language)
-                        .NotEmpty()
-                        .MaximumLength(2);
-                });
-        }
+          ett.RuleFor(ett => ett.Language)
+            .NotEmpty().WithMessage("Language must not be empty")
+            .MaximumLength(2).WithMessage("Language is to long");
+        });
     }
+  }
 }

@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         private DbEmailTemplate _dbEmailTemplateToAdd;
         private DbEmailTemplate _editDbEmailTemplate;
 
-        [OneTimeSetUp]
+        /*[OneTimeSetUp]
         public void OneTimeSetUp()
         {
             var dbOptions = new DbContextOptionsBuilder<MessageServiceDbContext>()
@@ -93,31 +93,6 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 _provider.EnsureDeleted();
             }
         }
-
-        #region Remove
-        [Test]
-        public void ShouldThrowExceptionWhenEmailTemplateDoesNotExist()
-        {
-            Assert.Throws<NotFoundException>(() => _repository.Disable(Guid.NewGuid()));
-            Assert.AreEqual(_provider.EmailTemplates, new List<DbEmailTemplate> { _dbEmailTemplate });
-        }
-
-        [Test]
-        public void ShouldRemoveEmailTemplateSuccessfully()
-        {
-            _repository.Disable(_emailTemplateId);
-
-            Assert.IsTrue(_provider.EmailTemplates.Find(_emailTemplateId).IsActive == false);
-            Assert.AreEqual(_provider.EmailTemplates, new List<DbEmailTemplate> { _dbEmailTemplate });
-        }
-
-        [Test]
-        public void ShouldThrowExceptionWhenEmailTemplateIdNull()
-        {
-            Assert.Throws<NotFoundException>(() => _repository.Disable(Guid.Empty));
-            Assert.AreEqual(_provider.EmailTemplates, new List<DbEmailTemplate> { _dbEmailTemplate });
-        }
-        #endregion
 
         #region Add
         [Test]
@@ -221,6 +196,6 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             Assert.AreEqual(_dbEmailTemplate.Type, response.Type);
         }
 
-        #endregion
+        #endregion*/
     }
 }

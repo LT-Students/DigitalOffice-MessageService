@@ -1,39 +1,78 @@
-﻿using FluentValidation;
+﻿using System;
+using System.Collections.Generic;
+using FluentValidation;
+using FluentValidation.Validators;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
 using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Helper;
+using LT.DigitalOffice.Models.Broker.Enums;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace LT.DigitalOffice.MessageService.Validation.EmailTemplate
 {
-    public class EditEmailTemplateValidator : AbstractValidator<EditEmailTemplateRequest>, IEditEmailTemplateValidator
+  public class EditEmailTemplateValidator : BaseEditRequestValidator<EditEmailTemplateRequest>, IEditEmailTemplateValidator
+  {
+    private void HandleInternalPropertyValidation(Operation<EditEmailTemplateRequest> requestedOperation, CustomContext context)
     {
-        public EditEmailTemplateValidator()
+      Context = context;
+      RequestedOperation = requestedOperation;
+
+      #region Paths
+
+      AddСorrectPaths(
+        new List<string>
         {
-            RuleFor(et => et.Id)
-                .NotEmpty();
+          nameof(EditEmailTemplateRequest.Name),
+          nameof(EditEmailTemplateRequest.Type),
+          nameof(EditEmailTemplateRequest.IsActive)
+        });
 
-            RuleFor(et => et.Name)
-                .NotEmpty();
+      AddСorrectOperations(nameof(EditEmailTemplateRequest.Name), new List<OperationType> { OperationType.Replace });
+      AddСorrectOperations(nameof(EditEmailTemplateRequest.Type), new List<OperationType> { OperationType.Replace });
+      AddСorrectOperations(nameof(EditEmailTemplateRequest.IsActive), new List<OperationType> { OperationType.Replace });
 
-            RuleFor(et => et.Type)
-                .IsInEnum();
+      #endregion
 
-            RuleFor(et => et.EmailTemplateTexts)
-                .NotNull();
+      #region Name
 
-            RuleForEach(et => et.EmailTemplateTexts)
-                .Must(ett => ett != null)
-                .ChildRules(ett =>
-                {
-                    ett.RuleFor(ett => ett.Subject)
-                        .NotEmpty();
+      AddFailureForPropertyIf(
+        nameof(EditEmailTemplateRequest.Name),
+        x => x == OperationType.Replace,
+        new()
+        {
+          { x => !string.IsNullOrEmpty(x.value.ToString()), "Email template name must not be empty." },
+        });
 
-                    ett.RuleFor(ett => ett.Text)
-                        .NotEmpty();
+      #endregion
 
-                    ett.RuleFor(ett => ett.Language)
-                        .NotEmpty()
-                        .MaximumLength(2);
-                });
-        }
+      #region Type
+
+      AddFailureForPropertyIf(
+        nameof(EditEmailTemplateRequest.Type),
+        x => x == OperationType.Replace,
+        new()
+        {
+          { x => Enum.TryParse(typeof(EmailTemplateType), x.value.ToString(), true, out _), "Incorrect Email template type." },
+        });
+
+      #endregion
+
+      #region IsActive
+
+      AddFailureForPropertyIf(
+        nameof(EditEmailTemplateRequest.IsActive),
+        x => x == OperationType.Replace,
+        new()
+        {
+          { x => bool.TryParse(x.value?.ToString(), out _), "Incorrect is active value." },
+        });
+
+      #endregion
     }
+
+    public EditEmailTemplateValidator()
+    {
+      RuleForEach(x => x.Operations).Custom(HandleInternalPropertyValidation);
+    }
+  }
 }
