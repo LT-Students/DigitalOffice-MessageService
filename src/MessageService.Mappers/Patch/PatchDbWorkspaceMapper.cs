@@ -16,21 +16,21 @@ namespace LT.DigitalOffice.MessageService.Mappers.Patch
         return null;
       }
 
-      JsonPatchDocument<DbWorkspace> response = new();
+      JsonPatchDocument<DbWorkspace> result = new();
 
       foreach(var item in request.Operations)
       {
         if (item.path.EndsWith(nameof(EditWorkspaceRequest.Image), StringComparison.OrdinalIgnoreCase))
         {
-          response.Operations.Add(new Operation<DbWorkspace>(item.op, nameof(DbWorkspace.ImageId), item.from, imageId));
+          result.Operations.Add(new Operation<DbWorkspace>(item.op, nameof(DbWorkspace.ImageId), item.from, imageId));
 
           continue;
         }
 
-        response.Operations.Add(new Operation<DbWorkspace>(item.op, item.path, item.from, item.value));
+        result.Operations.Add(new Operation<DbWorkspace>(item.op, item.path, item.from, item.value));
       }
 
-      return response;
+      return result;
     }
   }
 }
