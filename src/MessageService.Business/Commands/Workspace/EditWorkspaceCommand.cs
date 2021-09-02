@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
@@ -12,15 +11,10 @@ using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Patch.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
-using LT.DigitalOffice.Models.Broker.Requests.File;
-using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 {
@@ -32,40 +26,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IWorkspaceUserRepository _userRepository;
     private readonly IAccessValidator _accessValidator;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IRequestClient<IAddImageRequest> _rcAddImage;
-    private readonly ILogger<EditWorkspaceCommand> _logger;
-
-    private Guid? AddImage(CreateImageRequest image, Guid ownerId, List<string> errors)
-    {
-      Guid? imageId = null;
-
-      string errorMessage = "Can not add image to the workspace. Please try again later.";
-
-      try
-      {
-        var imageRequest = IAddImageRequest.CreateObj(
-          image.Name,
-          image.Content,
-          image.Extension,
-          ownerId);
-        var imageResponse = _rcAddImage.GetResponse<IOperationResult<Guid>>(imageRequest).Result;
-        if (imageResponse.Message.IsSuccess)
-        {
-          return imageResponse.Message.Body;
-        }
-
-        errors.AddRange(imageResponse.Message.Errors);
-        _logger.LogWarning(errorMessage);
-      }
-      catch (Exception exception)
-      {
-        _logger.LogError(exception, errorMessage);
-      }
-
-      errors.Add(errorMessage);
-
-      return imageId;
-    }
 
     public EditWorkspaceCommand(
       IEditWorkspaceRequestValidator validator,
@@ -73,9 +33,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       IWorkspaceRepository repository,
       IWorkspaceUserRepository userRepository,
       IAccessValidator accessValidator,
-      IHttpContextAccessor httpContextAccessor,
-      IRequestClient<IAddImageRequest> rcAddImage,
-      ILogger<EditWorkspaceCommand> logger)
+      IHttpContextAccessor httpContextAccessor)
     {
       _validator = validator;
       _mapper = mapper;
@@ -83,17 +41,15 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       _userRepository = userRepository;
       _accessValidator = accessValidator;
       _httpContextAccessor = httpContextAccessor;
-      _rcAddImage = rcAddImage;
-      _logger = logger;
     }
 
     public OperationResultResponse<bool> Execute(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request)
     {
-      DbWorkspace workspace = _repository.Get(workspaceId);
+      DbWorkspace dbWorkspace = _repository.Get(workspaceId);
 
       Guid editorId = _httpContextAccessor.HttpContext.GetUserId();
 
-      if (workspace.CreatedBy != editorId
+      if (dbWorkspace.CreatedBy != editorId
         && _userRepository.GetAdmins(workspaceId).FirstOrDefault(wa => wa.UserId == editorId) == null
         && !_accessValidator.IsAdmin())
       {
@@ -106,7 +62,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         };
       }
 
-      if(!_validator.ValidateCustom(request, out List<string> errors))
+      if (!_validator.ValidateCustom(request, out List<string> errors))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
@@ -117,20 +73,21 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         };
       }
 
-      /*var imageOperation = request.Operations.FirstOrDefault(o => o.path.EndsWith(nameof(EditWorkspaceRequest.Avatar), StringComparison.OrdinalIgnoreCase));
-      Guid? imageId = null;
+      OperationResultResponse<bool> response = new();
 
-      if (imageOperation != null)
-      {
-        imageId = AddImage(JsonConvert.DeserializeObject<CreateImageRequest>(imageOperation.value?.ToString()), editorId, errors);
-      }*/
+      response.Body = _repository.Edit(dbWorkspace, _mapper.Map(request), editorId);
 
-      return new OperationResultResponse<bool>
+      if (!response.Body)
       {
-        Status = errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess,
-        Body = _repository.Edit(workspace, _mapper.Map(request)),
-        Errors = errors
-      };
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+        response.Errors.Add("Bad request");
+        response.Status = OperationResultStatusType.Failed;
+        return response;
+      }
+
+      response.Status = OperationResultStatusType.FullSuccess;
+      return response;
     }
   }
 }

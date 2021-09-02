@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Helpers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.Models.Broker.Requests.Message;
@@ -15,10 +16,14 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Workspace
     private readonly IHttpContextAccessor _httpContextAccessor;
     private const string DefaultChannelName = "General";
     private const string DefaultWorkspaceDescription = "";
+    private readonly IResizeImageHelper _resizeHelper;
 
-    public DbWorkspaceMapper(IHttpContextAccessor httpContextAccessor)
+    public DbWorkspaceMapper(
+      IHttpContextAccessor httpContextAccessor,
+      IResizeImageHelper resizeHelper)
     {
       _httpContextAccessor = httpContextAccessor;
+      _resizeHelper = resizeHelper;
     }
 
     public DbWorkspace Map(CreateWorkspaceRequest request)
@@ -49,7 +54,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Workspace
         Name = request.Name,
         Description = request.Description,
         IsActive = true,
-        AvatarContent = request.Avatar?.Content,
+        AvatarContent = request.Avatar != null ?
+          _resizeHelper.Resize(request.Avatar.Content, request.Avatar.Extension) : null,
         AvatarExtension = request.Avatar?.Extension,
         CreatedBy = createdBy,
         CreatedAtUtc = DateTime.UtcNow,

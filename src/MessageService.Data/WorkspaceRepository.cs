@@ -38,14 +38,16 @@ namespace LT.DigitalOffice.MessageService.Data
       return workspace.Id;
     }
 
-    public bool Edit(DbWorkspace workspace, JsonPatchDocument<DbWorkspace> request)
+    public bool Edit(DbWorkspace dbWorkspace, JsonPatchDocument<DbWorkspace> request, Guid editorId)
     {
-      if (workspace == null)
+      if (dbWorkspace == null || request == null)
       {
-        throw new ArgumentNullException(nameof(workspace));
+        return false;
       }
 
-      request.ApplyTo(workspace);
+      request.ApplyTo(dbWorkspace);
+      dbWorkspace.ModifiedBy = editorId;
+      dbWorkspace.ModifiedAtUtc = DateTime.UtcNow;
       _provider.Save();
 
       return true;
