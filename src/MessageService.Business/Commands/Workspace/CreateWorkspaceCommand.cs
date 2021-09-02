@@ -12,7 +12,7 @@ using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
-using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
 using LT.DigitalOffice.Models.Broker.Requests.File;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
   public class CreateWorkspaceCommand : ICreateWorkspaceCommand
   {
     private readonly IDbWorkspaceMapper _mapper;
-    private readonly ICreateWorkspaceValidator _validator;
+    private readonly ICreateWorkspaceRequestValidator _validator;
     private readonly IWorkspaceRepository _repository;
     private readonly ILogger<CreateWorkspaceCommand> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -63,7 +63,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
     public CreateWorkspaceCommand(
         IDbWorkspaceMapper mapper,
-        ICreateWorkspaceValidator validator,
+        ICreateWorkspaceRequestValidator validator,
         IWorkspaceRepository repository,
         ILogger<CreateWorkspaceCommand> logger,
         IHttpContextAccessor httpContextAccessor,

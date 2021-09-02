@@ -8,6 +8,7 @@ using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
@@ -29,6 +30,19 @@ namespace LT.DigitalOffice.MessageService.Data
     {
       _provider.Workspaces.Add(workspace);
       _provider.Save();
+    }
+
+    public bool Edit(DbWorkspace workspace, JsonPatchDocument<DbWorkspace> request)
+    {
+      if (workspace == null)
+      {
+        throw new ArgumentNullException(nameof(workspace));
+      }
+
+      request.ApplyTo(workspace);
+      _provider.Save();
+
+      return true;
     }
 
     public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount)
@@ -81,23 +95,6 @@ namespace LT.DigitalOffice.MessageService.Data
       }
 
       return workspace.FirstOrDefault(w => w.Id == filter.WorkspaceId);
-    }
-
-    public bool SwitchActiveStatus(Guid workspaceId, bool status)
-    {
-      DbWorkspace dbWorkspace = _provider.Workspaces.FirstOrDefault(w => w.Id == workspaceId);
-      if (dbWorkspace == null)
-      {
-        return false;
-      }
-
-      dbWorkspace.IsActive = status;
-      dbWorkspace.ModifiedAtUtc = DateTime.UtcNow;
-
-      _provider.Workspaces.Update(dbWorkspace);
-      _provider.Save();
-
-      return true;
     }
   }
 }

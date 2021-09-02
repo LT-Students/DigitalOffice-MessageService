@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using FluentValidation;
 using FluentValidation.Validators;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
 using LT.DigitalOffice.MessageService.Validation.Helper;
+using LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplate.Interfaces;
 using LT.DigitalOffice.Models.Broker.Enums;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 

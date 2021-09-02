@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplateText.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplateText.Interfaces;
 
-namespace LT.DigitalOffice.MessageService.Validation.EmailTemplateText
+namespace LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplateText
 {
   public class CreateEmailTemplateTextValidator : AbstractValidator<EmailTemplateTextRequest>, ICreateEmailTemplateTextValidator
   {
