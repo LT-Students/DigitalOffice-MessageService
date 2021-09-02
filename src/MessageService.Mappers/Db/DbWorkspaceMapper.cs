@@ -1,48 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.Models.Broker.Requests.Message;
+using Microsoft.AspNetCore.Http;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Db.Workspace
 {
   public class DbWorkspaceMapper : IDbWorkspaceMapper
   {
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private const string DefaultChannelName = "General";
     private const string DefaultWorkspaceDescription = "";
 
-    public DbWorkspace Map(CreateWorkspaceRequest value, Guid ownerId, Guid? imageId)
+    public DbWorkspaceMapper(IHttpContextAccessor httpContextAccessor)
     {
-      if (value == null)
+      _httpContextAccessor = httpContextAccessor;
+    }
+
+    public DbWorkspace Map(CreateWorkspaceRequest request)
+    {
+      if (request == null)
       {
-        throw new ArgumentNullException(nameof(value));
+        return null;
       }
 
       Guid workspaceId = Guid.NewGuid();
+      Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
 
       DbChannel newChannel =
-          new DbChannel
-          {
-            Id = Guid.NewGuid(),
-            WorkspaceId = workspaceId,
-            CreatedBy = ownerId,
-            Name = DefaultChannelName,
-            CreatedAtUtc = DateTime.UtcNow,
-            IsActive = true,
-            IsPrivate = false
-          };
+        new DbChannel
+        {
+          Id = Guid.NewGuid(),
+          WorkspaceId = workspaceId,
+          Name = DefaultChannelName,
+          IsPrivate = false,
+          IsActive = true,
+          CreatedBy = createdBy,
+          CreatedAtUtc = DateTime.UtcNow
+        };
 
       return new DbWorkspace
       {
         Id = workspaceId,
-        CreatedBy = ownerId,
-        Name = value.Name,
-        Description = value.Description,
-        ImageId = imageId,
-        CreatedAtUtc = DateTime.UtcNow,
+        Name = request.Name,
+        Description = request.Description,
         IsActive = true,
+        AvatarContent = request.Avatar.Content,
+        AvatarExtension = request.Avatar.Extension,
+        CreatedBy = createdBy,
+        CreatedAtUtc = DateTime.UtcNow,
         Channels = new HashSet<DbChannel> { newChannel }
       };
     }
@@ -57,52 +67,51 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Workspace
       Guid workspaceId = Guid.NewGuid();
 
       List<DbWorkspaceUser> workspaceUsers =
-          request.Users?.Select(userId => new DbWorkspaceUser
-          {
-            Id = Guid.NewGuid(),
-            WorkspaceId = workspaceId,
-            UserId = userId,
-            IsAdmin = request.CreaterId == userId,
-            CreatedBy = request.CreaterId,
-            CreatedAtUtc = DateTime.UtcNow,
-            IsActive = true
-          }).ToList();
+        request.Users?.Select(userId => new DbWorkspaceUser
+        {
+          Id = Guid.NewGuid(),
+          WorkspaceId = workspaceId,
+          UserId = userId,
+          IsAdmin = request.CreaterId == userId,
+          CreatedBy = request.CreaterId,
+          CreatedAtUtc = DateTime.UtcNow,
+          IsActive = true
+        }).ToList();
 
       DbChannel newChannel =
-          new DbChannel
-          {
-            Id = Guid.NewGuid(),
-            WorkspaceId = workspaceId,
-            CreatedBy = request.CreaterId,
-            Name = DefaultChannelName,
-            CreatedAtUtc = DateTime.UtcNow,
-            IsActive = true,
-            IsPrivate = false
-          };
+        new DbChannel
+        {
+          Id = Guid.NewGuid(),
+          WorkspaceId = workspaceId,
+          Name = DefaultChannelName,
+          CreatedBy = request.CreaterId,
+          CreatedAtUtc = DateTime.UtcNow,
+          IsActive = true,
+          IsPrivate = false
+        };
 
       List<DbChannelUser> channelUsers =
-          workspaceUsers?.Select(wu => new DbChannelUser
-          {
-            Id = Guid.NewGuid(),
-            ChannelId = newChannel.Id,
-            WorkspaceUserId = wu.Id,
-            CreatedBy = request.CreaterId,
-            CreatedAtUtc = DateTime.UtcNow,
-            IsActive = true,
-            IsAdmin = wu.IsAdmin
-          }).ToList();
+        workspaceUsers?.Select(wu => new DbChannelUser
+        {
+          Id = Guid.NewGuid(),
+          ChannelId = newChannel.Id,
+          WorkspaceUserId = wu.Id,
+          CreatedBy = request.CreaterId,
+          CreatedAtUtc = DateTime.UtcNow,
+          IsActive = true,
+          IsAdmin = wu.IsAdmin
+        }).ToList();
 
       newChannel.Users = channelUsers.ToHashSet();
 
       return new DbWorkspace
       {
         Id = workspaceId,
-        CreatedBy = request.CreaterId,
         Name = request.Name,
         Description = DefaultWorkspaceDescription, // TODO Create description for default workspace
-        ImageId = null,
-        CreatedAtUtc = DateTime.UtcNow,
         IsActive = true,
+        CreatedBy = request.CreaterId,
+        CreatedAtUtc = DateTime.UtcNow,
         Channels = new HashSet<DbChannel> { newChannel },
         Users = workspaceUsers.ToHashSet()
       };

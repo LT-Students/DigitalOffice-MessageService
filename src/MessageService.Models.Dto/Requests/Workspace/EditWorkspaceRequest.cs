@@ -2,10 +2,11 @@
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace
 {
-  public record CreateWorkspaceRequest
+  public record EditWorkspaceRequest
   {
     public string Name { get; set; }
     public string Description { get; set; }
+    public bool IsActive { get; set; }
     public AvatarData Avatar { get; set; }
   }
 }

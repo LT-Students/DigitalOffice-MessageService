@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Channel;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.User;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Models
 {
   public record WorkspaceInfo
   {
     public Guid Id { get; set; }
-    public ImageInfo Image { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public bool IsActive { get; set; }
+    public AvatarData Avatar { get; set; }
     public UserInfo CreatedBy { get; set; }
     public DateTime CreatedAtUtc { get; set; }
 

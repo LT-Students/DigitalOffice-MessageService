@@ -8,6 +8,7 @@ using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
@@ -25,22 +26,33 @@ namespace LT.DigitalOffice.MessageService.Data
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public void Add(DbWorkspace workspace)
+    public Guid? Add(DbWorkspace workspace)
     {
+      if (workspace == null)
+      {
+        return null;
+      }
+
       _provider.Workspaces.Add(workspace);
       _provider.Save();
+
+      return workspace.Id;
     }
 
-    public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount)
+    public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount, List<string> errors)
     {
       if (filter.SkipCount < 0)
       {
-        throw new BadRequestException("Skip count cannot be less than 0.");
+        errors.Add("Skip count cannot be less than 0.");
+        totalCount = 0;
+        return null;
       }
 
       if (filter.TakeCount < 1)
       {
-        throw new BadRequestException("Take count cannot be less than 1.");
+        errors.Add("Take count cannot be less than 1.");
+        totalCount = 0;
+        return null;
       }
 
       IQueryable<DbWorkspace> workspaces = _provider.Workspaces.AsQueryable();
@@ -81,23 +93,6 @@ namespace LT.DigitalOffice.MessageService.Data
       }
 
       return workspace.FirstOrDefault(w => w.Id == filter.WorkspaceId);
-    }
-
-    public bool SwitchActiveStatus(Guid workspaceId, bool status)
-    {
-      DbWorkspace dbWorkspace = _provider.Workspaces.FirstOrDefault(w => w.Id == workspaceId);
-      if (dbWorkspace == null)
-      {
-        return false;
-      }
-
-      dbWorkspace.IsActive = status;
-      dbWorkspace.ModifiedAtUtc = DateTime.UtcNow;
-
-      _provider.Workspaces.Update(dbWorkspace);
-      _provider.Save();
-
-      return true;
     }
   }
 }
