@@ -53,5 +53,14 @@ namespace LT.DigitalOffice.MessageService.Controllers
 
       return result;
     }
+
+    [HttpPatch("edit")]
+    public OperationResultResponse<bool> Edit(
+            [FromServices] IEditWorkspaceCommand command,
+            [FromQuery] Guid workspaceId,
+            [FromBody] JsonPatchDocument<EditWorkspaceRequest> request)
+    {
+      return command.Execute(workspaceId, request);
+    }
   }
 }

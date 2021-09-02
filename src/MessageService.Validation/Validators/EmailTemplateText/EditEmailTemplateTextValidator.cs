@@ -2,11 +2,11 @@
 using FluentValidation;
 using FluentValidation.Validators;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplateText;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplateText.Interfaces;
 using LT.DigitalOffice.MessageService.Validation.Helper;
+using LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplateText.Interfaces;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 
-namespace LT.DigitalOffice.MessageService.Validation.EmailTemplateText
+namespace LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplateText
 {
   public class EditEmailTemplateTextValidator : BaseEditRequestValidator<EditEmailTemplateTextRequest>, IEditEmailTemplateTextValidator
   {

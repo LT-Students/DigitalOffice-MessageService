@@ -20,6 +20,8 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
 
     DbWorkspace Get(GetWorkspaceFilter filter);
 
-    List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount, List<string> errors);
+    List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount);
+
+    bool Edit(DbWorkspace workspace, JsonPatchDocument<DbWorkspace> request);
   }
 }

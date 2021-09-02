@@ -39,7 +39,20 @@ namespace LT.DigitalOffice.MessageService.Data
       return workspace.Id;
     }
 
-    public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount, List<string> errors)
+    public bool Edit(DbWorkspace workspace, JsonPatchDocument<DbWorkspace> request)
+    {
+      if (workspace == null)
+      {
+        throw new ArgumentNullException(nameof(workspace));
+      }
+
+      request.ApplyTo(workspace);
+      _provider.Save();
+
+      return true;
+    }
+
+    public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount)
     {
       if (filter.SkipCount < 0)
       {
