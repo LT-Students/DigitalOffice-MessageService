@@ -1,6 +1,7 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 using FluentValidation.Validators;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Validation.Helper;
 using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
@@ -23,14 +24,14 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
         {
           nameof(EditWorkspaceRequest.Name),
           nameof(EditWorkspaceRequest.Description),
-          nameof(EditWorkspaceRequest.Image),
+          nameof(EditWorkspaceRequest.Avatar),
           nameof(EditWorkspaceRequest.IsActive)
         });
 
       AddСorrectOperations(nameof(EditWorkspaceRequest.Name), new() { OperationType.Replace });
       AddСorrectOperations(nameof(EditWorkspaceRequest.Description), new() { OperationType.Replace });
       AddСorrectOperations(nameof(EditWorkspaceRequest.IsActive), new() { OperationType.Replace });
-      AddСorrectOperations(nameof(EditWorkspaceRequest.Image), new() { OperationType.Replace });
+      AddСorrectOperations(nameof(EditWorkspaceRequest.Avatar), new() { OperationType.Replace });
 
       #endregion
 
@@ -49,7 +50,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
       #region Image
 
       AddFailureForPropertyIf(
-        nameof(EditWorkspaceRequest.Image),
+        nameof(EditWorkspaceRequest.Avatar),
         x => x == OperationType.Replace,
         new()
         {
@@ -58,13 +59,16 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
             {
               try
               {
-                _ = JsonConvert.DeserializeObject<CreateImageRequest>(x.value?.ToString());
-                return true;
+                AvatarData avatar = JsonConvert.DeserializeObject<AvatarData>(x.value?.ToString());
+                if (!String.IsNullOrEmpty(avatar.Content) && !String.IsNullOrEmpty(avatar.Extension))
+                {
+                  return true;
+                }
               }
               catch
               {
-                return false;
               }
+              return false;
             },
             "Incorrect Image format"
           }

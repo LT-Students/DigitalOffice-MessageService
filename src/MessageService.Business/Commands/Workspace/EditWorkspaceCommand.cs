@@ -117,18 +117,18 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         };
       }
 
-      var imageOperation = request.Operations.FirstOrDefault(o => o.path.EndsWith(nameof(EditWorkspaceRequest.Image), StringComparison.OrdinalIgnoreCase));
+      /*var imageOperation = request.Operations.FirstOrDefault(o => o.path.EndsWith(nameof(EditWorkspaceRequest.Avatar), StringComparison.OrdinalIgnoreCase));
       Guid? imageId = null;
 
       if (imageOperation != null)
       {
         imageId = AddImage(JsonConvert.DeserializeObject<CreateImageRequest>(imageOperation.value?.ToString()), editorId, errors);
-      }
+      }*/
 
       return new OperationResultResponse<bool>
       {
         Status = errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess,
-        Body = _repository.Edit(workspace, _mapper.Map(request, imageId)),
+        Body = _repository.Edit(workspace, _mapper.Map(request)),
         Errors = errors
       };
     }

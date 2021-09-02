@@ -49,8 +49,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Workspace
         Name = request.Name,
         Description = request.Description,
         IsActive = true,
-        AvatarContent = request.Avatar.Content,
-        AvatarExtension = request.Avatar.Extension,
+        AvatarContent = request.Avatar?.Content,
+        AvatarExtension = request.Avatar?.Extension,
         CreatedBy = createdBy,
         CreatedAtUtc = DateTime.UtcNow,
         Channels = new HashSet<DbChannel> { newChannel }

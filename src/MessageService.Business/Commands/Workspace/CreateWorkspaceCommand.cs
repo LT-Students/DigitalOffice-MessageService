@@ -8,20 +8,20 @@ using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
-using LT.DigitalOffice.MessageService.Validation.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 {
   public class CreateWorkspaceCommand : ICreateWorkspaceCommand
   {
-    private readonly ICreateWorkspaceValidator _validator;
+    private readonly ICreateWorkspaceRequestValidator _validator;
     private readonly IDbWorkspaceMapper _mapper;
     private readonly IWorkspaceRepository _repository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public CreateWorkspaceCommand(
-      ICreateWorkspaceValidator validator,
+      ICreateWorkspaceRequestValidator validator,
       IDbWorkspaceMapper mapper,
       IWorkspaceRepository repository,
       IHttpContextAccessor httpContextAccessor)

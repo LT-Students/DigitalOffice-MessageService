@@ -9,6 +9,6 @@ namespace LT.DigitalOffice.MessageService.Mappers.Patch.Interfaces
   [AutoInject]
   public interface IPatchDbWorkspaceMapper
   {
-    JsonPatchDocument<DbWorkspace> Map(JsonPatchDocument<EditWorkspaceRequest> request, Guid? imageId);
+    JsonPatchDocument<DbWorkspace> Map(JsonPatchDocument<EditWorkspaceRequest> request);
   }
 }

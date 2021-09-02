@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
@@ -52,7 +51,7 @@ namespace LT.DigitalOffice.MessageService.Data
       return true;
     }
 
-    public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount)
+    public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount, List<string> errors)
     {
       if (filter.SkipCount < 0)
       {
@@ -68,22 +67,22 @@ namespace LT.DigitalOffice.MessageService.Data
         return null;
       }
 
-      IQueryable<DbWorkspace> workspaces = _provider.Workspaces.AsQueryable();
+      IQueryable<DbWorkspace> dbWorkspaces = _provider.Workspaces.AsQueryable();
 
-      if (!filter.IsIncludeDeactivated)
+      if (!filter.IncludeDeactivated)
       {
-        workspaces = workspaces.Where(w => w.IsActive);
+        dbWorkspaces = dbWorkspaces.Where(w => w.IsActive);
       }
 
       Guid userId = _httpContextAccessor.HttpContext.GetUserId();
 
-      workspaces = workspaces
+      dbWorkspaces = dbWorkspaces
         .Include(w => w.Users.Where(u => u.Id == userId))
         .Where(w => w.Users.Any() || w.CreatedBy == userId);
 
-      totalCount = workspaces.Count();
+      totalCount = dbWorkspaces.Count();
 
-      return workspaces.Skip(filter.SkipCount).Take(filter.TakeCount).ToList();
+      return dbWorkspaces.Skip(filter.SkipCount).Take(filter.TakeCount).ToList();
     }
 
     public DbWorkspace Get(Guid workspaceId)
@@ -93,19 +92,19 @@ namespace LT.DigitalOffice.MessageService.Data
 
     public DbWorkspace Get(GetWorkspaceFilter filter)
     {
-      IQueryable<DbWorkspace> workspace = _provider.Workspaces.AsQueryable();
+      IQueryable<DbWorkspace> dbWorkspace = _provider.Workspaces.AsQueryable();
 
       if (filter.IsIncludeChannels)
       {
-        workspace = workspace.Include(w => w.Channels);
+        dbWorkspace = dbWorkspace.Include(w => w.Channels);
       }
 
       if (filter.IsIncludeUsers)
       {
-        workspace = workspace.Include(w => w.Users);
+        dbWorkspace = dbWorkspace.Include(w => w.Users);
       }
 
-      return workspace.FirstOrDefault(w => w.Id == filter.WorkspaceId);
+      return dbWorkspace.FirstOrDefault(w => w.Id == filter.WorkspaceId);
     }
   }
 }

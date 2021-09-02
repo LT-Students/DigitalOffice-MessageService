@@ -11,8 +11,6 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters
     public int TakeCount { get; set; }
 
     [FromQuery(Name = "includeDeactivated")]
-    public bool? IncludeDeactivated { get; set; }
-
-    public bool IsIncludeDeactivated => IncludeDeactivated.HasValue && IncludeDeactivated.Value;
+    public bool IncludeDeactivated { get; set; } = false;
   }
 }
