@@ -24,32 +24,25 @@ namespace LT.DigitalOffice.MessageService.Controllers
     }
 
     [HttpPost("create")]
-    public OperationResultResponse<Guid> Create(
-        [FromServices] ICreateWorkspaceCommand command,
-        [FromBody] CreateWorkspaceRequest request)
+    public OperationResultResponse<Guid?> Create(
+      [FromServices] ICreateWorkspaceCommand command,
+      [FromBody] CreateWorkspaceRequest request)
     {
-      var result = command.Execute(request);
-
-      if (result.Status != OperationResultStatusType.Failed)
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-      }
-
-      return result;
+      return command.Execute(request);
     }
 
     [HttpGet("find")]
     public FindResultResponse<ShortWorkspaceInfo> Find(
-        [FromServices] IFindWorkspaceCommand command,
-        [FromQuery] FindWorkspaceFilter filter)
+      [FromServices] IFindWorkspaceCommand command,
+      [FromQuery] FindWorkspaceFilter filter)
     {
       return command.Execute(filter);
     }
 
     [HttpGet("get")]
     public OperationResultResponse<WorkspaceInfo> Get(
-            [FromServices] IGetWorkspaceCommand command,
-            [FromQuery] GetWorkspaceFilter filter)
+      [FromServices] IGetWorkspaceCommand command,
+      [FromQuery] GetWorkspaceFilter filter)
     {
       var result = command.Execute(filter);
 
@@ -63,9 +56,9 @@ namespace LT.DigitalOffice.MessageService.Controllers
 
     [HttpPatch("edit")]
     public OperationResultResponse<bool> Edit(
-            [FromServices] IEditWorkspaceCommand command,
-            [FromQuery] Guid workspaceId,
-            [FromBody] JsonPatchDocument<EditWorkspaceRequest> request)
+      [FromServices] IEditWorkspaceCommand command,
+      [FromQuery] Guid workspaceId,
+      [FromBody] JsonPatchDocument<EditWorkspaceRequest> request)
     {
       return command.Execute(workspaceId, request);
     }

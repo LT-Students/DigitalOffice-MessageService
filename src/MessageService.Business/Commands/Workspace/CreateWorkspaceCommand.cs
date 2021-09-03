@@ -1,106 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using LT.DigitalOffice.Kernel.Broker;
+using System.Net;
 using LT.DigitalOffice.Kernel.Enums;
-using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
-using LT.DigitalOffice.Models.Broker.Requests.File;
-using MassTransit;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 {
   public class CreateWorkspaceCommand : ICreateWorkspaceCommand
   {
-    private readonly IDbWorkspaceMapper _mapper;
     private readonly ICreateWorkspaceRequestValidator _validator;
+    private readonly IDbWorkspaceMapper _mapper;
     private readonly IWorkspaceRepository _repository;
-    private readonly ILogger<CreateWorkspaceCommand> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IRequestClient<IAddImageRequest> _requestClient;
-
-    private Guid? AddImageContent(CreateImageRequest image, Guid ownerId, List<string> errors)
-    {
-      Guid? imageId = null;
-
-      string errorMessage = "Can not add image to the workspace. Please try again later.";
-
-      try
-      {
-        var imageRequest = IAddImageRequest.CreateObj(
-            image.Name,
-            image.Content,
-            image.Extension,
-            ownerId);
-        var imageResponse = _requestClient.GetResponse<IOperationResult<Guid>>(imageRequest).Result;
-        if (imageResponse.Message.IsSuccess)
-        {
-          return imageResponse.Message.Body;
-        }
-
-        errors.AddRange(imageResponse.Message.Errors);
-        _logger.LogWarning(errorMessage);
-      }
-      catch (Exception exception)
-      {
-        _logger.LogError(exception, errorMessage);
-      }
-
-      errors.Add(errorMessage);
-
-      return imageId;
-    }
 
     public CreateWorkspaceCommand(
-        IDbWorkspaceMapper mapper,
-        ICreateWorkspaceRequestValidator validator,
-        IWorkspaceRepository repository,
-        ILogger<CreateWorkspaceCommand> logger,
-        IHttpContextAccessor httpContextAccessor,
-        IRequestClient<IAddImageRequest> requestClient)
+      ICreateWorkspaceRequestValidator validator,
+      IDbWorkspaceMapper mapper,
+      IWorkspaceRepository repository,
+      IHttpContextAccessor httpContextAccessor)
     {
-      _mapper = mapper;
-      _logger = logger;
       _validator = validator;
+      _mapper = mapper;
       _repository = repository;
-      _requestClient = requestClient;
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public OperationResultResponse<Guid> Execute(CreateWorkspaceRequest workspace)
+    public OperationResultResponse<Guid?> Execute(CreateWorkspaceRequest request)
     {
-      List<string> errors = new();
-
-      _validator.ValidateAndThrowCustom(workspace);
-
-      var ownerId = _httpContextAccessor.HttpContext.GetUserId();
-
-      Guid? imageId = null;
-      if (workspace.Image != null)
+      if (!_validator.ValidateCustom(request, out List<string> errors))
       {
-        imageId = AddImageContent(workspace.Image, ownerId, errors);
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+        return new OperationResultResponse<Guid?>
+        {
+          Status = OperationResultStatusType.Failed,
+          Errors = errors
+        };
       }
 
-      DbWorkspace dbWorkspace = _mapper.Map(workspace, ownerId, imageId);
+      OperationResultResponse<Guid?> response = new();
 
-      _repository.Add(dbWorkspace);
+      response.Body = _repository.Add(_mapper.Map(request));
 
-      return new OperationResultResponse<Guid>
+      if (response.Body == null)
       {
-        Status = errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess,
-        Body = dbWorkspace.Id,
-        Errors = errors
-      };
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+        response.Status = OperationResultStatusType.Failed;
+        return response;
+      }
+
+      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+
+      response.Status = OperationResultStatusType.FullSuccess;
+
+      return response;
     }
   }
 }

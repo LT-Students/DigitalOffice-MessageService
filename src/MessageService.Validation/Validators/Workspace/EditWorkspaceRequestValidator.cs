@@ -1,6 +1,8 @@
-﻿using FluentValidation;
+﻿using System;
+using System.Collections.Generic;
+using FluentValidation;
 using FluentValidation.Validators;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Validation.Helper;
 using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
@@ -11,6 +13,9 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
 {
   public class EditWorkspaceRequestValidator : BaseEditRequestValidator<EditWorkspaceRequest>, IEditWorkspaceRequestValidator
   {
+    private List<string> AllowedExtensions = new()
+    { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tga" };
+
     private void HandleInternalPropertyValidation(Operation<EditWorkspaceRequest> requestedOperation, CustomContext context)
     {
       Context = context;
@@ -58,13 +63,21 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
             {
               try
               {
-                _ = JsonConvert.DeserializeObject<CreateImageRequest>(x.value?.ToString());
-                return true;
+                Image image = JsonConvert.DeserializeObject<Image>(x.value?.ToString());
+
+                var byteString = new Span<byte>(new byte[image.Content.Length]);
+
+                if (!String.IsNullOrEmpty(image.Content) &&
+                  Convert.TryFromBase64String(image.Content, byteString, out _) &&
+                  AllowedExtensions.Contains(image.Extension))
+                {
+                  return true;
+                }
               }
               catch
               {
-                return false;
               }
+              return false;
             },
             "Incorrect Image format"
           }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
 using LT.DigitalOffice.Models.Broker.Models;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
@@ -21,27 +21,33 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
       _userInfoMapper = userInfoMapper;
     }
 
-    public WorkspaceInfo Map(DbWorkspace workspace, List<ImageInfo> images, List<UserData> users)
+    public WorkspaceInfo Map(DbWorkspace dbWorkspace, List<ImageInfo> images, List<UserData> users)
     {
-      if (workspace == null)
+      if (dbWorkspace == null)
       {
         return null;
       }
 
-      UserData user = users?.FirstOrDefault(u => u.Id == workspace.CreatedBy);
+      UserData user = users?.FirstOrDefault(u => u.Id == dbWorkspace.CreatedBy);
 
       return new WorkspaceInfo
       {
-        Id = workspace.Id,
-        Name = workspace.Name,
-        Image = images?.FirstOrDefault(i => i.Id == workspace.ImageId),
-        Description = workspace.Description,
-        CreatedAtUtc = workspace.CreatedAtUtc,
-        CreatedBy = _userInfoMapper.Map(user, images?.FirstOrDefault(i => i.Id == user.ImageId)),
-        IsActive = workspace.IsActive,
-        Channels = workspace.Channels?.Select(ch => _channelInfoMapper.Map(ch, images?.FirstOrDefault(i => i.Id == ch.ImageId))).ToList(),
+        Id = dbWorkspace.Id,
+        Name = dbWorkspace.Name,
+        Description = dbWorkspace.Description,
+        Image = new Image()
+        {
+          Content = dbWorkspace.ImageContent,
+          Extension = dbWorkspace.ImageExtension
+        },
+        CreatedAtUtc = dbWorkspace.CreatedAtUtc,
+        CreatedBy = _userInfoMapper
+          .Map(user, images?.FirstOrDefault(i => i.Id == user.ImageId)),
+        IsActive = dbWorkspace.IsActive,
+        Channels = dbWorkspace.Channels?
+          .Select(ch => _channelInfoMapper.Map(ch)).ToList(),
         Users = users?
-          .Where(u => workspace.Users.Any(wu => wu.UserId == u.Id))
+          .Where(u => dbWorkspace.Users.Any(wu => wu.UserId == u.Id))
           .Select(u => _userInfoMapper.Map(u, images?.FirstOrDefault(i => i.Id == u.ImageId)))
           .ToList()
       };
