@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentValidation;
 using FluentValidation.Validators;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
@@ -12,6 +13,9 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
 {
   public class EditWorkspaceRequestValidator : BaseEditRequestValidator<EditWorkspaceRequest>, IEditWorkspaceRequestValidator
   {
+    private List<string> AllowedExtensions = new()
+    { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tga" };
+
     private void HandleInternalPropertyValidation(Operation<EditWorkspaceRequest> requestedOperation, CustomContext context)
     {
       Context = context;
@@ -59,8 +63,13 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
             {
               try
               {
-                Image avatar = JsonConvert.DeserializeObject<Image>(x.value?.ToString());
-                if (!String.IsNullOrEmpty(avatar.Content) && !String.IsNullOrEmpty(avatar.Extension))
+                Image image = JsonConvert.DeserializeObject<Image>(x.value?.ToString());
+
+                var byteString = new Span<byte>(new byte[image.Content.Length]);
+
+                if (!String.IsNullOrEmpty(image.Content) &&
+                  Convert.TryFromBase64String(image.Content, byteString, out _) &&
+                  AllowedExtensions.Contains(image.Extension))
                 {
                   return true;
                 }
