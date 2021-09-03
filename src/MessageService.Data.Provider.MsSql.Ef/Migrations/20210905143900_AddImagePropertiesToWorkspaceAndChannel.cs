@@ -4,19 +4,19 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
 {
-  [Migration("AddImagePropertiesToWorkspace")]
+  [Migration("20210905143900_AddImagePropertiesToWorkspaceAndChannel")]
   [DbContext(typeof(MessageServiceDbContext))]
-  class AddImagePropertiesToWorkspace : Migration
+  class AddImagePropertiesToWorkspaceAndChannel : Migration
   {
     protected override void Up(MigrationBuilder builder)
     {
       builder.AddColumn<string>(
-        name: nameof(DbWorkspace.AvatarContent),
+        name: nameof(DbWorkspace.ImageContent),
         table: DbWorkspace.TableName,
         nullable: true);
 
       builder.AddColumn<string>(
-        name: nameof(DbWorkspace.AvatarExtension),
+        name: nameof(DbWorkspace.ImageExtension),
         table: DbWorkspace.TableName,
         nullable: true);
 
@@ -25,12 +25,12 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef.Migrations
         table: DbWorkspace.TableName);
 
       builder.AddColumn<string>(
-        name: nameof(DbWorkspace.AvatarContent),
+        name: nameof(DbChannel.ImageContent),
         table: DbChannel.TableName,
         nullable: true);
 
       builder.AddColumn<string>(
-        name: nameof(DbWorkspace.AvatarExtension),
+        name: nameof(DbChannel.ImageExtension),
         table: DbChannel.TableName,
         nullable: true);
 

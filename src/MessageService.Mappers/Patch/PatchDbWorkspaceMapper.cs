@@ -30,12 +30,12 @@ namespace LT.DigitalOffice.MessageService.Mappers.Patch
 
       foreach(var item in request.Operations)
       {
-        if (item.path.EndsWith(nameof(EditWorkspaceRequest.Avatar), StringComparison.OrdinalIgnoreCase))
+        if (item.path.EndsWith(nameof(EditWorkspaceRequest.Image), StringComparison.OrdinalIgnoreCase))
         {
-          AvatarData avatar = JsonConvert.DeserializeObject <AvatarData>(item.value.ToString());
+          Image avatar = JsonConvert.DeserializeObject<Image>(item.value.ToString());
           var resizedContent = _resizeHelper.Resize(avatar.Content, avatar.Extension);
-          result.Operations.Add(new Operation<DbWorkspace>(item.op, nameof(DbWorkspace.AvatarContent), item.from, resizedContent));
-          result.Operations.Add(new Operation<DbWorkspace>(item.op, nameof(DbWorkspace.AvatarExtension), item.from, avatar.Extension));
+          result.Operations.Add(new Operation<DbWorkspace>(item.op, nameof(DbWorkspace.ImageContent), item.from, resizedContent));
+          result.Operations.Add(new Operation<DbWorkspace>(item.op, nameof(DbWorkspace.ImageExtension), item.from, avatar.Extension));
 
           continue;
         }

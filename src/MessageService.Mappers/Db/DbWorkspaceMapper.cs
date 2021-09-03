@@ -54,9 +54,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Workspace
         Name = request.Name,
         Description = request.Description,
         IsActive = true,
-        AvatarContent = request.Avatar != null ?
-          _resizeHelper.Resize(request.Avatar.Content, request.Avatar.Extension) : null,
-        AvatarExtension = request.Avatar?.Extension,
+        ImageContent = request.Image != null ?
+          _resizeHelper.Resize(request.Image.Content, request.Image.Extension) : null,
+        ImageExtension = request.Image?.Extension,
         CreatedBy = createdBy,
         CreatedAtUtc = DateTime.UtcNow,
         Channels = new HashSet<DbChannel> { newChannel }

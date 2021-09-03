@@ -11,11 +11,11 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
       RuleFor(workspace => workspace.Name)
         .NotEmpty().WithMessage("Workspace name can not be empty.");
 
-      When(w => w.Avatar != null, () =>
+      When(w => w.Image != null, () =>
       {
-        RuleFor(w => w.Avatar.Content)
+        RuleFor(w => w.Image.Content)
           .NotEmpty().WithMessage("Avatar content can not be empty.");
-        RuleFor(w => w.Avatar.Extension)
+        RuleFor(w => w.Image.Extension)
           .NotEmpty().WithMessage("Avatar extension can not be empty.");
       });
     }

@@ -24,14 +24,14 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
         {
           nameof(EditWorkspaceRequest.Name),
           nameof(EditWorkspaceRequest.Description),
-          nameof(EditWorkspaceRequest.Avatar),
+          nameof(EditWorkspaceRequest.Image),
           nameof(EditWorkspaceRequest.IsActive)
         });
 
       AddСorrectOperations(nameof(EditWorkspaceRequest.Name), new() { OperationType.Replace });
       AddСorrectOperations(nameof(EditWorkspaceRequest.Description), new() { OperationType.Replace });
       AddСorrectOperations(nameof(EditWorkspaceRequest.IsActive), new() { OperationType.Replace });
-      AddСorrectOperations(nameof(EditWorkspaceRequest.Avatar), new() { OperationType.Replace });
+      AddСorrectOperations(nameof(EditWorkspaceRequest.Image), new() { OperationType.Replace });
 
       #endregion
 
@@ -50,7 +50,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
       #region Image
 
       AddFailureForPropertyIf(
-        nameof(EditWorkspaceRequest.Avatar),
+        nameof(EditWorkspaceRequest.Image),
         x => x == OperationType.Replace,
         new()
         {
@@ -59,7 +59,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
             {
               try
               {
-                AvatarData avatar = JsonConvert.DeserializeObject<AvatarData>(x.value?.ToString());
+                Image avatar = JsonConvert.DeserializeObject<Image>(x.value?.ToString());
                 if (!String.IsNullOrEmpty(avatar.Content) && !String.IsNullOrEmpty(avatar.Extension))
                 {
                   return true;

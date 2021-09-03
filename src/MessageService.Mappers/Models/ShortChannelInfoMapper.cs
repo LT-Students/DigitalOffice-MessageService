@@ -20,10 +20,10 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         Name = dbChannel.Name,
         IsActive = dbChannel.IsActive,
         IsPrivate = dbChannel.IsPrivate,
-        Avatar = new AvatarData()
+        Avatar = new Image()
         {
-          Content = dbChannel.AvatarContent,
-          Extension = dbChannel.AvatarExtension
+          Content = dbChannel.ImageContent,
+          Extension = dbChannel.ImageExtension
         },
       };
     }

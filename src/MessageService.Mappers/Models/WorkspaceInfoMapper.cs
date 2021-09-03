@@ -35,17 +35,17 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         Id = dbWorkspace.Id,
         Name = dbWorkspace.Name,
         Description = dbWorkspace.Description,
-        Avatar = new AvatarData()
+        Image = new Image()
         {
-          Content = dbWorkspace.AvatarContent,
-          Extension = dbWorkspace.AvatarExtension
+          Content = dbWorkspace.ImageContent,
+          Extension = dbWorkspace.ImageExtension
         },
         CreatedAtUtc = dbWorkspace.CreatedAtUtc,
         CreatedBy = _userInfoMapper
-        .Map(user, images?.FirstOrDefault(i => i.Id == user.ImageId)),
+          .Map(user, images?.FirstOrDefault(i => i.Id == user.ImageId)),
         IsActive = dbWorkspace.IsActive,
         Channels = dbWorkspace.Channels?
-        .Select(ch => _channelInfoMapper.Map(ch)).ToList(),
+          .Select(ch => _channelInfoMapper.Map(ch)).ToList(),
         Users = users?
           .Where(u => dbWorkspace.Users.Any(wu => wu.UserId == u.Id))
           .Select(u => _userInfoMapper.Map(u, images?.FirstOrDefault(i => i.Id == u.ImageId)))

@@ -16,6 +16,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IWorkspaceRepository _repository;
     private readonly IShortWorkspaceInfoMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
+
     public FindWorkspaceCommand(
         IWorkspaceRepository repository,
         IShortWorkspaceInfoMapper mapper,

@@ -14,8 +14,8 @@ namespace LT.DigitalOffice.MessageService.Models.Db
     public string Name { get; set; }
     public bool IsPrivate { get; set; }
     public bool IsActive { get; set; }
-    public string AvatarContent { get; set; }
-    public string AvatarExtension { get; set; }
+    public string ImageContent { get; set; }
+    public string ImageExtension { get; set; }
     public Guid CreatedBy { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public Guid? ModifiedBy { get; set; }

@@ -21,10 +21,10 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         Name = dbWorkspace.Name,
         Description = dbWorkspace.Description,
         IsActive = dbWorkspace.IsActive,
-        Avatar = new AvatarData()
+        Image = new Image()
         {
-          Content = dbWorkspace.AvatarContent,
-          Extension = dbWorkspace.AvatarExtension
+          Content = dbWorkspace.ImageContent,
+          Extension = dbWorkspace.ImageExtension
         }
       };
     }
