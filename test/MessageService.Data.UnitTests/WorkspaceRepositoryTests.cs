@@ -109,26 +109,5 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
       Assert.IsNull(_repository.Get(incorrectId));
     }
     #endregion
-
-    #region SwitchActiveStatus
-    [Test]
-    public void ShouldSwitchActiveStatusSuccessfully()
-    {
-      _dbWorkspaceInDb.IsActive = true;
-
-      var id = _dbWorkspaceInDb.Id;
-
-      Assert.IsTrue(_repository.SwitchActiveStatus(id, false));
-      Assert.IsFalse(_provider.Workspaces.FirstOrDefault(w => w.Id == id).IsActive);
-    }
-
-    [Test]
-    public void ShouldThrowNotFountExcWhenTryingSwitchStatusOfNonExistsWorkspace()
-    {
-      var id = Guid.NewGuid();
-
-      Assert.IsFalse(_repository.SwitchActiveStatus(id, false));
-    }
-    #endregion
   }
 }

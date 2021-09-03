@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
   public class GetWorkspaceCommand : IGetWorkspaceCommand
   {
     private readonly IWorkspaceInfoMapper _workspaceInfoMapper;
-    private readonly IWorkspaceRepository _workspaceRepository;
+    private readonly IWorkspaceRepository _repository;
     private readonly IRequestClient<IGetImagesRequest> _rcGetImages;
     private readonly IRequestClient<IGetUsersDataRequest> _rcGetUsers;
     private readonly IImageInfoMapper _imageInfoMapper;
@@ -31,14 +31,14 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
     public GetWorkspaceCommand(
       IWorkspaceInfoMapper workspaceInfoMapper,
-      IWorkspaceRepository workspaceRepository,
+      IWorkspaceRepository repository,
       IRequestClient<IGetImagesRequest> rcGetImages,
       IRequestClient<IGetUsersDataRequest> rcGetUsers,
       IImageInfoMapper imageInfoMapper,
       ILogger<GetWorkspaceCommand> logger)
     {
       _workspaceInfoMapper = workspaceInfoMapper;
-      _workspaceRepository = workspaceRepository;
+      _repository = repository;
       _rcGetImages = rcGetImages;
       _rcGetUsers = rcGetUsers;
       _imageInfoMapper = imageInfoMapper;
@@ -111,9 +111,9 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
     public OperationResultResponse<WorkspaceInfo> Execute(GetWorkspaceFilter filter)
     {
-      DbWorkspace workspace = _workspaceRepository.Get(filter);
+      DbWorkspace dbWorkspace = _repository.Get(filter);
 
-      if (workspace == null)
+      if (dbWorkspace == null)
       {
         return new OperationResultResponse<WorkspaceInfo>
         {
@@ -123,23 +123,18 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         };
       }
 
-      List<Guid> usersIds = workspace.Users?.Select(u => u.UserId).ToList() ?? new();
-      usersIds.Add(workspace.CreatedBy);
+      List<Guid> usersIds = dbWorkspace.Users?.Select(u => u.UserId).ToList() ?? new();
+      usersIds.Add(dbWorkspace.CreatedBy);
 
       List<string> errors = new();
 
-      List<UserData> users = GetUsers(usersIds, errors);
+      List<UserData> usersData = GetUsers(usersIds, errors);
 
-      List<Guid> imageIds = workspace.Channels?.Where(ch => ch.ImageId.HasValue).Select(ch => ch.ImageId.Value).ToList() ?? new();
+      List<Guid> imageIds = new();
 
-      if (workspace.ImageId.HasValue)
+      if (usersData != null)
       {
-        imageIds.Add(workspace.ImageId.Value);
-      }
-
-      if (users != null)
-      {
-        imageIds.AddRange(users.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList());
+        imageIds.AddRange(usersData.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList());
       }
 
       List<ImageInfo> images = GetImages(imageIds, errors);
@@ -147,7 +142,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       return new OperationResultResponse<WorkspaceInfo>
       {
         Status = errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess,
-        Body = _workspaceInfoMapper.Map(workspace, images, users),
+        Body = _workspaceInfoMapper.Map(dbWorkspace, images, usersData),
         Errors = errors
       };
     }

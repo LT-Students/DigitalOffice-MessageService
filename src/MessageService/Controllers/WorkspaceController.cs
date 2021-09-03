@@ -7,6 +7,7 @@ using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LT.DigitalOffice.MessageService.Controllers
@@ -23,32 +24,25 @@ namespace LT.DigitalOffice.MessageService.Controllers
     }
 
     [HttpPost("create")]
-    public OperationResultResponse<Guid> Create(
-        [FromServices] ICreateWorkspaceCommand command,
-        [FromBody] CreateWorkspaceRequest request)
+    public OperationResultResponse<Guid?> Create(
+      [FromServices] ICreateWorkspaceCommand command,
+      [FromBody] CreateWorkspaceRequest request)
     {
-      var result = command.Execute(request);
-
-      if (result.Status != OperationResultStatusType.Failed)
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-      }
-
-      return result;
+      return command.Execute(request);
     }
 
     [HttpGet("find")]
     public FindResultResponse<ShortWorkspaceInfo> Find(
-        [FromServices] IFindWorkspaceCommand command,
-        [FromQuery] FindWorkspaceFilter filter)
+      [FromServices] IFindWorkspaceCommand command,
+      [FromQuery] FindWorkspaceFilter filter)
     {
       return command.Execute(filter);
     }
 
     [HttpGet("get")]
     public OperationResultResponse<WorkspaceInfo> Get(
-            [FromServices] IGetWorkspaceCommand command,
-            [FromQuery] GetWorkspaceFilter filter)
+      [FromServices] IGetWorkspaceCommand command,
+      [FromQuery] GetWorkspaceFilter filter)
     {
       var result = command.Execute(filter);
 
@@ -60,19 +54,13 @@ namespace LT.DigitalOffice.MessageService.Controllers
       return result;
     }
 
-    [HttpDelete("remove")]
-    public OperationResultResponse<bool> Remove(
-            [FromServices] IRemoveWorkspaceCommand command,
-            [FromQuery] Guid workspaceId)
+    [HttpPatch("edit")]
+    public OperationResultResponse<bool> Edit(
+      [FromServices] IEditWorkspaceCommand command,
+      [FromQuery] Guid workspaceId,
+      [FromBody] JsonPatchDocument<EditWorkspaceRequest> request)
     {
-      var result = command.Execute(workspaceId);
-
-      if (result.Status == OperationResultStatusType.Failed)
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
-      }
-
-      return result;
+      return command.Execute(workspaceId, request);
     }
   }
 }

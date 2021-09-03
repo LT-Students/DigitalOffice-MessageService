@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
@@ -25,40 +25,66 @@ namespace LT.DigitalOffice.MessageService.Data
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public void Add(DbWorkspace workspace)
+    public Guid? Add(DbWorkspace workspace)
     {
+      if (workspace == null)
+      {
+        return null;
+      }
+
       _provider.Workspaces.Add(workspace);
       _provider.Save();
+
+      return workspace.Id;
     }
 
-    public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount)
+    public bool Edit(DbWorkspace dbWorkspace, JsonPatchDocument<DbWorkspace> request, Guid editorId)
+    {
+      if (dbWorkspace == null || request == null)
+      {
+        return false;
+      }
+
+      request.ApplyTo(dbWorkspace);
+      dbWorkspace.ModifiedBy = editorId;
+      dbWorkspace.ModifiedAtUtc = DateTime.UtcNow;
+      _provider.Save();
+
+      return true;
+    }
+
+    public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount, List<string> errors)
     {
       if (filter.SkipCount < 0)
       {
-        throw new BadRequestException("Skip count cannot be less than 0.");
+        errors.Add("Skip count cannot be less than 0.");
+        totalCount = 0;
+        return null;
       }
 
       if (filter.TakeCount < 1)
       {
-        throw new BadRequestException("Take count cannot be less than 1.");
+        errors.Add("Take count cannot be less than 1.");
+        totalCount = 0;
+        return null;
       }
 
-      IQueryable<DbWorkspace> workspaces = _provider.Workspaces.AsQueryable();
+      IQueryable<DbWorkspace> dbWorkspaces = _provider.Workspaces.AsQueryable();
 
-      if (!filter.IsIncludeDeactivated)
+      if (!filter.IncludeDeactivated)
       {
-        workspaces = workspaces.Where(w => w.IsActive);
+        dbWorkspaces = dbWorkspaces.Where(w => w.IsActive);
       }
 
       Guid userId = _httpContextAccessor.HttpContext.GetUserId();
 
-      workspaces = workspaces
+      dbWorkspaces = dbWorkspaces
         .Include(w => w.Users.Where(u => u.Id == userId))
         .Where(w => w.Users.Any() || w.CreatedBy == userId);
 
-      totalCount = workspaces.Count();
+      totalCount = dbWorkspaces.Count();
 
-      return workspaces.Skip(filter.SkipCount).Take(filter.TakeCount).ToList();
+      return dbWorkspaces.Skip(filter.SkipCount).Take(filter.TakeCount).ToList();
     }
 
     public DbWorkspace Get(Guid workspaceId)
@@ -68,36 +94,19 @@ namespace LT.DigitalOffice.MessageService.Data
 
     public DbWorkspace Get(GetWorkspaceFilter filter)
     {
-      IQueryable<DbWorkspace> workspace = _provider.Workspaces.AsQueryable();
+      IQueryable<DbWorkspace> dbWorkspace = _provider.Workspaces.AsQueryable();
 
       if (filter.IsIncludeChannels)
       {
-        workspace = workspace.Include(w => w.Channels);
+        dbWorkspace = dbWorkspace.Include(w => w.Channels);
       }
 
       if (filter.IsIncludeUsers)
       {
-        workspace = workspace.Include(w => w.Users);
+        dbWorkspace = dbWorkspace.Include(w => w.Users);
       }
 
-      return workspace.FirstOrDefault(w => w.Id == filter.WorkspaceId);
-    }
-
-    public bool SwitchActiveStatus(Guid workspaceId, bool status)
-    {
-      DbWorkspace dbWorkspace = _provider.Workspaces.FirstOrDefault(w => w.Id == workspaceId);
-      if (dbWorkspace == null)
-      {
-        return false;
-      }
-
-      dbWorkspace.IsActive = status;
-      dbWorkspace.ModifiedAtUtc = DateTime.UtcNow;
-
-      _provider.Workspaces.Update(dbWorkspace);
-      _provider.Save();
-
-      return true;
+      return dbWorkspace.FirstOrDefault(w => w.Id == filter.WorkspaceId);
     }
   }
 }

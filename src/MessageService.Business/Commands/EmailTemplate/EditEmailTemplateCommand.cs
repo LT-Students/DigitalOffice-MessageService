@@ -10,7 +10,7 @@ using LT.DigitalOffice.MessageService.Business.Commands.EmailTemplate.Interfaces
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
-using LT.DigitalOffice.MessageService.Validation.EmailTemplate.Interfaces;
+using LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplate.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 

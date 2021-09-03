@@ -1,26 +1,30 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Channel;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
   public class ShortChannelInfoMapper : IShortChannelInfoMapper
   {
-    public ShortChannelInfo Map(DbChannel channel, ImageInfo image)
+    public ShortChannelInfo Map(DbChannel dbChannel)
     {
-      if (channel == null)
+      if (dbChannel == null)
       {
         return null;
       }
 
       return new ShortChannelInfo
       {
-        Id = channel.Id,
-        Image = image,
-        Name = channel.Name,
-        IsActive = channel.IsActive,
-        IsPrivate = channel.IsPrivate
+        Id = dbChannel.Id,
+        Name = dbChannel.Name,
+        IsActive = dbChannel.IsActive,
+        IsPrivate = dbChannel.IsPrivate,
+        Avatar = new Image()
+        {
+          Content = dbChannel.ImageContent,
+          Extension = dbChannel.ImageExtension
+        },
       };
     }
   }

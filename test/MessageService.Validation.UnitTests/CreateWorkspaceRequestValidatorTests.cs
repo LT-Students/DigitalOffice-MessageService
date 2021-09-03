@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 using FluentValidation.TestHelper;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
-using LT.DigitalOffice.MessageService.Validation.Workspace;
+using LT.DigitalOffice.MessageService.Validation.Validators.Workspace;
 using NUnit.Framework;
 
 namespace LT.DigitalOffice.MessageService.Validation.UnitTests
 {
-    public class CreateWorkspaceRequestValidatorTests
+  public class CreateWorkspaceRequestValidatorTests
     {
         private IValidator<CreateWorkspaceRequest> _validator;
         private CreateWorkspaceRequest _workspace;
@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         [SetUp]
         public void SetUp()
         {
-            _validator = new CreateWorkspaceValidator();
+            _validator = new CreateWorkspaceRequestValidator();
 
             _workspace = new CreateWorkspaceRequest
             {

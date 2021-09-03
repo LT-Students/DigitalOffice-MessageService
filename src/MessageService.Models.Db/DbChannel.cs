@@ -11,10 +11,11 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
     public Guid Id { get; set; }
     public Guid WorkspaceId { get; set; }
-    public Guid? ImageId { get; set; }
     public string Name { get; set; }
-    public bool IsActive { get; set; }
     public bool IsPrivate { get; set; }
+    public bool IsActive { get; set; }
+    public string ImageContent { get; set; }
+    public string ImageExtension { get; set; }
     public Guid CreatedBy { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public Guid? ModifiedBy { get; set; }

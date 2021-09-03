@@ -2,25 +2,30 @@
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
   public class ShortWorkspaceInfoMapper : IShortWorkspaceInfoMapper
   {
-    public ShortWorkspaceInfo Map(DbWorkspace workspace, ImageInfo image)
+    public ShortWorkspaceInfo Map(DbWorkspace dbWorkspace)
     {
-      if (workspace == null)
+      if (dbWorkspace == null)
       {
         return null;
       }
 
       return new ShortWorkspaceInfo
       {
-        Id = workspace.Id,
-        Name = workspace.Name,
-        Image = image,
-        Description = workspace.Description,
-        IsActive = workspace.IsActive,
+        Id = dbWorkspace.Id,
+        Name = dbWorkspace.Name,
+        Description = dbWorkspace.Description,
+        IsActive = dbWorkspace.IsActive,
+        Image = new Image()
+        {
+          Content = dbWorkspace.ImageContent,
+          Extension = dbWorkspace.ImageExtension
+        }
       };
     }
   }
