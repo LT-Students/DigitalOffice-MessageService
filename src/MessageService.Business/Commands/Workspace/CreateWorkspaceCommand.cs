@@ -1,35 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Enums;
+using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
+using LT.DigitalOffice.Models.Broker.Common;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 {
   public class CreateWorkspaceCommand : ICreateWorkspaceCommand
   {
     private readonly ICreateWorkspaceRequestValidator _validator;
-    private readonly IDbWorkspaceMapper _mapper;
+    private readonly IDbWorkspaceMapper _workspaceMapper;
+    private readonly IDbWorkspaceUserMapper _workspaceUserMapper;
+    private readonly IDbChannelMapper _channelMapper;
+    private readonly IDbChannelUserMapper _channelUserMapper;
     private readonly IWorkspaceRepository _repository;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IRequestClient<ICheckUsersExistence> _rcCheckUsersExistence;
+    private readonly ILogger<CreateWorkspaceCommand> _logger;
+
+    private List<Guid> CheckUserExistence(List<Guid> usersIds, List<string> errors)
+    {
+      if (!usersIds.Any())
+      {
+        return usersIds;
+      }
+
+      string errorMessage = "Failed to check the existing users.";
+      string logMessage = "Cannot check existing users withs this ids {userIds}";
+
+      try
+      {
+        var response = _rcCheckUsersExistence.GetResponse<IOperationResult<ICheckUsersExistence>>(
+            ICheckUsersExistence.CreateObj(usersIds)).Result;
+        if (response.Message.IsSuccess)
+        {
+          return response.Message.Body.UserIds;
+        }
+
+        _logger.LogWarning("Can not find user Ids: {userIds}: " +
+            $"{Environment.NewLine}{string.Join('\n', response.Message.Errors)}");
+      }
+      catch (Exception exc)
+      {
+        _logger.LogError(exc, logMessage);
+      }
+
+      errors.Add(errorMessage);
+      return null;
+    }
 
     public CreateWorkspaceCommand(
       ICreateWorkspaceRequestValidator validator,
-      IDbWorkspaceMapper mapper,
+      IDbWorkspaceMapper workspaceMapper,
+      IDbWorkspaceUserMapper workspaceUserMapper,
+      IDbChannelMapper channelMapper,
+      IDbChannelUserMapper channelUserMapper,
       IWorkspaceRepository repository,
-      IHttpContextAccessor httpContextAccessor)
+      IHttpContextAccessor httpContextAccessor,
+      IRequestClient<ICheckUsersExistence> rcCheckUsersExistence,
+      ILogger<CreateWorkspaceCommand> logger)
     {
       _validator = validator;
-      _mapper = mapper;
+      _workspaceMapper = workspaceMapper;
+      _workspaceUserMapper = workspaceUserMapper;
+      _channelMapper = channelMapper;
+      _channelUserMapper = channelUserMapper;
       _repository = repository;
       _httpContextAccessor = httpContextAccessor;
+      _rcCheckUsersExistence = rcCheckUsersExistence;
+      _logger = logger;
     }
 
     public OperationResultResponse<Guid?> Execute(CreateWorkspaceRequest request)
@@ -45,21 +99,45 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         };
       }
 
+      Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
+
       OperationResultResponse<Guid?> response = new();
 
-      response.Body = _repository.Add(_mapper.Map(request));
+      List<Guid> usersIds = CheckUserExistence(
+        request.Users.Select(wu => wu.UserId).ToList(),
+        response.Errors);
+
+      DbWorkspace dbWorkspace = _workspaceMapper.Map(request, createdBy);
+
+      dbWorkspace.Users = usersIds
+        .Select(userId => _workspaceUserMapper
+          .Map(userId, dbWorkspace.Id, request.Users
+            .FirstOrDefault(x => x.UserId == userId).IsAdmin, createdBy))
+        .ToList()
+        .ToHashSet();
+
+      dbWorkspace.Users.Add(_workspaceUserMapper.Map(createdBy, dbWorkspace.Id, true, createdBy));
+
+      DbChannel dbChannel = _channelMapper.Map(dbWorkspace.Id, createdBy);
+
+      dbChannel.Users = dbWorkspace.Users
+        .Select(workspaceUser => _channelUserMapper
+          .Map(workspaceUser.Id, dbChannel.Id, workspaceUser.IsAdmin, createdBy))
+        .ToList()
+        .ToHashSet();
+
+      dbWorkspace.Channels.Add(dbChannel);
+
+      response.Body = _repository.Add(dbWorkspace);
+      response.Status = OperationResultStatusType.FullSuccess;
+      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
       if (response.Body == null)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
         response.Status = OperationResultStatusType.Failed;
-        return response;
       }
-
-      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-
-      response.Status = OperationResultStatusType.FullSuccess;
 
       return response;
     }

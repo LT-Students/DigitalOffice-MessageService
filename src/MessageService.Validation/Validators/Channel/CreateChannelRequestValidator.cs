@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentValidation;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
-using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Validation.Validators.Channel.Interfaces;
 
-namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
+namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
 {
-  public class CreateWorkspaceRequestValidator : AbstractValidator<CreateWorkspaceRequest>, ICreateWorkspaceRequestValidator
+  public class CreateChannelRequestValidator : AbstractValidator<CreateChannelRequest>, ICreateChannelRequestValidator
   {
     private List<string> AllowedExtensions = new()
     { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tga" };
 
-    public CreateWorkspaceRequestValidator()
+    public CreateChannelRequestValidator()
     {
-      RuleFor(workspace => workspace.Name)
-        .NotEmpty().WithMessage("Workspace name can not be empty.");
+      RuleFor(x => x.WorkspaceId)
+        .NotEmpty().WithMessage("Workspase id must not be empty");
+
+      RuleFor(x => x.Name.Trim())
+        .NotEmpty().WithMessage("Channel name must not be empty");
 
       When(w => w.Image != null, () =>
       {
-        RuleFor(w => w.Image.Content)
+        RuleFor(c => c.Image.Content)
           .NotEmpty().WithMessage("Image content can not be empty.")
           .Must(x =>
           {
@@ -33,13 +36,10 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
             }
           }).WithMessage("Wrong image content.");
 
-        RuleFor(w => w.Image.Extension)
+        RuleFor(c => c.Image.Extension)
           .Must(AllowedExtensions.Contains)
           .WithMessage($"Image extension is not {string.Join('/', AllowedExtensions)}");
       });
-
-      RuleFor(w => w.Users)
-        .NotNull().WithMessage("Users can not be null");
     }
   }
 }
