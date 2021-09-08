@@ -40,14 +40,14 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       try
       {
         var response = _rcCheckUsersExistence.GetResponse<IOperationResult<ICheckUsersExistence>>(
-            ICheckUsersExistence.CreateObj(usersIds)).Result;
+          ICheckUsersExistence.CreateObj(usersIds)).Result;
         if (response.Message.IsSuccess)
         {
           return response.Message.Body.UserIds;
         }
 
         _logger.LogWarning("Can not find user Ids: {userIds}: " +
-            $"{Environment.NewLine}{string.Join('\n', response.Message.Errors)}");
+          $"{Environment.NewLine}{string.Join('\n', response.Message.Errors)}");
       }
       catch (Exception exc)
       {

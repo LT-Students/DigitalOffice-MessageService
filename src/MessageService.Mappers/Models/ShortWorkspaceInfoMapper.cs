@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         Name = dbWorkspace.Name,
         Description = dbWorkspace.Description,
         IsActive = dbWorkspace.IsActive,
-        Image = new ImageContent()
+        Image = new ImageConsist()
         {
           Content = dbWorkspace.ImageContent,
           Extension = dbWorkspace.ImageExtension

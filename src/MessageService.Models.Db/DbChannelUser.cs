@@ -27,20 +27,18 @@ namespace LT.DigitalOffice.MessageService.Models.Db
     public void Configure(EntityTypeBuilder<DbChannelUser> builder)
     {
       builder
-          .ToTable(DbChannelUser.TableName);
+        .ToTable(DbChannelUser.TableName);
 
       builder
-          .HasKey(chu => chu.Id);
+        .HasKey(chu => chu.Id);
 
       builder
-          .HasOne(chu => chu.Channel)
-          .WithMany(ch => ch.Users)
-          .HasForeignKey(chu => chu.ChannelId);
+        .HasOne(chu => chu.Channel)
+        .WithMany(ch => ch.Users);
 
       builder
-          .HasOne(chu => chu.WorkspaceUser)
-          .WithMany(wu => wu.ChannelsUsers)
-          .HasForeignKey(chu => chu.WorkspaceUserId);
+        .HasOne(chu => chu.WorkspaceUser)
+        .WithMany(wu => wu.ChannelsUsers);
     }
   }
 }

@@ -8,6 +8,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces
   [AutoInject]
   public interface ICreateChannelCommand
   {
-    OperationResultResponse<Guid?> Exequte(CreateChannelRequest request);
+    OperationResultResponse<Guid?> Exeсute(CreateChannelRequest request);
   }
 }

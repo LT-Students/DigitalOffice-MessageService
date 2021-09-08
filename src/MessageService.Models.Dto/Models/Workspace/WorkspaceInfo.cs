@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Models
     public string Name { get; set; }
     public string Description { get; set; }
     public bool IsActive { get; set; }
-    public ImageContent Image { get; set; }
+    public ImageConsist Image { get; set; }
     public UserInfo CreatedBy { get; set; }
     public DateTime CreatedAtUtc { get; set; }
 

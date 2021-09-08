@@ -57,7 +57,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
         ImageExtension = request.Image?.Extension,
         CreatedBy = createdBy,
         CreatedAtUtc = DateTime.UtcNow,
-        Users = dbWorkspaceUsers,
+        Users = dbWorkspaceUsers.ToHashSet(),
         Channels = new List<DbChannel>()
         {
           _channelMapper.Map(workspaceId, dbWorkspaceUsers.ToList(), createdBy)

@@ -63,7 +63,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
             {
               try
               {
-                ImageContent image = JsonConvert.DeserializeObject<ImageContent>(x.value?.ToString());
+                ImageConsist image = JsonConvert.DeserializeObject<ImageConsist>(x.value?.ToString());
 
                 var byteString = new Span<byte>(new byte[image.Content.Length]);
 

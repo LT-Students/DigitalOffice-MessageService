@@ -13,10 +13,10 @@ namespace LT.DigitalOffice.MessageService.Controllers
 
     [HttpPost("create")]
     public OperationResultResponse<Guid?> Create(
-      [FromServices] ICreateChannelCommand _command,
+      [FromServices] ICreateChannelCommand command,
       [FromBody] CreateChannelRequest request)
     {
-      return _command.Exequte(request);
+      return command.Exeсute(request);
     }
   }
 }

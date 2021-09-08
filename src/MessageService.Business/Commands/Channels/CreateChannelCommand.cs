@@ -37,7 +37,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public OperationResultResponse<Guid?> Exequte(CreateChannelRequest request)
+    public OperationResultResponse<Guid?> Exeсute(CreateChannelRequest request)
     {
       Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
 
