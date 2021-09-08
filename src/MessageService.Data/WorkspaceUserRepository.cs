@@ -4,6 +4,7 @@ using System.Linq;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
+using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
@@ -27,10 +28,18 @@ namespace LT.DigitalOffice.MessageService.Data
       return _provider.WorkspaceUsers.Where(wa => wa.WorkspaceId == workspaceId && wa.IsAdmin && wa.IsActive).ToList();
     }
 
-    public bool IsWorkspaceUser(Guid workspaseId, Guid userId)
+    public DbWorkspaceUser Get(Guid workspaseId, Guid userId)
     {
       return _provider.WorkspaceUsers
-        .Any(x => x.WorkspaceId == workspaseId && x.UserId == userId);
+        .FirstOrDefault(x => x.WorkspaceId == workspaseId && x.UserId == userId);
+    }
+
+    public List<Guid> AreExistWorkspaceUsers(List<Guid> workspaceUsersIds, Guid workspaceId)
+    {
+      return _provider.WorkspaceUsers
+        .Where(wu =>
+          wu.WorkspaceId == workspaceId && workspaceUsersIds.Contains(wu.Id) && wu.IsActive)
+        .Select(wu => wu.Id).ToList();
     }
   }
 }

@@ -8,6 +8,7 @@ using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Validation.Validators.Channel.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -18,20 +19,20 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
   {
     private readonly IWorkspaceUserRepository _workspaceUserRepository;
     private readonly ICreateChannelRequestValidator _validator;
-    private readonly IDbChannelMapper _mapper;
+    private readonly IDbChannelMapper _channelMapper;
     private readonly IChannelRepository _channelRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public CreateChannelCommand(
       IWorkspaceUserRepository workspaceUserRepository,
       ICreateChannelRequestValidator validator,
-      IDbChannelMapper mapper,
+      IDbChannelMapper channelMapper,
       IChannelRepository channelRepository,
       IHttpContextAccessor httpContextAccessor)
     {
       _workspaceUserRepository = workspaceUserRepository;
       _validator = validator;
-      _mapper = mapper;
+      _channelMapper = channelMapper;
       _channelRepository = channelRepository;
       _httpContextAccessor = httpContextAccessor;
     }
@@ -40,7 +41,9 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
     {
       Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
 
-      if (!_workspaceUserRepository.IsWorkspaceUser(request.WorkspaceId, createdBy))
+      DbWorkspaceUser dbWorkspaceCreator = _workspaceUserRepository.Get(request.WorkspaceId, createdBy);
+
+      if (dbWorkspaceCreator == null)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -64,19 +67,17 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
       OperationResultResponse<Guid?> response = new();
 
-      response.Body = _channelRepository.Add(_mapper.Map(request, createdBy));
+      response.Body = _channelRepository.Add(_channelMapper.Map(request, dbWorkspaceCreator));
+
+      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+      response.Status = OperationResultStatusType.FullSuccess;
 
       if (response.Body == null)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
         response.Status = OperationResultStatusType.Failed;
-        return response;
       }
 
-      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-
-      response.Status = OperationResultStatusType.FullSuccess;
       return response;
     }
   }

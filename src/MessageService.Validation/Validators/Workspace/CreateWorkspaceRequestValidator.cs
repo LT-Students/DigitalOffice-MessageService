@@ -39,7 +39,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
       });
 
       RuleFor(w => w.Users)
-        .NotNull().WithMessage("Users can not be null");
+        .NotEmpty().WithMessage("Users can not be empty");
     }
   }
 }

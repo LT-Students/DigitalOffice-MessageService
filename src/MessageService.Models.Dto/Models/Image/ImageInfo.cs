@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LT.DigitalOffice.MessageService.Models.Dto.Models
+namespace LT.DigitalOffice.MessageService.Models.Dto.Models.Image
 {
     public record ImageInfo
     {

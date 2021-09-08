@@ -28,11 +28,5 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         {
             _validator.ShouldHaveValidationErrorFor(x => x.Name, string.Empty);
         }
-
-        [Test]
-        public void ShouldNotHaveAnyValidationErrorsWhenRequestIsValid()
-        {
-            _validator.TestValidate(_workspace).ShouldNotHaveAnyValidationErrors();
-        }
     }
 }

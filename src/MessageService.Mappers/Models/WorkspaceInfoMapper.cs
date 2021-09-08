@@ -3,7 +3,7 @@ using System.Linq;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.Models.Broker.Models;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
@@ -28,24 +28,24 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         return null;
       }
 
-      UserData user = users?.FirstOrDefault(u => u.Id == dbWorkspace.CreatedBy);
+      UserData createdByUserData = users?.FirstOrDefault(u => u.Id == dbWorkspace.CreatedBy);
 
       return new WorkspaceInfo
       {
         Id = dbWorkspace.Id,
         Name = dbWorkspace.Name,
         Description = dbWorkspace.Description,
-        Image = new Image()
+        Image = new ImageContent()
         {
           Content = dbWorkspace.ImageContent,
           Extension = dbWorkspace.ImageExtension
         },
         CreatedAtUtc = dbWorkspace.CreatedAtUtc,
         CreatedBy = _userInfoMapper
-          .Map(user, images?.FirstOrDefault(i => i.Id == user.ImageId)),
+          .Map(createdByUserData, images?.FirstOrDefault(i => i.Id == createdByUserData.ImageId)),
         IsActive = dbWorkspace.IsActive,
         Channels = dbWorkspace.Channels?
-          .Select(ch => _channelInfoMapper.Map(ch)).ToList(),
+          .Select(_channelInfoMapper.Map).ToList(),
         Users = users?
           .Where(u => dbWorkspace.Users.Any(wu => wu.UserId == u.Id))
           .Select(u => _userInfoMapper.Map(u, images?.FirstOrDefault(i => i.Id == u.ImageId)))

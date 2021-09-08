@@ -1,7 +1,7 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Channel;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         Name = dbChannel.Name,
         IsActive = dbChannel.IsActive,
         IsPrivate = dbChannel.IsPrivate,
-        Avatar = new Image()
+        Avatar = new ImageContent()
         {
           Content = dbChannel.ImageContent,
           Extension = dbChannel.ImageExtension

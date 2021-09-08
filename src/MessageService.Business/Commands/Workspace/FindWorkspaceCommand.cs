@@ -33,20 +33,19 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
       response.Body = _repository
         .Find(filter, out int totalCount, response.Errors)
-        .Select(w => _mapper.Map(w))
+        .Select(_mapper.Map)
         .ToList();
 
       response.TotalCount = totalCount;
+      response.Status = OperationResultStatusType.FullSuccess;
 
       if (response.Errors.Any())
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
         response.Status = OperationResultStatusType.Failed;
-        return response;
       }
 
-      response.Status = OperationResultStatusType.FullSuccess;
       return response;
     }
   }

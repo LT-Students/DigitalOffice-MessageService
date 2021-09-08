@@ -79,8 +79,8 @@ namespace LT.DigitalOffice.MessageService.Data
       Guid userId = _httpContextAccessor.HttpContext.GetUserId();
 
       dbWorkspaces = dbWorkspaces
-        .Include(w => w.Users.Where(u => u.Id == userId))
-        .Where(w => w.Users.Any() || w.CreatedBy == userId);
+        .Include(w => w.Users.Where(u => u.UserId == userId && u.IsActive))
+        .Where(w => w.Users.Any());
 
       totalCount = dbWorkspaces.Count();
 
@@ -94,14 +94,19 @@ namespace LT.DigitalOffice.MessageService.Data
 
     public DbWorkspace Get(GetWorkspaceFilter filter)
     {
+      if (filter == null)
+      {
+        return null;
+      }
+
       IQueryable<DbWorkspace> dbWorkspace = _provider.Workspaces.AsQueryable();
 
-      if (filter.IsIncludeChannels)
+      if (filter.IncludeChannels)
       {
         dbWorkspace = dbWorkspace.Include(w => w.Channels);
       }
 
-      if (filter.IsIncludeUsers)
+      if (filter.IncludeUsers)
       {
         dbWorkspace = dbWorkspace.Include(w => w.Users);
       }

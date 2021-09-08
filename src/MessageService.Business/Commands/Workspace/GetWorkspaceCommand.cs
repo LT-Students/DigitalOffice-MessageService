@@ -9,6 +9,7 @@ using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
 using LT.DigitalOffice.Models.Broker.Models;
 using LT.DigitalOffice.Models.Broker.Requests.File;
@@ -118,17 +119,13 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         return new OperationResultResponse<WorkspaceInfo>
         {
           Status = OperationResultStatusType.Failed,
-          Body = null,
           Errors = new() { $"Workspace with id: '{filter.WorkspaceId}' doesn't exist." }
         };
       }
 
-      List<Guid> usersIds = dbWorkspace.Users?.Select(u => u.UserId).ToList() ?? new();
-      usersIds.Add(dbWorkspace.CreatedBy);
+      OperationResultResponse<WorkspaceInfo> responce = new();
 
-      List<string> errors = new();
-
-      List<UserData> usersData = GetUsers(usersIds, errors);
+      List<UserData> usersData = GetUsers(dbWorkspace.Users?.Select(u => u.UserId).ToList(), responce.Errors);
 
       List<Guid> imageIds = new();
 
@@ -137,14 +134,12 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         imageIds.AddRange(usersData.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList());
       }
 
-      List<ImageInfo> images = GetImages(imageIds, errors);
+      List<ImageInfo> images = GetImages(imageIds, responce.Errors);
 
-      return new OperationResultResponse<WorkspaceInfo>
-      {
-        Status = errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess,
-        Body = _workspaceInfoMapper.Map(dbWorkspace, images, usersData),
-        Errors = errors
-      };
+      responce.Status = responce.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
+      responce.Body = _workspaceInfoMapper.Map(dbWorkspace, images, usersData);
+
+      return responce;
     }
   }
 }

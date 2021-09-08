@@ -7,6 +7,6 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Interfaces
   [AutoInject]
   public interface IDbWorkspaceUserMapper
   {
-    DbWorkspaceUser Map(Guid userId, Guid workspaceId, bool isAdmin, Guid createdBy);
+    DbWorkspaceUser Map(Guid workspaceId, Guid userId, bool isAdmin, Guid createdBy);
   }
 }

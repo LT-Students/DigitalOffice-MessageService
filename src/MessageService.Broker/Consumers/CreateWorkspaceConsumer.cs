@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.Models.Broker.Requests.Message;
 using MassTransit;
 
@@ -15,9 +14,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
     private bool CreateWorkspace(ICreateWorkspaceRequest request)
     {
-      DbWorkspace newWorkspace = _workspaceMapper.Map(request);
-
-      _workspaceRepository.Add(newWorkspace);
+      _workspaceRepository.Add(_workspaceMapper.Map(request.Name, request.Users, request.CreaterId));
 
       return true;
     }

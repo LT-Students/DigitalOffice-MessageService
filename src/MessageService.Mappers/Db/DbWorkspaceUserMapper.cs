@@ -6,7 +6,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
   public class DbWorkspaceUserMapper : IDbWorkspaceUserMapper
   {
-    public DbWorkspaceUser Map(Guid userId, Guid workspaceId, bool isAdmin, Guid createdBy)
+    public DbWorkspaceUser Map(Guid workspaceId, Guid userId,  bool isAdmin, Guid createdBy)
     {
       return new DbWorkspaceUser()
       {

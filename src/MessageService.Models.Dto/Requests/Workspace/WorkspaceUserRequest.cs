@@ -2,7 +2,7 @@
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace
 {
-  public record WorkspaceUser
+  public record WorkspaceUserRequest
   {
     public Guid UserId { get; set; }
     public bool IsAdmin { get; set; }
