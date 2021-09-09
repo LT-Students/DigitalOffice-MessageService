@@ -28,7 +28,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         return null;
       }
 
-      UserData createrUserData = users?.FirstOrDefault(u => u.Id == dbWorkspace.CreatedBy);
+      UserData creatorUserData = users?.FirstOrDefault(u => u.Id == dbWorkspace.CreatedBy);
 
       return new WorkspaceInfo
       {
@@ -42,7 +42,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         },
         CreatedAtUtc = dbWorkspace.CreatedAtUtc,
         CreatedBy = _userInfoMapper
-          .Map(createrUserData, images?.FirstOrDefault(i => i.Id == createrUserData.ImageId)),
+          .Map(creatorUserData, images?.FirstOrDefault(i => i.Id == creatorUserData.ImageId)),
         IsActive = dbWorkspace.IsActive,
         Channels = dbWorkspace.Channels?
           .Select(_channelInfoMapper.Map).ToList(),
