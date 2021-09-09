@@ -16,7 +16,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
     public Guid? Add(DbChannel dbChannel)
     {
-      if(dbChannel == null)
+      if (dbChannel == null)
       {
         return null;
       }
