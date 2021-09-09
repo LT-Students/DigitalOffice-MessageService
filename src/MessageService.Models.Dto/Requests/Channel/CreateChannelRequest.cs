@@ -11,6 +11,6 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Requests
     public Guid WorkspaceId { get; set; }
     public bool IsPrivate { get; set; }
     public ImageConsist Image { get; set; }
-    public List<ChannelUserRequest> Users { get; set; }
+    public List<CreateChannelUserRequest> Users { get; set; }
   }
 }
