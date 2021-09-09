@@ -67,7 +67,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
     public DbWorkspace Map(string name, List<Guid> usersIds, Guid createdBy)
     {
       Guid workspaceId = Guid.NewGuid();
-      string defaultDescription = ""; // TODO Create description for default workspace
+      const string defaultDescription = ""; // TODO Create description for default workspace
 
       List<DbWorkspaceUser> dbWorkspaceUsers = usersIds?
         .Select(ui => _workspaceUserMapper

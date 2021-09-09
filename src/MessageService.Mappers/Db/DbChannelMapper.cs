@@ -54,7 +54,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
 
     public DbChannel Map(Guid workspaceId, List<DbWorkspaceUser> workspaseUsers, Guid createdBy)
     {
-      string defaultChannelName = "General";
+      const string defaultChannelName = "General";
 
       Guid channelId = Guid.NewGuid();
 
