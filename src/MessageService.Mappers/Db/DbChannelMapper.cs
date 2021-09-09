@@ -30,8 +30,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
 
       Guid channelId = Guid.NewGuid();
 
-      ICollection<DbChannelUser> dbChannelUsers = request.Users?.Select(u =>
-        _channelUserMapper.Map(channelId, u, creatorWorkspaceUser.UserId)).ToHashSet();
+      ICollection<DbChannelUser> dbChannelUsers = request.Users?
+        .Select(u =>_channelUserMapper.Map(channelId, u.WorkspaceUserId, u.IsAdmin, creatorWorkspaceUser.UserId))
+        .ToHashSet();
 
       dbChannelUsers.Add(_channelUserMapper.Map(channelId, creatorWorkspaceUser.Id, true, creatorWorkspaceUser.UserId));
 
@@ -51,7 +52,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       };
     }
 
-    public DbChannel Map(Guid workspaceId, List<DbWorkspaceUser> users, Guid createdBy)
+    public DbChannel Map(Guid workspaceId, List<DbWorkspaceUser> workspaseUsers, Guid createdBy)
     {
       string defaultChannelName = "General";
 
@@ -66,8 +67,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
         IsActive = true,
         CreatedBy = createdBy,
         CreatedAtUtc = DateTime.UtcNow,
-        Users = users?.Select(u =>
-          _channelUserMapper.Map(channelId, u.Id, u.IsAdmin, createdBy)).ToHashSet()
+        Users = workspaseUsers?.Select(wu =>
+          _channelUserMapper.Map(channelId, wu.Id, wu.IsAdmin, createdBy)).ToHashSet()
       };
     }
   }

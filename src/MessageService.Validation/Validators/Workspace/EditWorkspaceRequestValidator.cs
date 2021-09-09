@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using FluentValidation;
 using FluentValidation.Validators;
+using LT.DigitalOffice.Kernel.Validators;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
-using LT.DigitalOffice.MessageService.Validation.Helper;
 using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Newtonsoft.Json;

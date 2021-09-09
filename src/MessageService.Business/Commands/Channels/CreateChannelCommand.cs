@@ -54,7 +54,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
         };
       }
 
-      if (_validator.ValidateCustom(request, out List<string> errors))
+      if (!_validator.ValidateCustom(request, out List<string> errors))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 

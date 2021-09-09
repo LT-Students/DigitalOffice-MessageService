@@ -11,6 +11,6 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Interfaces
   {
     DbChannel Map(CreateChannelRequest request, DbWorkspaceUser creatorWorkspaceUser);
 
-    DbChannel Map(Guid workspaceId, List<DbWorkspaceUser> users, Guid createdBy);
+    DbChannel Map(Guid workspaceId, List<DbWorkspaceUser> workspaseUsers, Guid createdBy);
   }
 }

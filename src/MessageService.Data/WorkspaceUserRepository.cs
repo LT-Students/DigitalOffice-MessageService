@@ -4,7 +4,6 @@ using System.Linq;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
-using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
@@ -34,7 +33,7 @@ namespace LT.DigitalOffice.MessageService.Data
         .FirstOrDefault(x => x.WorkspaceId == workspaseId && x.UserId == userId);
     }
 
-    public List<Guid> AreExistWorkspaceUsers(List<Guid> workspaceUsersIds, Guid workspaceId)
+    public List<Guid> DoExistWorkspaceUsers(List<Guid> workspaceUsersIds, Guid workspaceId)
     {
       return _provider.WorkspaceUsers
         .Where(wu =>

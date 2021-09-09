@@ -2,36 +2,42 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
+using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests.Channel;
 using LT.DigitalOffice.MessageService.Validation.Validators.Channel.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
 {
   public class CreateChannelRequestValidator : AbstractValidator<CreateChannelRequest>, ICreateChannelRequestValidator
   {
+    private IHttpContextAccessor _httpContextAccessor;
     private readonly IWorkspaceUserRepository _workspaceUserRepository;
     private List<Guid> _workspaceUsersIds = new();
 
     private List<string> AllowedExtensions = new()
     { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tga" };
 
-    private bool AreUsersInWorkspace(List<Guid> requestWorkspaceUsersIds, Guid workspaceId, out List<Guid> existingWorkspaceUsersIds)
+    private bool AreUsersInWorkspace(List<Guid> requestWorkspaceUsersIds, Guid workspaceId, out List<Guid> workspaceUsersIds)
     {
-      existingWorkspaceUsersIds = _workspaceUserRepository
-        .AreExistWorkspaceUsers(requestWorkspaceUsersIds, workspaceId);
+      workspaceUsersIds = _workspaceUserRepository
+        .DoExistWorkspaceUsers(requestWorkspaceUsersIds, workspaceId);
 
-      if (existingWorkspaceUsersIds.Count != existingWorkspaceUsersIds.Count)
-      {
-        return false;
-      }
-
-      return true;
+      return workspaceUsersIds.Count == requestWorkspaceUsersIds.Count;
     }
 
-    public CreateChannelRequestValidator(IWorkspaceUserRepository workspaceUserRepository)
+    private Guid GetCreatorWorkspaceUserId(Guid workspaceId)
     {
+      return _workspaceUserRepository
+        .Get(workspaceId, _httpContextAccessor.HttpContext.GetUserId()).Id;
+    }
+
+    public CreateChannelRequestValidator(
+      IWorkspaceUserRepository workspaceUserRepository,
+      IHttpContextAccessor httpContextAccessor)
+    {
+      _httpContextAccessor = httpContextAccessor;
       _workspaceUserRepository = workspaceUserRepository;
 
       RuleFor(x => x.WorkspaceId)
@@ -43,10 +49,23 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
       RuleFor(x => x.Users)
         .NotNull().WithMessage("Users can not be null");
 
-      When(x => x.Users.Count > 0, () =>
+      When(x => x.Users != null && x.Users.Count > 0, () =>
       {
+        Guid creatorWorkspaceUserId = new();
+
+        RuleFor(w => w)
+          .Must(w => w.Users.Select(i => i.WorkspaceUserId).ToHashSet().Count() == w.Users.Count())
+          .WithMessage("A user cannot be added to the channel twice")
+          .Must(w =>
+          {
+            creatorWorkspaceUserId = GetCreatorWorkspaceUserId(w.WorkspaceId);
+
+            return w.Users.FirstOrDefault(i => i.WorkspaceUserId == creatorWorkspaceUserId) == null;
+          })
+          .WithMessage($"Workspace user id {creatorWorkspaceUserId} cannot be added to channel users");
+
         RuleFor(x => x)
-          .Must(x => !AreUsersInWorkspace(
+          .Must(x => AreUsersInWorkspace(
             x.Users.Select(u => u.WorkspaceUserId).ToList(),
             x.WorkspaceId,
             out _workspaceUsersIds))

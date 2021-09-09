@@ -39,10 +39,10 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       Guid workspaceId = Guid.NewGuid();
       Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
 
-      ICollection<DbWorkspaceUser> dbWorkspaceUsers = usersIds?
+      List<DbWorkspaceUser> dbWorkspaceUsers = usersIds?
         .Select(ui => _workspaceUserMapper
           .Map(workspaceId, ui, request.Users.FirstOrDefault(u => u.UserId == ui).IsAdmin, createdBy))
-        .ToHashSet();
+        .ToList();
 
       dbWorkspaceUsers.Add(_workspaceUserMapper.Map(workspaceId, createdBy, true, createdBy));
 
@@ -57,7 +57,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
         ImageExtension = request.Image?.Extension,
         CreatedBy = createdBy,
         CreatedAtUtc = DateTime.UtcNow,
-        Users = dbWorkspaceUsers.ToHashSet(),
+        Users = dbWorkspaceUsers,
         Channels = new List<DbChannel>()
         {
           _channelMapper.Map(workspaceId, dbWorkspaceUsers.ToList(), createdBy)
@@ -70,11 +70,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       Guid workspaceId = Guid.NewGuid();
       string defaultDescription = ""; // TODO Create description for default workspace
 
-      ICollection<DbWorkspaceUser> dbWorkspaceUsers = usersIds?
+      List<DbWorkspaceUser> dbWorkspaceUsers = usersIds?
         .Select(ui => _workspaceUserMapper
-          .Map(workspaceId, ui, false, createdBy)).ToList();
-
-      dbWorkspaceUsers?.Add(_workspaceUserMapper.Map(workspaceId, createdBy, true, createdBy));
+          .Map(workspaceId, ui, ui == createdBy, createdBy)).ToList();
 
       return new DbWorkspace
       {
@@ -84,10 +82,10 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
         IsActive = true,
         CreatedBy = createdBy,
         CreatedAtUtc = DateTime.UtcNow,
-        Users = dbWorkspaceUsers.ToHashSet(),
+        Users = dbWorkspaceUsers,
         Channels = new List<DbChannel>()
         {
-          _channelMapper.Map(workspaceId, dbWorkspaceUsers?.ToList(), createdBy)
+          _channelMapper.Map(workspaceId, dbWorkspaceUsers, createdBy)
         }
       };
     }
