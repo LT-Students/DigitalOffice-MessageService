@@ -14,17 +14,14 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
   {
     private IHttpContextAccessor _httpContextAccessor;
     private readonly IWorkspaceUserRepository _workspaceUserRepository;
-    private List<Guid> _workspaceUsersIds = new();
 
     private List<string> AllowedExtensions = new()
     { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tga" };
 
-    private bool AreUsersInWorkspace(List<Guid> requestWorkspaceUsersIds, Guid workspaceId, out List<Guid> workspaceUsersIds)
+    private bool AreUsersInWorkspace(List<Guid> requestWorkspaceUsersIds, Guid workspaceId)
     {
-      workspaceUsersIds = _workspaceUserRepository
-        .DoExistWorkspaceUsers(requestWorkspaceUsersIds, workspaceId);
-
-      return workspaceUsersIds.Count == requestWorkspaceUsersIds.Count;
+      return _workspaceUserRepository
+        .DoExistWorkspaceUsers(requestWorkspaceUsersIds, workspaceId).Count() == requestWorkspaceUsersIds.Count();
     }
 
     private Guid GetCreatorWorkspaceUserId(Guid workspaceId)
@@ -60,14 +57,9 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
 
             return w.Users.FirstOrDefault(i => i.WorkspaceUserId == creatorWorkspaceUserId) == null;
           })
-          .WithMessage($"User can not add himself to request users list.");
-
-        RuleFor(x => x)
-          .Must(x => AreUsersInWorkspace(
-            x.Users.Select(u => u.WorkspaceUserId).ToList(),
-            x.WorkspaceId,
-            out _workspaceUsersIds))
-          .WithMessage($"Only workspace users with ids: {string.Join(", ", _workspaceUsersIds)} available for adding to the channel.");
+          .WithMessage("User can not add himself to request users list.")
+          .Must(w => AreUsersInWorkspace(w.Users.Select(u => u.WorkspaceUserId).ToList(), w.WorkspaceId))
+          .WithMessage("Some users are not available for adding to the channel.");
       });
 
       When(w => w.Image != null, () =>

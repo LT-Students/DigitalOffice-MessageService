@@ -24,54 +24,17 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IDbWorkspaceMapper _mapper;
     private readonly IWorkspaceRepository _repository;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IRequestClient<ICheckUsersExistence> _rcCheckUsersExistence;
-    private readonly ILogger<CreateWorkspaceCommand> _logger;
-
-    private List<Guid> CheckUserExistence(List<Guid> usersIds, List<string> errors)
-    {
-      if (!usersIds.Any())
-      {
-        return usersIds;
-      }
-
-      string errorMessage = "Failed to check the existing users.";
-      string logMessage = "Cannot check existing users withs this ids {userIds}";
-
-      try
-      {
-        var response = _rcCheckUsersExistence.GetResponse<IOperationResult<ICheckUsersExistence>>(
-          ICheckUsersExistence.CreateObj(usersIds)).Result;
-        if (response.Message.IsSuccess)
-        {
-          return response.Message.Body.UserIds;
-        }
-
-        _logger.LogWarning("Can not find user Ids: {userIds}: " +
-          $"{Environment.NewLine}{string.Join('\n', response.Message.Errors)}");
-      }
-      catch (Exception exc)
-      {
-        _logger.LogError(exc, logMessage);
-      }
-
-      errors.Add(errorMessage);
-      return null;
-    }
 
     public CreateWorkspaceCommand(
       ICreateWorkspaceRequestValidator validator,
       IDbWorkspaceMapper mapper,
       IWorkspaceRepository repository,
-      IHttpContextAccessor httpContextAccessor,
-      IRequestClient<ICheckUsersExistence> rcCheckUsersExistence,
-      ILogger<CreateWorkspaceCommand> logger)
+      IHttpContextAccessor httpContextAccessor)
     {
       _validator = validator;
       _mapper = mapper;
       _repository = repository;
       _httpContextAccessor = httpContextAccessor;
-      _rcCheckUsersExistence = rcCheckUsersExistence;
-      _logger = logger;
     }
 
     public OperationResultResponse<Guid?> Execute(CreateWorkspaceRequest request)
@@ -89,16 +52,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
       OperationResultResponse<Guid?> response = new();
 
-      List<Guid> usersIds = CheckUserExistence(
-        request.Users.Select(wu => wu.UserId).ToList(),
-        response.Errors);
-
-      if(usersIds.Count != request.Users.Count)
-      {
-        response.Errors.Add("Not all users available for adding to the channel.");
-      }
-
-      response.Body = _repository.Add(_mapper.Map(request, usersIds));
+      response.Body = _repository.Add(_mapper.Map(request));
       response.Status = OperationResultStatusType.FullSuccess;
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 

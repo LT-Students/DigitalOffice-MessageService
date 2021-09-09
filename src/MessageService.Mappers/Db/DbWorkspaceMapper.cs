@@ -29,7 +29,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public DbWorkspace Map(CreateWorkspaceRequest request, List<Guid> usersIds)
+    public DbWorkspace Map(CreateWorkspaceRequest request)
     {
       if (request == null)
       {
@@ -39,9 +39,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       Guid workspaceId = Guid.NewGuid();
       Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
 
-      List<DbWorkspaceUser> dbWorkspaceUsers = usersIds?
-        .Select(ui => _workspaceUserMapper
-          .Map(workspaceId, ui, request.Users.FirstOrDefault(u => u.UserId == ui).IsAdmin, createdBy))
+      List<DbWorkspaceUser> dbWorkspaceUsers = request.Users?
+        .Select(u => _workspaceUserMapper.Map(workspaceId, u.UserId, u.IsAdmin, createdBy))
         .ToList();
 
       dbWorkspaceUsers.Add(_workspaceUserMapper.Map(workspaceId, createdBy, true, createdBy));
@@ -60,7 +59,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
         Users = dbWorkspaceUsers,
         Channels = new List<DbChannel>()
         {
-          _channelMapper.Map(workspaceId, dbWorkspaceUsers.ToList(), createdBy)
+          _channelMapper.Map(workspaceId, dbWorkspaceUsers, createdBy)
         }
       };
     }

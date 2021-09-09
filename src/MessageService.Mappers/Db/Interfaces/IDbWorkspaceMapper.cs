@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Interfaces
   [AutoInject]
   public interface IDbWorkspaceMapper
   {
-    DbWorkspace Map(CreateWorkspaceRequest request, List<Guid> usersIds);
+    DbWorkspace Map(CreateWorkspaceRequest request);
 
     DbWorkspace Map(string name, List<Guid> usersIds, Guid createdBy);
   }
