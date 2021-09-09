@@ -93,6 +93,11 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         request.Users.Select(wu => wu.UserId).ToList(),
         response.Errors);
 
+      if(usersIds.Count != request.Users.Count)
+      {
+        response.Errors.Add("Not all users available for adding to the channel.");
+      }
+
       response.Body = _repository.Add(_mapper.Map(request, usersIds));
       response.Status = OperationResultStatusType.FullSuccess;
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
