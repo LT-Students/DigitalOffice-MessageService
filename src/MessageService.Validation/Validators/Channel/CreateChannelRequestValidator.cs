@@ -41,28 +41,26 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
       _workspaceUserRepository = workspaceUserRepository;
 
       RuleFor(x => x.WorkspaceId)
-        .NotEmpty().WithMessage("Workspase id must not be empty");
+        .NotEmpty().WithMessage("Workspase id must not be empty.");
 
       RuleFor(x => x.Name.Trim())
-        .NotEmpty().WithMessage("Channel name must not be empty");
+        .NotEmpty().WithMessage("Channel name must not be empty.");
 
       RuleFor(x => x.Users)
-        .NotNull().WithMessage("Users can not be null");
+        .NotNull().WithMessage("Users can not be null.");
 
       When(x => x.Users != null && x.Users.Count > 0, () =>
       {
-        Guid creatorWorkspaceUserId = new();
-
         RuleFor(w => w)
           .Must(w => w.Users.Select(i => i.WorkspaceUserId).ToHashSet().Count() == w.Users.Count())
-          .WithMessage("A user cannot be added to the channel twice")
+          .WithMessage("A user cannot be added to the channel twice.")
           .Must(w =>
           {
-            creatorWorkspaceUserId = GetCreatorWorkspaceUserId(w.WorkspaceId);
+            Guid creatorWorkspaceUserId = GetCreatorWorkspaceUserId(w.WorkspaceId);
 
             return w.Users.FirstOrDefault(i => i.WorkspaceUserId == creatorWorkspaceUserId) == null;
           })
-          .WithMessage($"Workspace user id {creatorWorkspaceUserId} cannot be added to channel users");
+          .WithMessage($"User can not add himself to request users list.");
 
         RuleFor(x => x)
           .Must(x => AreUsersInWorkspace(
@@ -91,7 +89,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
 
         RuleFor(c => c.Image.Extension)
           .Must(AllowedExtensions.Contains)
-          .WithMessage($"Image extension is not {string.Join('/', AllowedExtensions)}");
+          .WithMessage($"Image extension is not {string.Join('/', AllowedExtensions)}.");
       });
     }
   }
