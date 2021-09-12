@@ -33,12 +33,12 @@ namespace LT.DigitalOffice.MessageService.Data
         .FirstOrDefault(x => x.WorkspaceId == workspaseId && x.UserId == userId);
     }
 
-    public List<Guid> DoExistWorkspaceUsers(List<Guid> workspaceUsersIds, Guid workspaceId)
+    public bool DoExistWorkspaceUsers(List<Guid> workspaceUsersIds, Guid workspaceId)
     {
       return _provider.WorkspaceUsers
         .Where(wu =>
           wu.WorkspaceId == workspaceId && workspaceUsersIds.Contains(wu.Id) && wu.IsActive)
-        .Select(wu => wu.Id).ToList();
+        .Select(wu => wu.Id).ToList().Count == workspaceUsersIds.Count;
     }
   }
 }

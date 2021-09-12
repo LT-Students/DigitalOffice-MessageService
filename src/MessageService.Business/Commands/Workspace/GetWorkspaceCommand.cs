@@ -123,23 +123,23 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         };
       }
 
-      OperationResultResponse<WorkspaceInfo> responce = new();
+      OperationResultResponse<WorkspaceInfo> response = new();
 
-      List<UserData> usersData = GetUsers(dbWorkspace.Users?.Select(u => u.UserId).ToList(), responce.Errors);
+      List<UserData> usersData = GetUsers(dbWorkspace.Users?.Select(u => u.UserId).ToList(), response.Errors);
 
-      List<Guid> imageIds = new();
+      List<Guid> imagesIds = new();
 
       if (usersData != null)
       {
-        imageIds.AddRange(usersData.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList());
+        imagesIds.AddRange(usersData.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList());
       }
 
-      List<ImageInfo> images = GetImages(imageIds, responce.Errors);
+      List<ImageInfo> images = GetImages(imagesIds, response.Errors);
 
-      responce.Status = responce.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
-      responce.Body = _workspaceInfoMapper.Map(dbWorkspace, images, usersData);
+      response.Status = response.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
+      response.Body = _workspaceInfoMapper.Map(dbWorkspace, images, usersData);
 
-      return responce;
+      return response;
     }
   }
 }

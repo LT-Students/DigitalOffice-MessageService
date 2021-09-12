@@ -21,7 +21,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       _channelUserMapper = channelUserMapper;
     }
 
-    public DbChannel Map(CreateChannelRequest request, DbWorkspaceUser creatorWorkspaceUser)
+    public DbChannel Map(CreateChannelRequest request, DbWorkspaceUser workspaceUserCreator)
     {
       if (request == null)
       {
@@ -31,10 +31,10 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       Guid channelId = Guid.NewGuid();
 
       ICollection<DbChannelUser> dbChannelUsers = request.Users?
-        .Select(u =>_channelUserMapper.Map(channelId, u.WorkspaceUserId, u.IsAdmin, creatorWorkspaceUser.UserId))
+        .Select(u =>_channelUserMapper.Map(channelId, u.WorkspaceUserId, u.IsAdmin, workspaceUserCreator.UserId))
         .ToHashSet();
 
-      dbChannelUsers.Add(_channelUserMapper.Map(channelId, creatorWorkspaceUser.Id, true, creatorWorkspaceUser.UserId));
+      dbChannelUsers.Add(_channelUserMapper.Map(channelId, workspaceUserCreator.Id, true, workspaceUserCreator.UserId));
 
       return new()
       {
@@ -46,7 +46,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
         ImageContent = request.Image != null ?
           _resizeHelper.Resize(request.Image.Content, request.Image.Extension) : null,
         ImageExtension = request.Image?.Extension,
-        CreatedBy = creatorWorkspaceUser.UserId,
+        CreatedBy = workspaceUserCreator.UserId,
         CreatedAtUtc = DateTime.UtcNow,
         Users = dbChannelUsers.ToHashSet()
       };

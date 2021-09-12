@@ -14,6 +14,6 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
 
     DbWorkspaceUser Get(Guid workspaseId, Guid userId);
 
-    List<Guid> DoExistWorkspaceUsers(List<Guid> workspaceUsersIds, Guid workspaceId);
+    bool DoExistWorkspaceUsers(List<Guid> workspaceUsersIds, Guid workspaceId);
   }
 }

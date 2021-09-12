@@ -21,7 +21,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
     private bool AreUsersInWorkspace(List<Guid> requestWorkspaceUsersIds, Guid workspaceId)
     {
       return _workspaceUserRepository
-        .DoExistWorkspaceUsers(requestWorkspaceUsersIds, workspaceId).Count() == requestWorkspaceUsersIds.Count();
+        .DoExistWorkspaceUsers(requestWorkspaceUsersIds, workspaceId);
     }
 
     private Guid GetCreatorWorkspaceUserId(Guid workspaceId)
