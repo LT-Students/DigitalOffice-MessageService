@@ -51,12 +51,6 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             Assert.IsTrue(_provider.Channels.Contains(channel));
         }
 
-        [Test]
-        public void ShouldThrowArgumentNullExceptionWhenAddedChannelIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => _repository.Add(null));
-        }
-
         #endregion
     }
 }

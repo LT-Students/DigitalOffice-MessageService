@@ -2,6 +2,7 @@
 using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.Models.Broker.Models;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models.Interfaces

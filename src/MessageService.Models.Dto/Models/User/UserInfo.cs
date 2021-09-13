@@ -1,4 +1,5 @@
 ﻿using System;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Models.User
 {

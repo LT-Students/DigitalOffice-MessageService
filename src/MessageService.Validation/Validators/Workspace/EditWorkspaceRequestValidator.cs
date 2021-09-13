@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using FluentValidation;
 using FluentValidation.Validators;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
+using LT.DigitalOffice.Kernel.Validators;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
-using LT.DigitalOffice.MessageService.Validation.Helper;
 using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Newtonsoft.Json;
@@ -63,7 +63,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
             {
               try
               {
-                Image image = JsonConvert.DeserializeObject<Image>(x.value?.ToString());
+                ImageConsist image = JsonConvert.DeserializeObject<ImageConsist>(x.value?.ToString());
 
                 var byteString = new Span<byte>(new byte[image.Content.Length]);
 

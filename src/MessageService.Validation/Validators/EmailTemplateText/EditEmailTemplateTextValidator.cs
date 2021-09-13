@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using FluentValidation;
 using FluentValidation.Validators;
+using LT.DigitalOffice.Kernel.Validators;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplateText;
-using LT.DigitalOffice.MessageService.Validation.Helper;
 using LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplateText.Interfaces;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 
