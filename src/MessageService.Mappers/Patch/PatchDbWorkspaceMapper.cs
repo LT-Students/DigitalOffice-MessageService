@@ -2,7 +2,7 @@
 using LT.DigitalOffice.MessageService.Mappers.Helpers.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Patch.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -28,14 +28,14 @@ namespace LT.DigitalOffice.MessageService.Mappers.Patch
 
       JsonPatchDocument<DbWorkspace> result = new();
 
-      foreach(var item in request.Operations)
+      foreach (var item in request.Operations)
       {
         if (item.path.EndsWith(nameof(EditWorkspaceRequest.Image), StringComparison.OrdinalIgnoreCase))
         {
-          Image avatar = JsonConvert.DeserializeObject<Image>(item.value.ToString());
-          var resizedContent = _resizeHelper.Resize(avatar.Content, avatar.Extension);
+          ImageConsist image = JsonConvert.DeserializeObject<ImageConsist>(item.value.ToString());
+          var resizedContent = _resizeHelper.Resize(image.Content, image.Extension);
           result.Operations.Add(new Operation<DbWorkspace>(item.op, nameof(DbWorkspace.ImageContent), item.from, resizedContent));
-          result.Operations.Add(new Operation<DbWorkspace>(item.op, nameof(DbWorkspace.ImageExtension), item.from, avatar.Extension));
+          result.Operations.Add(new Operation<DbWorkspace>(item.op, nameof(DbWorkspace.ImageExtension), item.from, image.Extension));
 
           continue;
         }

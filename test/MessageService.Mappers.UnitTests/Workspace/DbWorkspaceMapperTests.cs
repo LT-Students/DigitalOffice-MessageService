@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LT.DigitalOffice.MessageService.Mappers.Db.Workspace;
-using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
@@ -13,7 +11,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.UnitTests.Workspace
 {
   public class DbWorkspaceMapperTests
   {
-    private IDbWorkspaceMapper _mapper;
+    /*private IDbWorkspaceMapper _mapper;
 
     /*[OneTimeSetUp]
     public void OneTimeSetUp()

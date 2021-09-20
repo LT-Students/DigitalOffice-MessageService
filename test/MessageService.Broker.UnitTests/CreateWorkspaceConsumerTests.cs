@@ -1,6 +1,6 @@
 ﻿using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
-using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.Models.Broker.Requests.Message;
 using MassTransit;
@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.MessageService.Broker.UnitTests
 {
-    public class CreateWorkspaceConsumerTests
+    /*public class CreateWorkspaceConsumerTests
     {
         private AutoMocker _mocker;
         private InMemoryTestHarness _harness;
@@ -77,5 +77,5 @@ namespace LT.DigitalOffice.MessageService.Broker.UnitTests
                 await _harness.Stop();
             }
         }
-    }
+    }*/
 }

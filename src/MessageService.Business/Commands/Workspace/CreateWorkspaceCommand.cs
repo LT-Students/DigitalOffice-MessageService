@@ -6,7 +6,7 @@ using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -48,18 +48,15 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       OperationResultResponse<Guid?> response = new();
 
       response.Body = _repository.Add(_mapper.Map(request));
+      response.Status = OperationResultStatusType.FullSuccess;
+      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
       if (response.Body == null)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
         response.Status = OperationResultStatusType.Failed;
-        return response;
       }
-
-      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-
-      response.Status = OperationResultStatusType.FullSuccess;
 
       return response;
     }

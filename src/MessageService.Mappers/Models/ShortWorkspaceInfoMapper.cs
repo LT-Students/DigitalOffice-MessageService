@@ -1,8 +1,7 @@
-﻿using System;
-using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
+﻿using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
@@ -21,7 +20,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         Name = dbWorkspace.Name,
         Description = dbWorkspace.Description,
         IsActive = dbWorkspace.IsActive,
-        Image = new Image()
+        Image = new ImageConsist()
         {
           Content = dbWorkspace.ImageContent,
           Extension = dbWorkspace.ImageExtension
