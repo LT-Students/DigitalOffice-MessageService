@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.TestHelper;
-using LT.DigitalOffice.MessageService.Models.Dto.Enums;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
+using LT.DigitalOffice.MessageService.Validation.Validators.EmailTemplate;
 using LT.DigitalOffice.Models.Broker.Enums;
 using NUnit.Framework;
 using System;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.MessageService.Validation.UnitTests
 {
-    class CreateEmailTemplateValidatorTests
+  class CreateEmailTemplateValidatorTests
     {
         private IValidator<EmailTemplateRequest> _validator;
         private EmailTemplateRequest _emailTemplateRequest;
@@ -22,7 +22,6 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
             _emailTemplateRequest = new EmailTemplateRequest
             {
                 Name = "Pattern name",
-                AuthorId = Guid.NewGuid(),
                 Type = EmailTemplateType.Greeting,
             };
         }
@@ -37,12 +36,6 @@ namespace LT.DigitalOffice.MessageService.Validation.UnitTests
         public void ShouldThrowExceptionWhenEmailTemplateTypeIsEmpty()
         {
             _validator.ShouldHaveValidationErrorFor(x => x.Type, (EmailTemplateType)4);
-        }
-
-        [Test]
-        public void ShouldThrowExceptionWhenEmailTemplateAuthorIsEmpty()
-        {
-            _validator.ShouldHaveValidationErrorFor(x => x.AuthorId, Guid.Empty);
         }
 
         [Test]

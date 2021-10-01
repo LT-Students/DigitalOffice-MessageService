@@ -26,8 +26,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
             {
                 Id = email.Id,
                 Email = _mapper.Map(email.Email),
-                CreatedAt = email.CreatedAt,
-                LastSendAt = email.LastSendAt,
+                CreatedAtUtc = email.CreatedAtUtc,
+                LastSendAtUtc = email.LastSendAtUtc,
                 TotalSendingCount = email.TotalSendingCount
             };
         }

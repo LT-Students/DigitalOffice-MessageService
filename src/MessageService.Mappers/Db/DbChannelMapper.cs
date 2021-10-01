@@ -1,23 +1,75 @@
-﻿using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+using LT.DigitalOffice.MessageService.Mappers.Helpers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using System;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
-    public class DbChannelMapper : IDbChannelMapper
+  public class DbChannelMapper : IDbChannelMapper
+  {
+    private readonly IResizeImageHelper _resizeHelper;
+    private readonly IDbChannelUserMapper _channelUserMapper;
+
+    public DbChannelMapper(
+      IResizeImageHelper resizeHelper,
+      IDbChannelUserMapper channelUserMapper)
     {
-        public DbChannel Map(Guid workspaceId, Guid ownerId, string name, bool isPrivate)
-        {
-            return new DbChannel
-            {
-                Id = Guid.NewGuid(),
-                WorkspaceId = workspaceId,
-                OwnerId = ownerId,
-                Name = name,
-                CreatedAt = DateTime.UtcNow,
-                IsActive = true,
-                IsPrivate = isPrivate
-            };
-        }
+      _resizeHelper = resizeHelper;
+      _channelUserMapper = channelUserMapper;
     }
+
+    public DbChannel Map(CreateChannelRequest request, DbWorkspaceUser workspaceUserCreator)
+    {
+      if (request == null)
+      {
+        return null;
+      }
+
+      Guid channelId = Guid.NewGuid();
+
+      ICollection<DbChannelUser> dbChannelUsers = request.Users?
+        .Select(u =>_channelUserMapper.Map(channelId, u.WorkspaceUserId, u.IsAdmin, workspaceUserCreator.UserId))
+        .ToHashSet();
+
+      dbChannelUsers.Add(_channelUserMapper.Map(channelId, workspaceUserCreator.Id, true, workspaceUserCreator.UserId));
+
+      return new()
+      {
+        Id = channelId,
+        WorkspaceId = request.WorkspaceId,
+        Name = request.Name,
+        IsPrivate = request.IsPrivate,
+        IsActive = true,
+        ImageContent = request.Image != null ?
+          _resizeHelper.Resize(request.Image.Content, request.Image.Extension) : null,
+        ImageExtension = request.Image?.Extension,
+        CreatedBy = workspaceUserCreator.UserId,
+        CreatedAtUtc = DateTime.UtcNow,
+        Users = dbChannelUsers.ToHashSet()
+      };
+    }
+
+    public DbChannel Map(Guid workspaceId, List<DbWorkspaceUser> workspaseUsers, Guid createdBy)
+    {
+      const string defaultChannelName = "General";
+
+      Guid channelId = Guid.NewGuid();
+
+      return new DbChannel()
+      {
+        Id = channelId,
+        WorkspaceId = workspaceId,
+        Name = defaultChannelName,
+        IsPrivate = false,
+        IsActive = true,
+        CreatedBy = createdBy,
+        CreatedAtUtc = DateTime.UtcNow,
+        Users = workspaseUsers?.Select(wu =>
+          _channelUserMapper.Map(channelId, wu.Id, wu.IsAdmin, createdBy)).ToHashSet()
+      };
+    }
+  }
 }

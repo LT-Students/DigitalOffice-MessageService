@@ -1,25 +1,27 @@
-﻿using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
+﻿using System;
+using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.EmailTemplate;
-using System;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
-    public class DbEmailTemplateTextMapper : IDbEmailTemplateTextMapper
+  public class DbEmailTemplateTextMapper : IDbEmailTemplateTextMapper
+  {
+    public DbEmailTemplateText Map(EmailTemplateTextRequest request)
     {
-        public DbEmailTemplateText Map(EmailTemplateTextRequest templateText)
-        {
-            if (templateText == null)
-            {
-                throw new ArgumentNullException(nameof(templateText));
-            }
+      if (request == null)
+      {
+        return null;
+      }
 
-            return new DbEmailTemplateText
-            {
-                Subject = templateText.Subject,
-                Text = templateText.Text,
-                Language = templateText.Language
-            };
-        }
+      return new DbEmailTemplateText
+      {
+        Id = Guid.NewGuid(),
+        EmailTemplateId = request.EmailTemplateId.Value,
+        Subject = request.Subject,
+        Text = request.Text,
+        Language = request.Language
+      };
     }
+  }
 }

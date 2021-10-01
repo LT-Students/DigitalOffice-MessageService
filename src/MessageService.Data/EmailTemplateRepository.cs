@@ -1,123 +1,108 @@
-﻿using LT.DigitalOffice.Kernel.Exceptions.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
-    public class EmailTemplateRepository : IEmailTemplateRepository
+  public class EmailTemplateRepository : IEmailTemplateRepository
+  {
+    private readonly IDataProvider _provider;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public EmailTemplateRepository(
+      IDataProvider provider,
+      IHttpContextAccessor httpContextAccessor)
     {
-        private readonly IDataProvider _provider;
-
-        public EmailTemplateRepository(IDataProvider provider)
-        {
-            _provider = provider;
-        }
-
-        public bool Disable(Guid templateId)
-        {
-            var dbEmailTemplateText = _provider.EmailTemplates
-                .FirstOrDefault(templateText => templateText.Id == templateId);
-
-            if (dbEmailTemplateText == null)
-            {
-                throw new NotFoundException($"Email template with this ID '{templateId}' does not exist.");
-            }
-
-            dbEmailTemplateText.IsActive = false;
-
-            _provider.EmailTemplates.Update(dbEmailTemplateText);
-            _provider.Save();
-
-            return true;
-        }
-
-        public Guid Add(DbEmailTemplate emailTemplate)
-        {
-            if (emailTemplate == null)
-            {
-                throw new ArgumentNullException(nameof(emailTemplate));
-            }
-
-            _provider.EmailTemplates.Add(emailTemplate);
-            _provider.Save();
-
-            return emailTemplate.Id;
-        }
-
-        public DbEmailTemplate Get(Guid id)
-        {
-            var dbEmailTemplate = _provider.EmailTemplates
-                .Include(et => et.EmailTemplateTexts)
-                .FirstOrDefault(et => et.Id == id);
-
-            if (dbEmailTemplate == null)
-            {
-                throw new NotFoundException($"Email template with this ID '{id}' does not exist");
-            }
-
-            return dbEmailTemplate;
-        }
-
-        public DbEmailTemplate Get(int type)
-        {
-            var dbEmailTemplate = _provider.EmailTemplates.Include(et => et.EmailTemplateTexts)
-                .FirstOrDefault(et => et.Type == type);
-
-            if (dbEmailTemplate == null)
-            {
-                throw new NotFoundException($"Email template with this type '{type}' does not exist");
-            }
-
-            return dbEmailTemplate;
-        }
-
-        public bool Edit(DbEmailTemplate dbEmailTemplateToEdit)
-        {
-            var dbTemplate = _provider.EmailTemplates
-                .AsNoTracking()
-                .FirstOrDefault(et => et.Id == dbEmailTemplateToEdit.Id);
-
-            if (dbTemplate == null)
-            {
-                throw new NotFoundException($"Email template with this ID '{dbEmailTemplateToEdit.Id}' does not exist.");
-            }
-
-            _provider.EmailTemplates.Update(dbEmailTemplateToEdit);
-            _provider.Save();
-
-            return true;
-        }
-
-        public List<DbEmailTemplate> Find(int skipCount, int takeCount, bool? includeDeactivated, out int totalCount)
-        {
-            if (skipCount < 0)
-            {
-                throw new BadRequestException("Skip count can't be less than 0.");
-            }
-
-            if (takeCount <= 0)
-            {
-                throw new BadRequestException("Take count can't be equal or less than 0.");
-            }
-
-            var dbEmails = _provider.EmailTemplates.AsQueryable();
-
-            if (includeDeactivated.HasValue && includeDeactivated.Value)
-            {
-                totalCount = _provider.EmailTemplates.Count();
-            }
-            else
-            {
-                dbEmails = dbEmails.Where(e => e.IsActive);
-                totalCount = _provider.EmailTemplates.Count(e => e.IsActive);
-            }
-
-            return dbEmails.Skip(skipCount).Take(takeCount).Include(e => e.EmailTemplateTexts).ToList();
-        }
+      _provider = provider;
+      _httpContextAccessor = httpContextAccessor;
     }
+
+    public Guid? Create(DbEmailTemplate request)
+    {
+      if (request == null)
+      {
+        return null;
+      }
+
+      _provider.EmailTemplates.Add(request);
+      _provider.Save();
+
+      return request.Id;
+    }
+
+    public bool Edit(Guid emailTemplateId, JsonPatchDocument<DbEmailTemplate> patch)
+    {
+      if (patch == null)
+      {
+        return false;
+      }
+
+      DbEmailTemplate dbEmailTemplate = _provider.EmailTemplates
+        .FirstOrDefault(et => et.Id == emailTemplateId);
+
+      if (dbEmailTemplate == null)
+      {
+        return false;
+      }
+
+      patch.ApplyTo(dbEmailTemplate);
+      dbEmailTemplate.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
+      dbEmailTemplate.ModifiedAtUtc = DateTime.UtcNow;
+      _provider.Save();
+
+      return true;
+    }
+
+    public DbEmailTemplate Get(Guid emailTemplateId)
+    {
+      return _provider.EmailTemplates
+        .Include(et => et.EmailTemplateTexts)
+        .FirstOrDefault(et => et.Id == emailTemplateId);
+    }
+
+    public DbEmailTemplate Get(int type)
+    {
+      return _provider.EmailTemplates
+        .Include(et => et.EmailTemplateTexts)
+        .FirstOrDefault(et => et.Type == type && et.IsActive);
+    }
+
+    public List<DbEmailTemplate> Find(int skipCount, int takeCount, out int totalCount, List<string> errors, bool includeDeactivated)
+    {
+      if (skipCount < 0)
+      {
+        errors.Add("Skip count can't be less than 0.");
+        totalCount = 0;
+        return null;
+      }
+
+      if (takeCount < 1)
+      {
+        errors.Add("Take count can't be equal or less than 0.");
+        totalCount = 0;
+        return null;
+      }
+
+      IQueryable<DbEmailTemplate> dbEmailTemplates = _provider.EmailTemplates.AsQueryable();
+
+      if (includeDeactivated)
+      {
+        totalCount = _provider.EmailTemplates.Count();
+      }
+      else
+      {
+        dbEmailTemplates = dbEmailTemplates.Where(e => e.IsActive);
+        totalCount = _provider.EmailTemplates.Count(e => e.IsActive);
+      }
+
+      return dbEmailTemplates.Skip(skipCount).Take(takeCount).Include(e => e.EmailTemplateTexts).ToList();
+    }
+  }
 }

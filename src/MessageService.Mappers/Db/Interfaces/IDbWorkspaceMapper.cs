@@ -1,16 +1,16 @@
-﻿using LT.DigitalOffice.Kernel.Attributes;
+﻿using System;
+using System.Collections.Generic;
+using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
-using LT.DigitalOffice.Models.Broker.Requests.Message;
-using System;
 
-namespace LT.DigitalOffice.MessageService.Mappers.Db.Workspace.Interfaces
+namespace LT.DigitalOffice.MessageService.Mappers.Db.Interfaces
 {
-    [AutoInject]
-    public interface IDbWorkspaceMapper
-    {
-        DbWorkspace Map(WorkspaceRequest value, Guid ownerId, Guid? imageId);
+  [AutoInject]
+  public interface IDbWorkspaceMapper
+  {
+    DbWorkspace Map(CreateWorkspaceRequest request);
 
-        DbWorkspace Map(ICreateWorkspaceRequest request);
-    }
+    DbWorkspace Map(string name, List<Guid> usersIds, Guid createdBy);
+  }
 }
