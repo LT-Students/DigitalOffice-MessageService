@@ -18,12 +18,6 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Configurations
     [AutoInjectRequest(typeof(IGetSmtpCredentialsRequest))]
     public string GetSmtpCredentialsEndpoint { get; set; }
 
-    [AutoInjectRequest(typeof(IAddImageRequest))]
-    public string AddImageEndpoint { get; set; }
-
-    [AutoInjectRequest(typeof(IGetImagesRequest))]
-    public string GetImagesEndpoint { get; set; }
-
     [AutoInjectRequest(typeof(IGetUsersDataRequest))]
     public string GetUsersDataEndpoint { get; set; }
 
