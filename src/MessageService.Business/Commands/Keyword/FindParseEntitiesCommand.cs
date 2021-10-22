@@ -21,11 +21,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.ParseEntity
 
         public OperationResultResponse<Dictionary<string, Dictionary<string, List<string>>>> Execute()
         {
-            if (!_accessValidator.IsAdmin())
-            {
-                throw new ForbiddenException("Not enouth rights");
-            }
-
             Dictionary<string, Dictionary<string, List<string>>> response = new();
 
             foreach(KeyValuePair<string, Dictionary<string, List<string>>> service in AllParseEntities.Entities)

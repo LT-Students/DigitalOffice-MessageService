@@ -31,11 +31,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.ParseEntity
 
         public FindResultResponse<KeywordInfo> Execute(int skipCount, int takeCount)
         {
-            if (!_accessValidator.IsAdmin())
-            {
-                throw new ForbiddenException("Not enouth rights");
-            }
-
             return new()
             {
                 Status = OperationResultStatusType.FullSuccess,

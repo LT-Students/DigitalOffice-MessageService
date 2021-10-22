@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
@@ -43,7 +44,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public OperationResultResponse<bool> Execute(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request)
+    public async Task<OperationResultResponse<bool>> Execute(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request)
     {
       DbWorkspace dbWorkspace = _repository.Get(workspaceId);
 
@@ -51,7 +52,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
       if (dbWorkspace.CreatedBy != editorId
         && _userRepository.GetAdmins(workspaceId).FirstOrDefault(wa => wa.UserId == editorId) == null
-        && !_accessValidator.IsAdmin())
+        && !await _accessValidator.IsAdminAsync())
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
