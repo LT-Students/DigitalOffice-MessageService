@@ -44,16 +44,12 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
 
     public async Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateMessageRequest request)
     {
-      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveDepartments))
-      {
-        return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.Forbidden);
-      }
-
       ValidationResult validationResult = await _validator.ValidateAsync(request);
 
       if (!validationResult.IsValid)
       {
-        return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest,
+        return _responseCreator.CreateFailureResponse<Guid?>(
+          HttpStatusCode.BadRequest,
           validationResult.Errors.Select(vf => vf.ErrorMessage).ToList());
       }
 
