@@ -56,12 +56,12 @@ namespace LT.DigitalOffice.MessageService.Controllers
     }
 
     [HttpPatch("edit")]
-    public async Task<OperationResultResponse<bool>> Edit(
+    public async Task<OperationResultResponse<bool>> EditAsync(
       [FromServices] IEditWorkspaceCommand command,
       [FromQuery] Guid workspaceId,
       [FromBody] JsonPatchDocument<EditWorkspaceRequest> request)
     {
-      return await command.Execute(workspaceId, request);
+      return await command.ExecuteAsync(workspaceId, request);
     }
   }
 }

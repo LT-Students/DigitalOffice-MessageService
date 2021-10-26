@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
   public class MessageController : ControllerBase
   {
     [HttpPost("create")]
-    public async Task<OperationResultResponse<Guid?>> Create(
+    public async Task<OperationResultResponse<Guid?>> CreateAsync(
       [FromServices] ICreateMessageCommand command,
       [FromBody] CreateMessageRequest request)
     {

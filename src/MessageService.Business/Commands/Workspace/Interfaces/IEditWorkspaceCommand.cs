@@ -10,6 +10,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces
   [AutoInject]
   public interface IEditWorkspaceCommand
   {
-    Task<OperationResultResponse<bool>> Execute(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request);
+    Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request);
   }
 }

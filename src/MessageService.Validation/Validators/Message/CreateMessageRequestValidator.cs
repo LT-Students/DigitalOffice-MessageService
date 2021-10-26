@@ -13,6 +13,9 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Message
         RuleForEach(request => request.Content)
           .NotEmpty().WithMessage("Content can not be empty.");
       });
+
+      RuleFor(request => request.Status)
+        .IsInEnum();
     }
   }
 }

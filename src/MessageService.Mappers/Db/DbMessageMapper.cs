@@ -27,6 +27,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       {
         Id = Guid.NewGuid(),
         Content = request.Content,
+        Status = (int)request.Status,
         SenderUserId = _httpContextAccessor.HttpContext.GetUserId(),
         CreatedAtUtc = DateTime.UtcNow
       };

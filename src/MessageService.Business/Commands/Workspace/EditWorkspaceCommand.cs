@@ -44,7 +44,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<OperationResultResponse<bool>> Execute(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request)
+    public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request)
     {
       DbWorkspace dbWorkspace = _repository.Get(workspaceId);
 
