@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
@@ -9,6 +10,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces
   [AutoInject]
   public interface IEditWorkspaceCommand
   {
-    OperationResultResponse<bool> Execute(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request);
+    Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request);
   }
 }

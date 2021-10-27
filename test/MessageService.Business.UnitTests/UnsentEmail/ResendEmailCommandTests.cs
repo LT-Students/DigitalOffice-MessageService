@@ -1,4 +1,4 @@
-﻿using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+﻿/*using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail;
 using LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail.Interfaces;
@@ -94,3 +94,4 @@ namespace LT.DigitalOffice.MessageService.Business.UnitTests.UnsentEmail
         //}
     }
 }
+*/

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
@@ -55,12 +56,12 @@ namespace LT.DigitalOffice.MessageService.Controllers
     }
 
     [HttpPatch("edit")]
-    public OperationResultResponse<bool> Edit(
+    public async Task<OperationResultResponse<bool>> EditAsync(
       [FromServices] IEditWorkspaceCommand command,
       [FromQuery] Guid workspaceId,
       [FromBody] JsonPatchDocument<EditWorkspaceRequest> request)
     {
-      return command.Execute(workspaceId, request);
+      return await command.ExecuteAsync(workspaceId, request);
     }
   }
 }

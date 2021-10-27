@@ -28,11 +28,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail
 
         public UnsentEmailsResponse Execute(int skipCount, int takeCount)
         {
-            if (!_accessValidator.IsAdmin())
-            {
-                throw new ForbiddenException("Not enough rights.");
-            }
-
             IEnumerable<DbUnsentEmail> emails = _repository.Find(skipCount, takeCount, out int totalCount);
 
             return new UnsentEmailsResponse

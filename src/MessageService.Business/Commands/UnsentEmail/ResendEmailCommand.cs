@@ -23,11 +23,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.UnsentEmail
 
         public OperationResultResponse<bool> Execute(Guid id)
         {
-            if (!_accessValidator.IsAdmin())
-            {
-                throw new ForbiddenException("Not enough rights.");
-            }
-
             bool isSuccess = _emailSender.ResendEmail(id);
 
             return new OperationResultResponse<bool>

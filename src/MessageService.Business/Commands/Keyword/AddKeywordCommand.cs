@@ -32,11 +32,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.ParseEntity
 
         public OperationResultResponse<Guid> Execute(AddKeywordRequest request)
         {
-            if (!_accessValidator.IsAdmin())
-            {
-                throw new ForbiddenException("Not enouth rights.");
-            }
-
             _validator.ValidateAndThrowCustom(request);
 
             return new()
