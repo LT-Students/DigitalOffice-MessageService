@@ -18,7 +18,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
 
     public DbMessage Map(CreateMessageRequest request)
     {
-      if (request == null)
+      if (request is null)
       {
         return null;
       }
@@ -26,9 +26,10 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       return new DbMessage
       {
         Id = Guid.NewGuid(),
+        ChannelId = request.ChannelId,
         Content = request.Content,
         Status = (int)request.Status,
-        SenderUserId = _httpContextAccessor.HttpContext.GetUserId(),
+        CreatedBy = _httpContextAccessor.HttpContext.GetUserId(),
         CreatedAtUtc = DateTime.UtcNow
       };
     }

@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
@@ -57,7 +56,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
 
       response.Body = await _repository.CreateAsync(_mapper.Map(request));
 
-      if (response.Body == null)
+      if (response.Body is null)
       {
         return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest);
       }

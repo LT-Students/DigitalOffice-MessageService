@@ -8,7 +8,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
   {
     public ImageInfo Map(ImageData imageData)
     {
-      if (imageData == null)
+      if (imageData is null)
       {
         return null;
       }

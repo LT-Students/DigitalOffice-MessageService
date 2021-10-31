@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using LT.DigitalOffice.ImageSupport.Helpers.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Helpers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 
@@ -10,20 +11,20 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
   public class DbChannelMapper : IDbChannelMapper
   {
-    private readonly IResizeImageHelper _resizeHelper;
+    private readonly IImageResizeHelper _resizeHelper;
     private readonly IDbChannelUserMapper _channelUserMapper;
 
     public DbChannelMapper(
-      IResizeImageHelper resizeHelper,
+      IImageResizeHelper resizeHelper,
       IDbChannelUserMapper channelUserMapper)
     {
       _resizeHelper = resizeHelper;
       _channelUserMapper = channelUserMapper;
     }
 
-    public DbChannel Map(CreateChannelRequest request, DbWorkspaceUser workspaceUserCreator)
+    public async Task<DbChannel> MapAsync(CreateChannelRequest request, DbWorkspaceUser workspaceUserCreator)
     {
-      if (request == null)
+      if (request is null)
       {
         return null;
       }
@@ -31,10 +32,14 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       Guid channelId = Guid.NewGuid();
 
       ICollection<DbChannelUser> dbChannelUsers = request.Users?
-        .Select(u =>_channelUserMapper.Map(channelId, u.WorkspaceUserId, u.IsAdmin, workspaceUserCreator.UserId))
+        .Select(u => _channelUserMapper.Map(channelId, u.WorkspaceUserId, u.IsAdmin, workspaceUserCreator.UserId))
         .ToHashSet();
 
       dbChannelUsers.Add(_channelUserMapper.Map(channelId, workspaceUserCreator.Id, true, workspaceUserCreator.UserId));
+
+      (bool _, string resizedContent, string extension) = request.Image is null
+        ? (false, null, null)
+        : (await _resizeHelper.ResizeAsync(request.Image.Content, request.Image.Extension));
 
       return new()
       {
@@ -43,9 +48,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
         Name = request.Name,
         IsPrivate = request.IsPrivate,
         IsActive = true,
-        ImageContent = request.Image != null ?
-          _resizeHelper.Resize(request.Image.Content, request.Image.Extension) : null,
-        ImageExtension = request.Image?.Extension,
+        ImageContent = resizedContent,
+        ImageExtension = extension,
         CreatedBy = workspaceUserCreator.UserId,
         CreatedAtUtc = DateTime.UtcNow,
         Users = dbChannelUsers.ToHashSet()

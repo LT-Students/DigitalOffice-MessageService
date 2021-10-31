@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
   {
     public ShortWorkspaceInfo Map(DbWorkspace dbWorkspace)
     {
-      if (dbWorkspace == null)
+      if (dbWorkspace is null)
       {
         return null;
       }

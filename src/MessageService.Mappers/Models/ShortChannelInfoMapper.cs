@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
   {
     public ShortChannelInfo Map(DbChannel dbChannel)
     {
-      if (dbChannel == null)
+      if (dbChannel is null)
       {
         return null;
       }

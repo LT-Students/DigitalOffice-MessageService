@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LT.DigitalOffice.MessageService.Models.Db
 {
-  public class DbMessageFile
+  public class DbThreadMessage
   {
-    public const string TableName = "MessagesFiles";
+    public const string TableName = "ThreadsMessages";
 
     public Guid Id { get; set; }
     public Guid MessageId { get; set; }
-    public Guid FileId { get; set; }
+    public string Content { get; set; }
+    public int Status { get; set; }
     public Guid CreatedBy { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public Guid? ModifiedBy { get; set; }
@@ -19,19 +20,19 @@ namespace LT.DigitalOffice.MessageService.Models.Db
     public DbMessage Message { get; set; }
   }
 
-  public class DbMessageFileConfiguration : IEntityTypeConfiguration<DbMessageFile>
+  public class DbThreadMessageConfiguration : IEntityTypeConfiguration<DbThreadMessage>
   {
-    public void Configure(EntityTypeBuilder<DbMessageFile> builder)
+    public void Configure(EntityTypeBuilder<DbThreadMessage> builder)
     {
       builder
-        .ToTable(DbMessageFile.TableName);
+        .ToTable(DbThreadMessage.TableName);
 
       builder
-        .HasKey(mf => mf.Id);
+        .HasKey(mi => mi.Id);
 
       builder
-        .HasOne(mf => mf.Message)
-        .WithMany(m => m.Files);
+        .HasOne(tm => tm.Message)
+        .WithMany(m => m.ThreadMessages);
     }
   }
 }

@@ -1,15 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LT.DigitalOffice.Kernel.Requests;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters
 {
-  public record FindWorkspaceFilter
+  public record FindWorkspaceFilter : BaseFindFilter
   {
-    [FromQuery(Name = "skipCount")]
-    public int SkipCount { get; set; }
-
-    [FromQuery(Name = "takeCount")]
-    public int TakeCount { get; set; }
-
     [FromQuery(Name = "includeDeactivated")]
     public bool IncludeDeactivated { get; set; } = false;
   }

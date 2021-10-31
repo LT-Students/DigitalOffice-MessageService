@@ -46,7 +46,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         {
             DbChannel channel = new DbChannel();
 
-            _repository.Add(channel);
+            _repository.CreateAsync(channel);
 
             Assert.IsTrue(_provider.Channels.Contains(channel));
         }

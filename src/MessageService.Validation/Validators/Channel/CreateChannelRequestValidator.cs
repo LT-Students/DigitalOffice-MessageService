@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentValidation;
 using LT.DigitalOffice.Kernel.Extensions;
+using LT.DigitalOffice.Kernel.Validators.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Validation.Validators.Channel.Interfaces;
@@ -15,24 +17,23 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
     private IHttpContextAccessor _httpContextAccessor;
     private readonly IWorkspaceUserRepository _workspaceUserRepository;
 
-    private List<string> AllowedExtensions = new()
-    { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tga" };
-
-    private bool AreUsersInWorkspace(List<Guid> requestWorkspaceUsersIds, Guid workspaceId)
+    private async Task<bool> AreUsersInWorkspace(List<Guid> requestWorkspaceUsersIds, Guid workspaceId)
     {
-      return _workspaceUserRepository
-        .DoExistWorkspaceUsers(requestWorkspaceUsersIds, workspaceId);
+      return await _workspaceUserRepository
+        .WorkspaceUsersExist(requestWorkspaceUsersIds, workspaceId);
     }
 
-    private Guid GetCreatorWorkspaceUserId(Guid workspaceId)
+    private async Task<Guid> GetCreatorWorkspaceUserId(Guid workspaceId)
     {
-      return _workspaceUserRepository
-        .Get(workspaceId, _httpContextAccessor.HttpContext.GetUserId()).Id;
+      return (await _workspaceUserRepository
+        .GetAsync(workspaceId, _httpContextAccessor.HttpContext.GetUserId())).Id;
     }
 
     public CreateChannelRequestValidator(
       IWorkspaceUserRepository workspaceUserRepository,
-      IHttpContextAccessor httpContextAccessor)
+      IHttpContextAccessor httpContextAccessor,
+      IImageContentValidator imageContentValidator,
+      IImageExtensionValidator imageExtensionValidator)
     {
       _httpContextAccessor = httpContextAccessor;
       _workspaceUserRepository = workspaceUserRepository;
@@ -51,37 +52,24 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
         RuleFor(w => w)
           .Must(w => w.Users.Select(i => i.WorkspaceUserId).ToHashSet().Count() == w.Users.Count())
           .WithMessage("A user cannot be added to the channel twice.")
-          .Must(w =>
+          .MustAsync(async (w, _) =>
           {
-            Guid creatorWorkspaceUserId = GetCreatorWorkspaceUserId(w.WorkspaceId);
+            Guid creatorWorkspaceUserId = await GetCreatorWorkspaceUserId(w.WorkspaceId);
 
             return w.Users.FirstOrDefault(i => i.WorkspaceUserId == creatorWorkspaceUserId) == null;
           })
           .WithMessage("User can not add himself to request users list.")
-          .Must(w => AreUsersInWorkspace(w.Users.Select(u => u.WorkspaceUserId).ToList(), w.WorkspaceId))
+          .MustAsync(async (w, _) => await AreUsersInWorkspace(w.Users.Select(u => u.WorkspaceUserId).ToList(), w.WorkspaceId))
           .WithMessage("Some users are not available for adding to the channel.");
       });
 
       When(w => w.Image != null, () =>
       {
-        RuleFor(c => c.Image.Content)
-          .NotEmpty().WithMessage("Image content can not be empty.")
-          .Must(x =>
-          {
-            try
-            {
-              var byteString = new Span<byte>(new byte[x.Length]);
-              return Convert.TryFromBase64String(x, byteString, out _);
-            }
-            catch
-            {
-              return false;
-            }
-          }).WithMessage("Wrong image content.");
+        RuleFor(w => w.Image.Content)
+          .SetValidator(imageContentValidator);
 
-        RuleFor(c => c.Image.Extension)
-          .Must(AllowedExtensions.Contains)
-          .WithMessage($"Image extension is not {string.Join('/', AllowedExtensions)}.");
+        RuleFor(w => w.Image.Extension)
+          .SetValidator(imageExtensionValidator);
       });
     }
   }

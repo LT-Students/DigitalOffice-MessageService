@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
@@ -25,48 +26,39 @@ namespace LT.DigitalOffice.MessageService.Data
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public Guid? Add(DbWorkspace workspace)
+    public async Task<Guid?> CreateAsync(DbWorkspace dbWorkspace)
     {
-      if (workspace == null)
+      if (dbWorkspace is null)
       {
         return null;
       }
 
-      _provider.Workspaces.Add(workspace);
-      _provider.Save();
+      _provider.Workspaces.Add(dbWorkspace);
+      await _provider.SaveAsync();
 
-      return workspace.Id;
+      return dbWorkspace.Id;
     }
 
-    public bool Edit(DbWorkspace dbWorkspace, JsonPatchDocument<DbWorkspace> request, Guid editorId)
+    public async Task<bool> EditAsync(DbWorkspace dbWorkspace, JsonPatchDocument<DbWorkspace> request)
     {
-      if (dbWorkspace == null || request == null)
+      if (dbWorkspace is null || request is null)
       {
         return false;
       }
 
       request.ApplyTo(dbWorkspace);
-      dbWorkspace.ModifiedBy = editorId;
+      dbWorkspace.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
       dbWorkspace.ModifiedAtUtc = DateTime.UtcNow;
-      _provider.Save();
+      await _provider.SaveAsync();
 
       return true;
     }
 
-    public List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount, List<string> errors)
+    public async Task<(List<DbWorkspace> dbWorkspases, int totalCount)> FindAsync(FindWorkspaceFilter filter)
     {
-      if (filter.SkipCount < 0)
+      if (filter is null)
       {
-        errors.Add("Skip count cannot be less than 0.");
-        totalCount = 0;
-        return null;
-      }
-
-      if (filter.TakeCount < 1)
-      {
-        errors.Add("Take count cannot be less than 1.");
-        totalCount = 0;
-        return null;
+        return (null, default);
       }
 
       IQueryable<DbWorkspace> dbWorkspaces = _provider.Workspaces.AsQueryable();
@@ -82,19 +74,20 @@ namespace LT.DigitalOffice.MessageService.Data
         .Include(w => w.Users.Where(u => u.UserId == userId && u.IsActive))
         .Where(w => w.Users.Any());
 
-      totalCount = dbWorkspaces.Count();
-
-      return dbWorkspaces.Skip(filter.SkipCount).Take(filter.TakeCount).ToList();
+      return (
+        await dbWorkspaces.Skip(filter.SkipCount).Take(filter.TakeCount).ToListAsync(),
+        await dbWorkspaces.CountAsync());
     }
 
-    public DbWorkspace Get(Guid workspaceId)
+    public async Task<DbWorkspace> GetAsync(Guid workspaceId)
     {
-      return _provider.Workspaces.FirstOrDefault(w => w.Id == workspaceId);
+      return await _provider.Workspaces
+        .FirstOrDefaultAsync(w => w.Id == workspaceId);
     }
 
-    public DbWorkspace Get(GetWorkspaceFilter filter)
+    public async Task<DbWorkspace> GetAsync(GetWorkspaceFilter filter)
     {
-      if (filter == null)
+      if (filter is null)
       {
         return null;
       }
@@ -111,7 +104,7 @@ namespace LT.DigitalOffice.MessageService.Data
         dbWorkspace = dbWorkspace.Include(w => w.Users);
       }
 
-      return dbWorkspace.FirstOrDefault(w => w.Id == filter.WorkspaceId);
+      return await dbWorkspace.FirstOrDefaultAsync(w => w.Id == filter.WorkspaceId);
     }
   }
 }

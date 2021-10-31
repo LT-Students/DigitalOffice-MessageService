@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using FluentValidation.Results;
 using LT.DigitalOffice.Kernel.Enums;
-using LT.DigitalOffice.Kernel.FluentValidationExtensions;
+using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
@@ -19,43 +21,41 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IDbWorkspaceMapper _mapper;
     private readonly IWorkspaceRepository _repository;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IResponseCreater _responseCreator;
 
     public CreateWorkspaceCommand(
       ICreateWorkspaceRequestValidator validator,
       IDbWorkspaceMapper mapper,
       IWorkspaceRepository repository,
-      IHttpContextAccessor httpContextAccessor)
+      IHttpContextAccessor httpContextAccessor,
+      IResponseCreater responseCreator)
     {
       _validator = validator;
       _mapper = mapper;
       _repository = repository;
       _httpContextAccessor = httpContextAccessor;
+      _responseCreator = responseCreator;
     }
 
-    public OperationResultResponse<Guid?> Execute(CreateWorkspaceRequest request)
+    public async Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateWorkspaceRequest request)
     {
-      if (!_validator.ValidateCustom(request, out List<string> errors))
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+      ValidationResult validationResult = await _validator.ValidateAsync(request);
 
-        return new OperationResultResponse<Guid?>
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = errors
-        };
+      if (!validationResult.IsValid)
+      {
+        return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest,
+          validationResult.Errors.Select(vf => vf.ErrorMessage).ToList());
       }
 
       OperationResultResponse<Guid?> response = new();
 
-      response.Body = _repository.Add(_mapper.Map(request));
+      response.Body = await _repository.CreateAsync(await _mapper.MapAsync(request));
       response.Status = OperationResultStatusType.FullSuccess;
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
-      if (response.Body == null)
+      if (response.Body is null)
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-        response.Status = OperationResultStatusType.Failed;
+        _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest);
       }
 
       return response;

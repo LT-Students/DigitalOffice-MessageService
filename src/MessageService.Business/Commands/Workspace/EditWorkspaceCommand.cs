@@ -7,6 +7,7 @@ using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
+using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
@@ -27,6 +28,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IWorkspaceUserRepository _userRepository;
     private readonly IAccessValidator _accessValidator;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IResponseCreater _responseCreator;
 
     public EditWorkspaceCommand(
       IEditWorkspaceRequestValidator validator,
@@ -34,7 +36,8 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       IWorkspaceRepository repository,
       IWorkspaceUserRepository userRepository,
       IAccessValidator accessValidator,
-      IHttpContextAccessor httpContextAccessor)
+      IHttpContextAccessor httpContextAccessor,
+      IResponseCreater responseCreator)
     {
       _validator = validator;
       _mapper = mapper;
@@ -46,21 +49,15 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
     public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request)
     {
-      DbWorkspace dbWorkspace = _repository.Get(workspaceId);
+      DbWorkspace dbWorkspace = await _repository.GetAsync(workspaceId);
 
       Guid editorId = _httpContextAccessor.HttpContext.GetUserId();
 
       if (dbWorkspace.CreatedBy != editorId
-        && _userRepository.GetAdmins(workspaceId).FirstOrDefault(wa => wa.UserId == editorId) == null
+        && (await _userRepository.GetAdminsAsync(workspaceId)).FirstOrDefault(wa => wa.UserId == editorId) == null
         && !await _accessValidator.IsAdminAsync())
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-
-        return new OperationResultResponse<bool>
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = new() { "Not enough rights." }
-        };
+        return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
       if (!_validator.ValidateCustom(request, out List<string> errors))
@@ -76,7 +73,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
       OperationResultResponse<bool> response = new();
 
-      response.Body = _repository.Edit(dbWorkspace, _mapper.Map(request), editorId);
+      response.Body = await _repository.EditAsync(dbWorkspace, await _mapper.MapAsync(request));
 
       if (!response.Body)
       {

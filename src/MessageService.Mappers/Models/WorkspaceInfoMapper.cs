@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
 
     public WorkspaceInfo Map(DbWorkspace dbWorkspace, List<UserData> users)
     {
-      if (dbWorkspace == null)
+      if (dbWorkspace is null)
       {
         return null;
       }

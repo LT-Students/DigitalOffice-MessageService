@@ -21,12 +21,15 @@ namespace LT.DigitalOffice.MessageService.Models.Db
     public Guid? ModifiedBy { get; set; }
     public DateTime? ModifiedAtUtc { get; set; }
 
-    public ICollection<DbChannelUser> Users { get; set; }
     public DbWorkspace Workspace { get; set; }
+
+    public ICollection<DbChannelUser> Users { get; set; }
+    public ICollection<DbMessage> Messages { get; set; }
 
     public DbChannel()
     {
       Users = new HashSet<DbChannelUser>();
+      Messages = new HashSet<DbMessage>();
     }
   }
 
@@ -35,23 +38,26 @@ namespace LT.DigitalOffice.MessageService.Models.Db
     public void Configure(EntityTypeBuilder<DbChannel> builder)
     {
       builder
-          .ToTable(DbChannel.TableName);
+        .ToTable(DbChannel.TableName);
 
       builder
-          .HasKey(ch => ch.Id);
+        .HasKey(ch => ch.Id);
 
       builder
-          .Property(ch => ch.Name)
-          .IsRequired();
+        .Property(ch => ch.Name)
+        .IsRequired();
 
       builder
-          .HasOne(ch => ch.Workspace)
-          .WithMany(w => w.Channels)
-          .HasForeignKey(ch => ch.WorkspaceId);
+        .HasOne(ch => ch.Workspace)
+        .WithMany(w => w.Channels);
 
       builder
-          .HasMany(ch => ch.Users)
-          .WithOne(chu => chu.Channel);
+        .HasMany(ch => ch.Users)
+        .WithOne(chu => chu.Channel);
+
+      builder
+        .HasMany(ch => ch.Messages)
+        .WithOne(chu => chu.Channel);
     }
   }
 }

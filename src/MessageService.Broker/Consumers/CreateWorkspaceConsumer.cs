@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
 
     private bool CreateWorkspace(ICreateWorkspaceRequest request)
     {
-      _workspaceRepository.Add(_workspaceMapper.Map(request.Name, request.Users, request.CreaterId));
+      _workspaceRepository.CreateAsync(_workspaceMapper.Map(request.Name, request.Users, request.CreaterId));
 
       return true;
     }

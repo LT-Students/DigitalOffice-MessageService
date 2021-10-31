@@ -16,16 +16,14 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef
     {
     }
 
-    public DbSet<DbMessage> Messages { get; set; }
-    public DbSet<DbEmail> Emails { get; set; }
     public DbSet<DbWorkspace> Workspaces { get; set; }
-    public DbSet<DbEmailTemplate> EmailTemplates { get; set; }
-    public DbSet<DbEmailTemplateText> EmailTemplateTexts { get; set; }
-    public DbSet<DbWorkspaceUser> WorkspaceUsers { get; set; }
-    public DbSet<DbChannelUser> ChannelUsers { get; set; }
+    public DbSet<DbWorkspaceUser> WorkspacesUsers { get; set; }
     public DbSet<DbChannel> Channels { get; set; }
-    public DbSet<DbUnsentEmail> UnsentEmails { get; set; }
-    public DbSet<DbKeyword> ParseEntities { get; set; }
+    public DbSet<DbChannelUser> ChannelsUsers { get; set; }
+    public DbSet<DbMessage> Messages { get; set; }
+    public DbSet<DbThreadMessage> ThreadsMessages { get; set; }
+    public DbSet<DbMessageFile> MessagesFiles { get; set; }
+    public DbSet<DbMessageFile> MessagesImages { get; set; }
 
     void IBaseDataProvider.Save()
     {
