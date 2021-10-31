@@ -70,7 +70,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
       if (response.Body is null)
       {
-        _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest);
+        response = _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest);
       }
 
       return response;

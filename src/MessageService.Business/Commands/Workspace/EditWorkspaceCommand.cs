@@ -62,29 +62,19 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
       if (!_validator.ValidateCustom(request, out List<string> errors))
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-        return new OperationResultResponse<bool>
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = errors
-        };
+        return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, errors);
       }
 
       OperationResultResponse<bool> response = new();
 
       response.Body = await _repository.EditAsync(dbWorkspace, await _mapper.MapAsync(request));
+      response.Status = OperationResultStatusType.FullSuccess;
 
       if (!response.Body)
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-        response.Errors.Add("Bad request");
-        response.Status = OperationResultStatusType.Failed;
-        return response;
+        response = _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.BadRequest);
       }
 
-      response.Status = OperationResultStatusType.FullSuccess;
       return response;
     }
   }

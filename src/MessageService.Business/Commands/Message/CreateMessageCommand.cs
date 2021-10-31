@@ -55,15 +55,14 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
       OperationResultResponse<Guid?> response = new();
 
       response.Body = await _repository.CreateAsync(_mapper.Map(request));
-
-      if (response.Body is null)
-      {
-        return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest);
-      }
-
       response.Status = OperationResultStatusType.FullSuccess;
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+
+      if (response.Body is null)
+      {
+        response = _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest);
+      }
 
       return response;
     }

@@ -51,11 +51,12 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
       response.Body = await _repository.CreateAsync(await _mapper.MapAsync(request));
       response.Status = OperationResultStatusType.FullSuccess;
+
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
       if (response.Body is null)
       {
-        _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest);
+        response = _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest);
       }
 
       return response;

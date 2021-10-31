@@ -17,7 +17,6 @@ using LT.DigitalOffice.Models.Broker.Models;
 using LT.DigitalOffice.Models.Broker.Requests.User;
 using LT.DigitalOffice.Models.Broker.Responses.User;
 using MassTransit;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
@@ -27,38 +26,30 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IWorkspaceInfoMapper _workspaceInfoMapper;
     private readonly IWorkspaceRepository _repository;
     private readonly IRequestClient<IGetUsersDataRequest> _rcGetUsers;
-    private readonly IImageInfoMapper _imageInfoMapper;
     private readonly ILogger<GetWorkspaceCommand> _logger;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IResponseCreater _responseCreator;
 
     public GetWorkspaceCommand(
       IWorkspaceInfoMapper workspaceInfoMapper,
       IWorkspaceRepository repository,
       IRequestClient<IGetUsersDataRequest> rcGetUsers,
-      IImageInfoMapper imageInfoMapper,
       ILogger<GetWorkspaceCommand> logger,
-      IHttpContextAccessor httpContextAccessor,
       IResponseCreater responseCreator)
     {
       _workspaceInfoMapper = workspaceInfoMapper;
       _repository = repository;
       _rcGetUsers = rcGetUsers;
-      _imageInfoMapper = imageInfoMapper;
       _logger = logger;
       _responseCreator = responseCreator;
       _responseCreator = responseCreator;
     }
 
-    private async Task<List<UserData>> GetUsers(List<Guid> usersIds, List<string> errors)
+    private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
     {
-      if (usersIds == null || !usersIds.Any())
+      if (usersIds is null || !usersIds.Any())
       {
         return null;
       }
-
-      string errorMessage = "Cannot get users now. Please try again later.";
-      const string logMessage = "Cannot get users with ids: {usersIds}.";
 
       try
       {
@@ -71,14 +62,20 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
           return response.Message.Body.UsersData;
         }
 
-        _logger.LogWarning(logMessage, string.Join(", ", usersIds));
+        _logger.LogWarning(
+          "Cannot get users data with users ids: {UsersIds}.\nErrors: {Errors}",
+          string.Join(", ", usersIds),
+          string.Join('\n', response.Message.Errors));
       }
       catch (Exception exc)
       {
-        _logger.LogError(exc, logMessage, string.Join(", ", usersIds));
+        _logger.LogError(
+          exc,
+          "Cannot get users data with users ids: {UsersIds}.",
+          string.Join(", ", usersIds));
       }
 
-      errors.Add(errorMessage);
+      errors.Add("Cannot get users data. Please try again later.");
 
       return null;
     }
@@ -94,7 +91,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
       OperationResultResponse<WorkspaceInfo> response = new();
 
-      List<UserData> usersData = await GetUsers(dbWorkspace.Users?.Select(u => u.UserId).ToList(), response.Errors);
+      List<UserData> usersData = await GetUsersAsync(dbWorkspace.Users?.Select(u => u.UserId).ToList(), response.Errors);
 
       List<Guid> imagesIds = new();
 

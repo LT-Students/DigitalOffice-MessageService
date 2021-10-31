@@ -13,7 +13,6 @@ using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
-using Microsoft.AspNetCore.Http;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 {
@@ -22,20 +21,17 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IBaseFindFilterValidator _baseFindValidator;
     private readonly IWorkspaceRepository _repository;
     private readonly IShortWorkspaceInfoMapper _mapper;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IResponseCreater _responseCreator;
 
     public FindWorkspaceCommand(
       IBaseFindFilterValidator baseFindValidator,
       IWorkspaceRepository repository,
       IShortWorkspaceInfoMapper mapper,
-      IHttpContextAccessor httpContextAccessor,
       IResponseCreater responseCreator)
     {
       _baseFindValidator = baseFindValidator;
       _repository = repository;
       _mapper = mapper;
-      _httpContextAccessor = httpContextAccessor;
       _responseCreator = responseCreator;
     }
 
@@ -60,7 +56,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
       if (response.Errors.Any())
       {
-        _responseCreator.CreateFailureFindResponse<ShortWorkspaceInfo>(
+        response = _responseCreator.CreateFailureFindResponse<ShortWorkspaceInfo>(
           HttpStatusCode.BadRequest);
       }
 
