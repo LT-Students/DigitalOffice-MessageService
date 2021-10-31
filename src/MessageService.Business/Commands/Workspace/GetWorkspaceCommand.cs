@@ -63,7 +63,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         }
 
         _logger.LogWarning(
-          "Cannot get users data with users ids: {UsersIds}.\nErrors: {Errors}",
+          "Error while geting users data with users ids: {UsersIds}.\nErrors: {Errors}",
           string.Join(", ", usersIds),
           string.Join('\n', response.Message.Errors));
       }
