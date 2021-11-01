@@ -67,19 +67,6 @@ namespace LT.DigitalOffice.MessageService
       context.Database.Migrate();
     }
 
-    private void StartResender(IApplicationBuilder app)
-    {
-      EmailEngineConfig emailEngineConfig = Configuration
-        .GetSection(EmailEngineConfig.SectionName)
-        .Get<EmailEngineConfig>();
-
-      IServiceProvider serviceProvider = app.ApplicationServices.GetRequiredService<IServiceProvider>();
-
-      var scope = app.ApplicationServices.CreateScope();
-
-      ILoggerFactory loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
-    }
-
     #endregion
 
     #region public methods
@@ -151,8 +138,6 @@ namespace LT.DigitalOffice.MessageService
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
     {
       UpdateDatabase(app);
-
-      StartResender(app);
 
       app.UseForwardedHeaders();
 
