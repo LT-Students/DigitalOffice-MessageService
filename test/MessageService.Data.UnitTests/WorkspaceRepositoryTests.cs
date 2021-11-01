@@ -94,7 +94,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 
     #endregion
 
-    #region GetWorkspace
+    /*#region GetWorkspace
     [Test]
     public void ShouldReturnExistsWorkspace()
     {
@@ -108,6 +108,6 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 
       Assert.IsNull(_repository.GetAsync(incorrectId));
     }
-    #endregion
+    #endregion*/
   }
 }

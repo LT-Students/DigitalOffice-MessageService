@@ -93,8 +93,8 @@ namespace LT.DigitalOffice.MessageService
         .Get<BaseServiceInfoConfig>();
 
       _rabbitMqConfig = Configuration
-          .GetSection(BaseRabbitMqConfig.SectionName)
-          .Get<RabbitMqConfig>();
+        .GetSection(BaseRabbitMqConfig.SectionName)
+        .Get<RabbitMqConfig>();
 
       Version = "1.3.1.0";
       Description = "MessageService, is intended to work with the messages.";
