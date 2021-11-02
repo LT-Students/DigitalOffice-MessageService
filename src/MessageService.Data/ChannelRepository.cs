@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -14,15 +15,15 @@ namespace LT.DigitalOffice.MessageService.Data
       _provider = provider;
     }
 
-    public Guid? Add(DbChannel dbChannel)
+    public async Task<Guid?> CreateAsync(DbChannel dbChannel)
     {
-      if (dbChannel == null)
+      if (dbChannel is null)
       {
         return null;
       }
 
       _provider.Channels.Add(dbChannel);
-      _provider.Save();
+      await _provider.SaveAsync();
 
       return dbChannel.Id;
     }

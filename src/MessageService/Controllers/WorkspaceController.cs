@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
-using Microsoft.AspNetCore.Http;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,42 +14,28 @@ namespace LT.DigitalOffice.MessageService.Controllers
   [ApiController]
   public class WorkspaceController : ControllerBase
   {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public WorkspaceController(IHttpContextAccessor httpContextAccessor)
-    {
-      _httpContextAccessor = httpContextAccessor;
-    }
-
     [HttpPost("create")]
-    public OperationResultResponse<Guid?> Create(
+    public async Task<OperationResultResponse<Guid?>> CreateAsync(
       [FromServices] ICreateWorkspaceCommand command,
       [FromBody] CreateWorkspaceRequest request)
     {
-      return command.Execute(request);
+      return await command.ExecuteAsync(request);
     }
 
     [HttpGet("find")]
-    public FindResultResponse<ShortWorkspaceInfo> Find(
+    public async Task<FindResultResponse<ShortWorkspaceInfo>> FindAsync(
       [FromServices] IFindWorkspaceCommand command,
       [FromQuery] FindWorkspaceFilter filter)
     {
-      return command.Execute(filter);
+      return await command.ExecuteAsync(filter);
     }
 
     [HttpGet("get")]
-    public OperationResultResponse<WorkspaceInfo> Get(
+    public async Task<OperationResultResponse<WorkspaceInfo>> GetAsync(
       [FromServices] IGetWorkspaceCommand command,
       [FromQuery] GetWorkspaceFilter filter)
     {
-      var result = command.Execute(filter);
-
-      if (result.Status == OperationResultStatusType.Failed)
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
-      }
-
-      return result;
+      return await command.ExecuteAsync(filter);
     }
 
     [HttpPatch("edit")]

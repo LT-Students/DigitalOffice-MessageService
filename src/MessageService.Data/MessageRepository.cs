@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
     public async Task<Guid?> CreateAsync(DbMessage request)
     {
-      if (request == null)
+      if (request is null)
       {
         return null;
       }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
@@ -10,13 +11,12 @@ namespace LT.DigitalOffice.MessageService.Controllers
   [ApiController]
   public class ChannelController : ControllerBase
   {
-
     [HttpPost("create")]
-    public OperationResultResponse<Guid?> Create(
+    public async Task<OperationResultResponse<Guid?>> CreateAsync(
       [FromServices] ICreateChannelCommand command,
       [FromBody] CreateChannelRequest request)
     {
-      return command.Exeсute(request);
+      return await command.ExeсuteAsync(request);
     }
   }
 }

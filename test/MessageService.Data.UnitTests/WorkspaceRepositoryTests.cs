@@ -87,18 +87,18 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
     {
       _dbWorkspaceToAdd.Id = Guid.NewGuid();
 
-      _repository.Add(_dbWorkspaceToAdd);
+      _repository.CreateAsync(_dbWorkspaceToAdd);
 
       Assert.AreEqual(_dbWorkspaceToAdd, _provider.Workspaces.Find(_dbWorkspaceToAdd.Id));
     }
 
     #endregion
 
-    #region GetWorkspace
+    /*#region GetWorkspace
     [Test]
     public void ShouldReturnExistsWorkspace()
     {
-      SerializerAssert.AreEqual(_repository.Get(_dbWorkspaceInDb.Id), _dbWorkspaceInDb);
+      SerializerAssert.AreEqual(_repository.GetAsync(_dbWorkspaceInDb.Id), _dbWorkspaceInDb);
     }
 
     [Test]
@@ -106,8 +106,8 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
     {
       var incorrectId = Guid.NewGuid();
 
-      Assert.IsNull(_repository.Get(incorrectId));
+      Assert.IsNull(_repository.GetAsync(incorrectId));
     }
-    #endregion
+    #endregion*/
   }
 }

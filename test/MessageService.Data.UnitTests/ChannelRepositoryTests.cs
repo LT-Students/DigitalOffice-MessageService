@@ -30,7 +30,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
             _repository = new ChannelRepository(_provider);
         }
 
-        [TearDown]
+        /*[TearDown]
         public void CleanDb()
         {
             if (_provider.IsInMemory())
@@ -46,11 +46,11 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         {
             DbChannel channel = new DbChannel();
 
-            _repository.Add(channel);
+            _repository.CreateAsync(channel);
 
             Assert.IsTrue(_provider.Channels.Contains(channel));
         }
 
-        #endregion
+        #endregion*/
     }
 }

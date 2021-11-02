@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 {
     class WorkspaceUserRepositoryTests
     {
-        private IDataProvider _provider;
+        /*private IDataProvider _provider;
         private IWorkspaceUserRepository _repository;
 
         [OneTimeSetUp]
@@ -60,7 +60,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 
             var expected = new List<DbWorkspaceUser> { _dbWorkspaceAdmin };
 
-            SerializerAssert.AreEqual(expected, _repository.GetAdmins(_dbWorkspaceAdmin.WorkspaceId));
+            SerializerAssert.AreEqual(expected, _repository.GetAdminsAsync(_dbWorkspaceAdmin.WorkspaceId));
         }
 
         #endregion
@@ -91,7 +91,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 }
             };
 
-            _repository.AddRange(users);
+            _repository.CreateAsync(users);
 
             SerializerAssert.AreEqual(users, _provider.WorkspaceUsers.ToList());
         }
@@ -99,9 +99,9 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldThrowArgumentNullExceptionWhenCollectionIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => _repository.AddRange(null));
+            Assert.Throws<ArgumentNullException>(() => _repository.CreateAsync(null));
         }
 
-        #endregion
+        #endregion*/
     }
 }

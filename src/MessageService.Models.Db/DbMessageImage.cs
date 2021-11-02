@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LT.DigitalOffice.MessageService.Models.Db
 {
-  public class DbMessageFile
+  public class DbMessageImage
   {
-    public const string TableName = "MessagesFiles";
+    public const string TableName = "MessagesImages";
 
     public Guid Id { get; set; }
     public Guid MessageId { get; set; }
-    public Guid FileId { get; set; }
+    public Guid ImageId { get; set; }
     public Guid CreatedBy { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public Guid? ModifiedBy { get; set; }
@@ -20,23 +20,23 @@ namespace LT.DigitalOffice.MessageService.Models.Db
     public DbThreadMessage ThreadMessage { get; set; }
   }
 
-  public class DbMessageFileConfiguration : IEntityTypeConfiguration<DbMessageFile>
+  public class DbMessageImageConfiguration : IEntityTypeConfiguration<DbMessageImage>
   {
-    public void Configure(EntityTypeBuilder<DbMessageFile> builder)
+    public void Configure(EntityTypeBuilder<DbMessageImage> builder)
     {
       builder
-        .ToTable(DbMessageFile.TableName);
+        .ToTable(DbMessageImage.TableName);
 
       builder
-        .HasKey(mf => mf.Id);
+        .HasKey(mi => mi.Id);
 
       builder
-        .HasOne(mf => mf.Message)
-        .WithMany(m => m.Files);
+        .HasOne(mi => mi.Message)
+        .WithMany(m => m.Images);
 
       builder
         .HasOne(mf => mf.ThreadMessage)
-        .WithMany(m => m.Files);
+        .WithMany(m => m.Images);
     }
   }
 }

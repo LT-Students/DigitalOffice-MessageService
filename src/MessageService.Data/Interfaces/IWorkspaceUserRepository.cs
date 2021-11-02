@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.MessageService.Models.Db;
 
@@ -8,12 +9,12 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
   [AutoInject]
   public interface IWorkspaceUserRepository
   {
-    void AddRange(IEnumerable<DbWorkspaceUser> workspaceUsers);
+    Task CreateAsync(IEnumerable<DbWorkspaceUser> dbWorkspaceUsers);
 
-    List<DbWorkspaceUser> GetAdmins(Guid workspaceId);
+    Task<List<DbWorkspaceUser>> GetAdminsAsync(Guid workspaceId);
 
-    DbWorkspaceUser Get(Guid workspaseId, Guid userId);
+    Task<DbWorkspaceUser> GetAsync(Guid workspaseId, Guid userId);
 
-    bool DoExistWorkspaceUsers(List<Guid> workspaceUsersIds, Guid workspaceId);
+    Task<bool> WorkspaceUsersExist(List<Guid> workspaceUsersIds, Guid workspaceId);
   }
 }

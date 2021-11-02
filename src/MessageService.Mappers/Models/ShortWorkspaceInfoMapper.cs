@@ -1,7 +1,7 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
   {
     public ShortWorkspaceInfo Map(DbWorkspace dbWorkspace)
     {
-      if (dbWorkspace == null)
+      if (dbWorkspace is null)
       {
         return null;
       }

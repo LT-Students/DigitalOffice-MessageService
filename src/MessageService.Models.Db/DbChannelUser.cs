@@ -6,7 +6,7 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 {
   public class DbChannelUser
   {
-    public const string TableName = "ChannelUsers";
+    public const string TableName = "ChannelsUsers";
 
     public Guid Id { get; set; }
     public Guid WorkspaceUserId { get; set; }
@@ -30,14 +30,14 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         .ToTable(DbChannelUser.TableName);
 
       builder
-        .HasKey(chu => chu.Id);
+        .HasKey(cu => cu.Id);
 
       builder
-        .HasOne(chu => chu.Channel)
-        .WithMany(ch => ch.Users);
+        .HasOne(cu => cu.Channel)
+        .WithMany(c => c.Users);
 
       builder
-        .HasOne(chu => chu.WorkspaceUser)
+        .HasOne(cu => cu.WorkspaceUser)
         .WithMany(wu => wu.ChannelsUsers);
     }
   }

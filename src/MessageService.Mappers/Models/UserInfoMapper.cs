@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
   {
     public UserInfo Map(UserData user)
     {
-      if (user == null)
+      if (user is null)
       {
         return null;
       }

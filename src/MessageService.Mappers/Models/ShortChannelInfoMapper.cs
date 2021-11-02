@@ -1,7 +1,7 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Channel;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Channel;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
   {
     public ShortChannelInfo Map(DbChannel dbChannel)
     {
-      if (dbChannel == null)
+      if (dbChannel is null)
       {
         return null;
       }
