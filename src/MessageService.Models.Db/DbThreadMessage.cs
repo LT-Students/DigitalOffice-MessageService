@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,6 +19,9 @@ namespace LT.DigitalOffice.MessageService.Models.Db
     public DateTime? ModifiedAtUtc { get; set; }
 
     public DbMessage Message { get; set; }
+
+    public ICollection<DbMessageFile> Files { get; set; }
+    public ICollection<DbMessageImage> Images { get; set; }
   }
 
   public class DbThreadMessageConfiguration : IEntityTypeConfiguration<DbThreadMessage>
@@ -33,6 +37,14 @@ namespace LT.DigitalOffice.MessageService.Models.Db
       builder
         .HasOne(tm => tm.Message)
         .WithMany(m => m.ThreadMessages);
+
+      builder
+        .HasMany(tm => tm.Files)
+        .WithOne(mf => mf.ThreadMessage);
+
+      builder
+        .HasMany(tm => tm.Images)
+        .WithOne(mf => mf.ThreadMessage);
     }
   }
 }

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
-using Microsoft.AspNetCore.Http;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 

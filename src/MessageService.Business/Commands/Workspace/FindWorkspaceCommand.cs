@@ -11,8 +11,8 @@ using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 {

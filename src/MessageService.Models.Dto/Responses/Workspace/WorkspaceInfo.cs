@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Channel;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.User;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.User;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Channel;
 
-namespace LT.DigitalOffice.MessageService.Models.Dto.Models
+namespace LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace
 {
   public record WorkspaceInfo
   {

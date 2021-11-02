@@ -17,6 +17,7 @@ namespace LT.DigitalOffice.MessageService.Models.Db
     public DateTime? ModifiedAtUtc { get; set; }
 
     public DbMessage Message { get; set; }
+    public DbThreadMessage ThreadMessage { get; set; }
   }
 
   public class DbMessageFileConfiguration : IEntityTypeConfiguration<DbMessageFile>
@@ -31,6 +32,10 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
       builder
         .HasOne(mf => mf.Message)
+        .WithMany(m => m.Files);
+
+      builder
+        .HasOne(mf => mf.ThreadMessage)
         .WithMany(m => m.Files);
     }
   }

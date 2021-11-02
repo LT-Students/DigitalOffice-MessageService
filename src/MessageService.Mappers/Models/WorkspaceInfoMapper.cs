@@ -2,8 +2,8 @@
 using System.Linq;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
 using LT.DigitalOffice.Models.Broker.Models;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models

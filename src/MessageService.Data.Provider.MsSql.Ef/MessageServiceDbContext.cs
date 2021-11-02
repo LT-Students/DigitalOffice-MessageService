@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef
     public DbSet<DbMessage> Messages { get; set; }
     public DbSet<DbThreadMessage> ThreadsMessages { get; set; }
     public DbSet<DbMessageFile> MessagesFiles { get; set; }
-    public DbSet<DbMessageFile> MessagesImages { get; set; }
+    public DbSet<DbMessageImage> MessagesImages { get; set; }
 
     void IBaseDataProvider.Save()
     {

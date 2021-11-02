@@ -16,6 +16,6 @@ namespace LT.DigitalOffice.MessageService.Data.Provider
     DbSet<DbMessage> Messages { get; set; }
     DbSet<DbThreadMessage> ThreadsMessages { get; set; }
     DbSet<DbMessageFile> MessagesFiles { get; set; }
-    DbSet<DbMessageFile> MessagesImages { get; set; }
+    DbSet<DbMessageImage> MessagesImages { get; set; }
   }
 }

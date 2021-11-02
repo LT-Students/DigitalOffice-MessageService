@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.User;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
 
-namespace LT.DigitalOffice.MessageService.Models.Dto.Models.Channel
+namespace LT.DigitalOffice.MessageService.Models.Dto.Responses.Channel
 {
   public record ChannelInfo
   {
