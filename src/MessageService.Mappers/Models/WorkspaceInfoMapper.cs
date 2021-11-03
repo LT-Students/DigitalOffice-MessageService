@@ -30,16 +30,16 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
 
       UserData creatorUserData = users?.FirstOrDefault(u => u.Id == dbWorkspace.CreatedBy);
 
+      ImageConsist image = dbWorkspace.ImageContent is null
+        ? null
+        : new() { Content = dbWorkspace.ImageContent, Extension = dbWorkspace.ImageExtension };
+
       return new WorkspaceInfo
       {
         Id = dbWorkspace.Id,
         Name = dbWorkspace.Name,
         Description = dbWorkspace.Description,
-        Image = new ImageConsist()
-        {
-          Content = dbWorkspace.ImageContent,
-          Extension = dbWorkspace.ImageExtension
-        },
+        Image = image,
         CreatedAtUtc = dbWorkspace.CreatedAtUtc,
         CreatedBy = _userInfoMapper.Map(creatorUserData),
         IsActive = dbWorkspace.IsActive,
