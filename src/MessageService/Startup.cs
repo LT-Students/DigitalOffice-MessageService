@@ -6,6 +6,7 @@ using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
 using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
+using LT.DigitalOffice.MessageService.Business.Commands.Message.Hubs;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
 using MassTransit;
@@ -114,6 +115,8 @@ namespace LT.DigitalOffice.MessageService
       services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
       services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
 
+      services.AddSignalR();
+
       services.AddHttpContextAccessor();
 
       services.AddDbContext<MessageServiceDbContext>(options =>
@@ -153,6 +156,8 @@ namespace LT.DigitalOffice.MessageService
 
       app.UseEndpoints(endpoints =>
       {
+        endpoints.MapHub<ChatHub>("/chatHub");
+
         endpoints.MapControllers().RequireCors(CorsPolicyName);
 
         endpoints.MapHealthChecks($"/{_serviceInfoConfig.Id}/hc", new HealthCheckOptions

@@ -9,5 +9,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
   public interface IChannelRepository
   {
     Task<Guid?> CreateAsync(DbChannel dbChannel);
+
+    Task<DbChannel> GetAsync(Guid channelId);
   }
 }

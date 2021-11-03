@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
+using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
@@ -26,6 +27,11 @@ namespace LT.DigitalOffice.MessageService.Data
       await _provider.SaveAsync();
 
       return dbChannel.Id;
+    }
+
+    public async Task<DbChannel> GetAsync(Guid channelId)
+    {
+      return await _provider.Channels.FirstOrDefaultAsync(dbChannel => dbChannel.Id == channelId);
     }
   }
 }

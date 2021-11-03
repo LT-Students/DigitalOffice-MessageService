@@ -7,26 +7,25 @@ using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
-using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Channel;
 using LT.DigitalOffice.Models.Broker.Models;
 using LT.DigitalOffice.Models.Broker.Requests.User;
 using LT.DigitalOffice.Models.Broker.Responses.User;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
+namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 {
-  public class GetWorkspaceCommand : IGetWorkspaceCommand
+  public class GetChannelCommand : IGetChannelCommand
   {
-    private readonly IWorkspaceInfoMapper _workspaceInfoMapper;
-    private readonly IWorkspaceRepository _repository;
+    private readonly IChannelInfoMapper _channelInfoMapper;
+    private readonly IChannelRepository _channelRepository;
     private readonly IRequestClient<IGetUsersDataRequest> _rcGetUsers;
-    private readonly ILogger<GetWorkspaceCommand> _logger;
+    private readonly ILogger<GetChannelCommand> _logger;
     private readonly IResponseCreater _responseCreator;
 
     private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
@@ -65,33 +64,32 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       return null;
     }
 
-    public GetWorkspaceCommand(
-      IWorkspaceInfoMapper workspaceInfoMapper,
-      IWorkspaceRepository repository,
+    public GetChannelCommand(
+      IChannelInfoMapper channelInfoMapper,
+      IChannelRepository channelRepository,
       IRequestClient<IGetUsersDataRequest> rcGetUsers,
-      ILogger<GetWorkspaceCommand> logger,
+      ILogger<GetChannelCommand> logger,
       IResponseCreater responseCreator)
     {
-      _workspaceInfoMapper = workspaceInfoMapper;
-      _repository = repository;
+      _channelInfoMapper = channelInfoMapper;
+      _channelRepository = channelRepository;
       _rcGetUsers = rcGetUsers;
       _logger = logger;
       _responseCreator = responseCreator;
-      _responseCreator = responseCreator;
     }
 
-    public async Task<OperationResultResponse<WorkspaceInfo>> ExecuteAsync(GetWorkspaceFilter filter)
+    public async Task<OperationResultResponse<ChannelInfo>> ExecuteAsync(Guid channelId)
     {
-      DbWorkspace dbWorkspace = await _repository.GetAsync(filter);
+      DbChannel dbChannel = await _channelRepository.GetAsync(channelId);
 
-      if (dbWorkspace is null)
+      if (dbChannel is null)
       {
-        return _responseCreator.CreateFailureResponse<WorkspaceInfo>(HttpStatusCode.NotFound);
+        return _responseCreator.CreateFailureResponse<ChannelInfo>(HttpStatusCode.NotFound);
       }
 
-      OperationResultResponse<WorkspaceInfo> response = new();
+      OperationResultResponse<ChannelInfo> response = new();
 
-      List<UserData> usersData = await GetUsersAsync(dbWorkspace.Users?.Select(u => u.UserId).ToList(), response.Errors);
+      List<UserData> usersData = await GetUsersAsync(dbChannel.Users?.Select(u => u.WorkspaceUserId).ToList(), response.Errors);
 
       List<Guid> imagesIds = new();
 
@@ -101,7 +99,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       }
 
       response.Status = response.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
-      response.Body = _workspaceInfoMapper.Map(dbWorkspace, usersData);
+      response.Body = _channelInfoMapper.Map(dbChannel, usersData);
 
       return response;
     }

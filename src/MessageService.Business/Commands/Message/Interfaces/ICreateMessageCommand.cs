@@ -9,6 +9,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message.Interfaces
   [AutoInject]
   public interface ICreateMessageCommand
   {
-    Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateMessageRequest request);
+    Task<OperationResultResponse<Task>> ExecuteAsync(CreateMessageRequest request);
   }
 }

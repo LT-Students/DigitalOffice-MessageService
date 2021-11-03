@@ -1,5 +1,4 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.User;
 using LT.DigitalOffice.Models.Broker.Models;
 

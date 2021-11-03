@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Message.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Message;
@@ -12,7 +11,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
   public class MessageController : ControllerBase
   {
     [HttpPost("create")]
-    public async Task<OperationResultResponse<Guid?>> CreateAsync(
+    public async Task<OperationResultResponse<Task>> CreateAsync(
       [FromServices] ICreateMessageCommand command,
       [FromBody] CreateMessageRequest request)
     {
