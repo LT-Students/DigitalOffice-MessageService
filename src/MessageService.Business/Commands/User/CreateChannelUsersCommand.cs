@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.User
 {
-  public class CreateChannelUserCommand : ICreateChannelUserCommand
+  public class CreateChannelUsersCommand : ICreateChannelUsersCommand
   {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAccessValidator _accessValidator;
@@ -26,7 +26,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.User
     private readonly IChannelUserRepository _repository;
     private readonly IResponseCreater _responseCreater;
 
-    public CreateChannelUserCommand(
+    public CreateChannelUsersCommand(
       IHttpContextAccessor httpContextAccessor,
       IAccessValidator accessValidator,
       ICreateChannelUserValidator validator,
@@ -44,29 +44,27 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.User
 
     public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid channelId, List<Guid> usersIds)
     {
-      bool isAdmin = true;
+      List<string> errors = new();
 
-      if (!await _accessValidator.IsAdminAsync())
+      if (!await _accessValidator.IsAdminAsync()
+        && !await _repository.IsChannelAdminAsync(channelId, _httpContextAccessor.HttpContext.GetUserId()))
       {
-        isAdmin = false;
         return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
       ValidationResult validationResult = await _validator.ValidateAsync(usersIds);
 
+      errors.AddRange(validationResult.Errors.Select(e => e.ErrorMessage).ToList());
+
       if (!validationResult.IsValid)
       {
-        return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.BadRequest);
+        return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, errors);
       }
 
       OperationResultResponse<bool> response = new();
 
-      await _repository.RemoveAsync(channelId, usersIds);
-
-      Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
-
       response.Body = await _repository.CreateAsync(
-        usersIds.Select(userId => _mapper.Map(channelId, userId, isAdmin, _httpContextAccessor.HttpContext.GetUserId())).ToList());
+        usersIds.Select(userId => _mapper.Map(channelId, userId, true, _httpContextAccessor.HttpContext.GetUserId())).ToList());
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
@@ -74,7 +72,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.User
 
       if (!response.Body)
       {
-        return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.BadRequest);
+        response = _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.BadRequest);
       }
 
       return response;

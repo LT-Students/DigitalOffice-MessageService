@@ -7,8 +7,8 @@ using LT.DigitalOffice.Kernel.Responses;
 namespace LT.DigitalOffice.MessageService.Business.Commands.User.Interfaces
 {
   [AutoInject]
-  public interface ICreateChannelUserCommand
+  public interface ICreateWorkspaceUsersCommand
   {
-    Task<OperationResultResponse<bool>> ExecuteAsync(Guid channelId, List<Guid> usersIds);
+    Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, List<Guid> usersIds);
   }
 }

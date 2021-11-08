@@ -18,5 +18,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     Task<bool> WorkspaceUsersExist(List<Guid> workspaceUsersIds, Guid workspaceId);
 
     Task<bool> RemoveAsync(Guid workspaceId, IEnumerable<Guid> usersIds);
+
+    Task<bool> IsWorkspaceAdminAsync(Guid workspaceId, Guid userId);
   }
 }

@@ -25,14 +25,14 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         return null;
       }
 
+      ImageConsist image = dbChannel.ImageContent is null
+        ? null
+        : new() { Content = dbChannel.ImageContent, Extension = dbChannel.ImageExtension };
+
       return new ChannelInfo
       {
         Id = dbChannel.Id,
-        Avatar = new ImageConsist()
-        {
-          Content = dbChannel.ImageContent,
-          Extension = dbChannel.ImageExtension
-        },
+        Avatar = image,
         Name = dbChannel.Name,
         IsActive = dbChannel.IsActive,
         IsPrivate = dbChannel.IsPrivate,

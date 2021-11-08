@@ -14,5 +14,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
     Task<DbChannelUser> GetAsync(Guid userId, Guid channelId);
 
     Task<bool> RemoveAsync(Guid channelId, IEnumerable<Guid> usersIds);
+
+    Task<bool> IsChannelAdminAsync(Guid channelId, Guid userId);
   }
 }

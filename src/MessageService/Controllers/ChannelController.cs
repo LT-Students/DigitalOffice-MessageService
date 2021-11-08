@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.Channel.Filters;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses.Channel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,9 +25,9 @@ namespace LT.DigitalOffice.MessageService.Controllers
     [HttpGet("get")]
     public async Task<OperationResultResponse<ChannelInfo>> GetAsync(
       [FromServices] IGetChannelCommand command,
-      [FromQuery] Guid channelId)
+      [FromQuery] GetChannelFilter filter)
     {
-      return await command.ExecuteAsync(channelId);
+      return await command.ExecuteAsync(filter);
     }
   }
 }

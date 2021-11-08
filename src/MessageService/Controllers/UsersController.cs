@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
   {
     [HttpPost("createworkspaceuser")]
     public async Task<OperationResultResponse<bool>> CreateAsync(
-      [FromServices] ICreateWorkspaceUserCommand command,
+      [FromServices] ICreateWorkspaceUsersCommand command,
       [FromQuery] Guid workspaceId,
       [FromBody] List<Guid> usersIds)
     {
@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
 
     [HttpDelete("removeworkspaceuser")]
     public async Task<OperationResultResponse<bool>> RemoveAsync(
-      [FromServices] IRemoveWorkspaceUserCommand command,
+      [FromServices] IRemoveWorkspaceUsersCommand command,
       [FromQuery] Guid workspaceId,
       [FromBody] List<Guid> usersIds)
     {
@@ -31,7 +31,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
 
     [HttpPost("createcahnneluser")]
     public async Task<OperationResultResponse<bool>> CreateAsync(
-      [FromServices] ICreateChannelUserCommand command,
+      [FromServices] ICreateChannelUsersCommand command,
       [FromQuery] Guid channelId,
       [FromBody] List<Guid> usersIds)
     {
@@ -40,7 +40,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
 
     [HttpDelete("removecahnneluser")]
     public async Task<OperationResultResponse<bool>> RemoveAsync(
-      [FromServices] IRemoveChannelUserCommand command,
+      [FromServices] IRemoveChannelUsersCommand command,
       [FromQuery] Guid channelId,
       [FromBody] List<Guid> usersIds)
     {

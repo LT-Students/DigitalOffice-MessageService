@@ -47,7 +47,7 @@ namespace LT.DigitalOffice.MessageService.Data
     public async Task<DbWorkspaceUser> GetAsync(Guid workspaseId, Guid userId)
     {
       return await _provider.WorkspacesUsers
-        .FirstOrDefaultAsync(x => x.WorkspaceId == workspaseId && x.UserId == userId);
+        .FirstOrDefaultAsync(x => x.IsActive && x.WorkspaceId == workspaseId && x.UserId == userId);
     }
 
     public async Task<bool> WorkspaceUsersExist(List<Guid> workspaceUsersIds, Guid workspaceId)
@@ -82,6 +82,11 @@ namespace LT.DigitalOffice.MessageService.Data
       await _provider.SaveAsync();
 
       return true;
+    }
+
+    public async Task<bool> IsWorkspaceAdminAsync(Guid workspaceId, Guid userId)
+    {
+      return await _provider.WorkspacesUsers.AnyAsync(wu => wu.IsActive && wu.IsAdmin && wu.WorkspaceId == workspaceId && wu.UserId == userId);
     }
   }
 }

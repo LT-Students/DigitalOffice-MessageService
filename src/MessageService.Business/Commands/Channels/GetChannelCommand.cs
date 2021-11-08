@@ -11,6 +11,7 @@ using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.Channel.Filters;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses.Channel;
 using LT.DigitalOffice.Models.Broker.Models;
 using LT.DigitalOffice.Models.Broker.Requests.User;
@@ -78,9 +79,10 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
       _responseCreator = responseCreator;
     }
 
-    public async Task<OperationResultResponse<ChannelInfo>> ExecuteAsync(Guid channelId)
+    public async Task<OperationResultResponse<ChannelInfo>> ExecuteAsync(GetChannelFilter filter)
     {
-      DbChannel dbChannel = await _channelRepository.GetAsync(channelId);
+      //Rework. Add filters
+      DbChannel dbChannel = await _channelRepository.GetAsync(filter);
 
       if (dbChannel is null)
       {

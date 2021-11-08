@@ -40,7 +40,7 @@ namespace LT.DigitalOffice.MessageService.Data
     public async Task<DbChannelUser> GetAsync(Guid userId, Guid channelId)
     {
       return await _provider.ChannelsUsers
-        .FirstOrDefaultAsync(x => x.ChannelId == channelId && x.WorkspaceUserId == userId);
+        .FirstOrDefaultAsync(x => x.IsActive && x.ChannelId == channelId && x.WorkspaceUserId == userId);
     }
 
     public async Task<bool> RemoveAsync(Guid channelId, IEnumerable<Guid> usersIds)
@@ -65,6 +65,16 @@ namespace LT.DigitalOffice.MessageService.Data
       await _provider.SaveAsync();
 
       return true;
+    }
+
+    public async Task<bool> IsChannelAdminAsync(Guid channelId, Guid userId)
+    {
+      return await _provider.ChannelsUsers.AnyAsync(cu
+        =>
+          cu.IsActive &&
+          cu.IsAdmin &&
+          cu.ChannelId == channelId &&
+          cu.WorkspaceUserId == userId);
     }
   }
 }

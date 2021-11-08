@@ -5,32 +5,38 @@ using System.Net;
 using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
+using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.User.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.User
 {
-  public class RemoveWorkspaceUserCommand : IRemoveWorkspaceUserCommand
+  public class RemoveChannelUsersCommand : IRemoveChannelUsersCommand
   {
-    private readonly IWorkspaceUserRepository _repository;
+    private readonly IChannelUserRepository _repository;
     private readonly IAccessValidator _accessValidator;
     private readonly IResponseCreater _responseCreater;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public RemoveWorkspaceUserCommand(
-      IWorkspaceUserRepository repository,
+    public RemoveChannelUsersCommand(
+      IChannelUserRepository repository,
       IAccessValidator accessValidator,
-      IResponseCreater responseCreater)
+      IResponseCreater responseCreater,
+      IHttpContextAccessor httpContextAccessor)
     {
       _repository = repository;
       _accessValidator = accessValidator;
       _responseCreater = responseCreater;
+      _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, List<Guid> usersIds)
+    public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid channelId, List<Guid> usersIds)
     {
-      if (!await _accessValidator.IsAdminAsync())
+      if (!await _accessValidator.IsAdminAsync()
+        && !await _repository.IsChannelAdminAsync(channelId, _httpContextAccessor.HttpContext.GetUserId()))
       {
         return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
@@ -40,17 +46,13 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.User
         return _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.BadRequest);
       }
 
-      OperationResultResponse<bool> response = new();
+      bool response = await _repository.RemoveAsync(channelId, usersIds);
 
-      response.Body = await _repository.RemoveAsync(workspaceId, usersIds);
-      response.Status = OperationResultStatusType.FullSuccess;
-
-      if (response.Body)
+      return new()
       {
-        response = _responseCreater.CreateFailureResponse<bool>(HttpStatusCode.NotFound);
-      }
-
-      return response;
+        Status = response ? OperationResultStatusType.FullSuccess : OperationResultStatusType.Failed,
+        Body = response
+      };
     }
   }
 }

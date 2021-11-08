@@ -44,9 +44,8 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
     public async Task<OperationResultResponse<Guid?>> ExeсuteAsync(CreateChannelRequest request)
     {
-      Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
-
-      DbWorkspaceUser dbWorkspaceCreator = await _workspaceUserRepository.GetAsync(request.WorkspaceId, createdBy);
+      DbWorkspaceUser dbWorkspaceCreator = await _workspaceUserRepository.GetAsync(
+        request.WorkspaceId, _httpContextAccessor.HttpContext.GetUserId());
 
       if (dbWorkspaceCreator is null)
       {
