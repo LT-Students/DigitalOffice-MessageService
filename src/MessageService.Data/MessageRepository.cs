@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
@@ -15,7 +14,7 @@ namespace LT.DigitalOffice.MessageService.Data
       _provider = provider;
     }
 
-    public async Task<Guid?> CreateAsync(DbMessage request)
+    public async Task<DbMessage> CreateAsync(DbMessage request)
     {
       if (request is null)
       {
@@ -25,7 +24,7 @@ namespace LT.DigitalOffice.MessageService.Data
       _provider.Messages.Add(request);
       await _provider.SaveAsync();
 
-      return request.Id;
+      return request;
     }
   }
 }
