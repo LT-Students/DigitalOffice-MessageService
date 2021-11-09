@@ -73,6 +73,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
         {
           Content = message.Content,
           Status = message.Status,
+          UserId = message.CreatedBy,
           CreatedAtUtc = message.CreatedAtUtc
         });
 
