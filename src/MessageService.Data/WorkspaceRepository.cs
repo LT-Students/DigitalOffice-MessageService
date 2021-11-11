@@ -96,7 +96,8 @@ namespace LT.DigitalOffice.MessageService.Data
 
       if (filter.IncludeChannels)
       {
-        dbWorkspace = dbWorkspace.Include(w => w.Channels.Where(wc => wc.IsActive));
+        //to do add private channels filter
+        dbWorkspace = dbWorkspace.Include(w => w.Channels.Where(c => c.IsActive));
       }
 
       if (filter.IncludeUsers)
