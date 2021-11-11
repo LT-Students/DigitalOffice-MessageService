@@ -41,13 +41,13 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         Description = dbWorkspace.Description,
         Image = image,
         CreatedAtUtc = dbWorkspace.CreatedAtUtc,
-        CreatedBy = _userInfoMapper.Map(creatorUserData),
+        CreatedBy = _userInfoMapper.Map(creatorUserData, null),
         IsActive = dbWorkspace.IsActive,
         Channels = dbWorkspace.Channels?
           .Select(_channelInfoMapper.Map).ToList(),
         Users = users?
           .Where(u => dbWorkspace.Users.Any(wu => wu.UserId == u.Id))
-          .Select(_userInfoMapper.Map).ToList()
+          .Select(u => _userInfoMapper.Map(u, null)).ToList()
       };
     }
   }

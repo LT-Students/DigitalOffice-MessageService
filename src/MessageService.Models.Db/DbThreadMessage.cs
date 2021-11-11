@@ -22,6 +22,13 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
     public ICollection<DbMessageFile> Files { get; set; }
     public ICollection<DbMessageImage> Images { get; set; }
+
+
+    public DbThreadMessage()
+    {
+      Files = new HashSet<DbMessageFile>();
+      Images = new HashSet<DbMessageImage>();
+    }
   }
 
   public class DbThreadMessageConfiguration : IEntityTypeConfiguration<DbThreadMessage>
@@ -32,7 +39,7 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         .ToTable(DbThreadMessage.TableName);
 
       builder
-        .HasKey(mi => mi.Id);
+        .HasKey(tm => tm.Id);
 
       builder
         .HasOne(tm => tm.Message)
@@ -44,7 +51,7 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
       builder
         .HasMany(tm => tm.Images)
-        .WithOne(mf => mf.ThreadMessage);
+        .WithOne(mi => mi.ThreadMessage);
     }
   }
 }

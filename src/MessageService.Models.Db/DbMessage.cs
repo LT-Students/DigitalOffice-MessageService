@@ -41,10 +41,10 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         .ToTable(DbMessage.TableName);
 
       builder
-        .HasKey(w => w.Id);
+        .HasKey(m => m.Id);
 
       builder
-        .Property(w => w.Content)
+        .Property(m => m.Content)
         .IsRequired();
 
       builder
@@ -61,7 +61,7 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
       builder
         .HasMany(m => m.Images)
-        .WithOne(mf => mf.Message);
+        .WithOne(mi => mi.Message);
     }
   }
 }

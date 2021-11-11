@@ -7,7 +7,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
   public class UserInfoMapper : IUserInfoMapper
   {
-    public UserInfo Map(UserData user)
+    public UserInfo Map(UserData user, ImageInfo avatar)
     {
       if (user is null)
       {
@@ -19,7 +19,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models
         Id = user.Id,
         FirstName = user.FirstName,
         MiddleName = user.MiddleName,
-        LastName = user.LastName
+        LastName = user.LastName,
+        Avatar = avatar
       };
     }
   }

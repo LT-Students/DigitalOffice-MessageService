@@ -49,7 +49,7 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
       builder
         .HasMany(wu => wu.ChannelsUsers)
-        .WithOne(chu => chu.WorkspaceUser);
+        .WithOne(cu => cu.WorkspaceUser);
     }
   }
 }

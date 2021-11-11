@@ -82,6 +82,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
 
     public async Task<OperationResultResponse<WorkspaceInfo>> ExecuteAsync(GetWorkspaceFilter filter)
     {
+      //to do do not return private channels without request userId
       DbWorkspace dbWorkspace = await _repository.GetAsync(filter);
 
       if (dbWorkspace is null)
