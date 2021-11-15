@@ -32,13 +32,11 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
       builder
         .HasOne(mi => mi.Message)
-        .WithMany(m => m.Images)
-        .HasForeignKey(mi => mi.MessageId);
+        .WithMany(m => m.Images);
 
       builder
         .HasOne(mi => mi.ThreadMessage)
-        .WithMany(tm => tm.Images)
-        .HasForeignKey(mi => mi.MessageId);
+        .WithMany(tm => tm.Images);
     }
   }
 }

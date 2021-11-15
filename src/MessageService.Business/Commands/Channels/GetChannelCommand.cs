@@ -157,7 +157,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
       OperationResultResponse<ChannelInfo> response = new();
 
-
       List<Guid> usersIds = dbChannel.Users.Select(cu => cu.WorkspaceUser.UserId).ToList();
       usersIds.AddRange(dbChannel.Messages.Select(m => m.CreatedBy).Distinct().ToList());
 

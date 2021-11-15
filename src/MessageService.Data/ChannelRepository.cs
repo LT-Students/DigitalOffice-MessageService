@@ -35,20 +35,20 @@ namespace LT.DigitalOffice.MessageService.Data
     {
       IQueryable<DbChannel> dbChannel = _provider.Channels.AsQueryable();
 
-      dbChannel = dbChannel.Include(c => c.Workspace).ThenInclude(w => w.Users);
+      /*dbChannel = dbChannel.Include(c => c.Workspace).ThenInclude(w => w.Users);
 
       dbChannel = dbChannel
         .Include(c => c.Users.Where(cu => cu.IsActive))
-        .ThenInclude(cu => cu.WorkspaceUser);
+        .ThenInclude(cu => cu.WorkspaceUser);*/
 
       dbChannel = dbChannel
         .Include(c => c.Messages
           .OrderByDescending(m => m.CreatedAtUtc)
           .Skip(filter.SkipMessages)
           .Take(filter.TakeMessages))
-        .ThenInclude(m => m.Images)
-        .Include(c => c.Messages)
-        .ThenInclude(cm => cm.Images);
+        .ThenInclude(m => m.Images);
+        /*.Include(c => c.Messages)
+        .ThenInclude(cm => cm.Files);*/
 
       return await dbChannel
         .FirstOrDefaultAsync(c => c.Id == filter.ChannelId && c.IsActive);

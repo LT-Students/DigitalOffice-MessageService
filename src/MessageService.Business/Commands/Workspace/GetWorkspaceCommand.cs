@@ -39,7 +39,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IResponseCreater _responseCreator;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-
     private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
     {
       if (usersIds is null || !usersIds.Any())
@@ -154,9 +153,9 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       List<UserData> usersData = await GetUsersAsync(dbWorkspace.Users?.Select(u => u.UserId).ToList(), response.Errors);
 
       List<ImageInfo> imagesInfo = (await GetImagesAsync(
-        usersData?.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList(),
-        response.Errors))
-      ?.Select(_imageMapper.Map).ToList();
+          usersData?.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList(),
+          response.Errors))
+        ?.Select(_imageMapper.Map).ToList();
 
       response.Status = response.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
       response.Body = _workspaceInfoMapper.Map(
