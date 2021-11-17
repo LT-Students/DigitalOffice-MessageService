@@ -148,9 +148,9 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
         return _responseCreator.CreateFailureResponse<ChannelInfo>(HttpStatusCode.NotFound);
       }
 
-      if (!dbChannel.Workspace.Users.Select(wu => wu.UserId).Contains(requestUserId)
-        || (dbChannel.IsPrivate
-          && !dbChannel.Users.Where(u => u.IsActive).Select(u => u.WorkspaceUser.UserId).Contains(requestUserId)))
+      if ((dbChannel.IsPrivate
+          && !dbChannel.Users.Select(cu => cu.UserId).Contains(requestUserId))
+        || !dbChannel.Workspace.Users.Select(wu => wu.UserId).Contains(requestUserId))
       {
         return _responseCreator.CreateFailureResponse<ChannelInfo>(HttpStatusCode.Forbidden);
       }

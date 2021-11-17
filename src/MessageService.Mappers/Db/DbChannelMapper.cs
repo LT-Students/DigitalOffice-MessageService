@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LT.DigitalOffice.ImageSupport.Helpers.Interfaces;
+using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using Microsoft.AspNetCore.Http;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
@@ -13,29 +15,33 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
   {
     private readonly IImageResizeHelper _resizeHelper;
     private readonly IDbChannelUserMapper _channelUserMapper;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public DbChannelMapper(
       IImageResizeHelper resizeHelper,
-      IDbChannelUserMapper channelUserMapper)
+      IDbChannelUserMapper channelUserMapper,
+      IHttpContextAccessor httpContextAccessor)
     {
       _resizeHelper = resizeHelper;
       _channelUserMapper = channelUserMapper;
+      _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<DbChannel> MapAsync(CreateChannelRequest request, DbWorkspaceUser workspaceUserCreator)
+    public async Task<DbChannel> MapAsync(CreateChannelRequest request)
     {
       if (request is null)
       {
         return null;
       }
 
+      Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
       Guid channelId = Guid.NewGuid();
 
       ICollection<DbChannelUser> dbChannelUsers = request.Users?
-        .Select(u => _channelUserMapper.Map(channelId, u.WorkspaceUserId, u.IsAdmin, workspaceUserCreator.UserId))
+        .Select(u => _channelUserMapper.Map(channelId, u.UserId, u.IsAdmin, createdBy))
         .ToHashSet();
 
-      dbChannelUsers.Add(_channelUserMapper.Map(channelId, workspaceUserCreator.Id, true, workspaceUserCreator.UserId));
+      dbChannelUsers.Add(_channelUserMapper.Map(channelId, createdBy, true, createdBy));
 
       (bool _, string resizedContent, string extension) = request.Image is null
         ? (false, null, null)
@@ -50,7 +56,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
         IsActive = true,
         ImageContent = resizedContent,
         ImageExtension = extension,
-        CreatedBy = workspaceUserCreator.UserId,
+        CreatedBy = createdBy,
         CreatedAtUtc = DateTime.UtcNow,
         Users = dbChannelUsers.ToHashSet()
       };
@@ -72,7 +78,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
         CreatedBy = createdBy,
         CreatedAtUtc = DateTime.UtcNow,
         Users = workspaseUsers?.Select(wu =>
-          _channelUserMapper.Map(channelId, wu.Id, wu.IsAdmin, createdBy)).ToHashSet()
+          _channelUserMapper.Map(channelId, wu.UserId, wu.IsAdmin, createdBy)).ToHashSet()
       };
     }
   }

@@ -17,16 +17,10 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
     private IHttpContextAccessor _httpContextAccessor;
     private readonly IWorkspaceUserRepository _workspaceUserRepository;
 
-    private async Task<bool> AreUsersInWorkspace(List<Guid> requestWorkspaceUsersIds, Guid workspaceId)
+    private async Task<bool> AreUsersInWorkspace(List<Guid> requestUsersIds, Guid workspaceId)
     {
       return await _workspaceUserRepository
-        .WorkspaceUsersExist(requestWorkspaceUsersIds, workspaceId);
-    }
-
-    private async Task<Guid> GetCreatorWorkspaceUserId(Guid workspaceId)
-    {
-      return (await _workspaceUserRepository
-        .GetAsync(workspaceId, _httpContextAccessor.HttpContext.GetUserId())).Id;
+        .WorkspaceUsersExist(requestUsersIds, workspaceId);
     }
 
     public CreateChannelRequestValidator(
@@ -50,16 +44,14 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
       When(x => x.Users != null && x.Users.Count > 0, () =>
       {
         RuleFor(w => w)
-          .Must(w => w.Users.Select(i => i.WorkspaceUserId).ToHashSet().Count() == w.Users.Count())
+          .Must(w => w.Users.Select(i => i.UserId).ToHashSet().Count() == w.Users.Count())
           .WithMessage("A user cannot be added to the channel twice.")
-          .MustAsync(async (w, _) =>
+          .Must(w =>
           {
-            Guid creatorWorkspaceUserId = await GetCreatorWorkspaceUserId(w.WorkspaceId);
-
-            return w.Users.FirstOrDefault(i => i.WorkspaceUserId == creatorWorkspaceUserId) == null;
+            return w.Users.FirstOrDefault(i => i.UserId == _httpContextAccessor.HttpContext.GetUserId()) == null;
           })
           .WithMessage("User can not add himself to request users list.")
-          .MustAsync(async (w, _) => await AreUsersInWorkspace(w.Users.Select(u => u.WorkspaceUserId).ToList(), w.WorkspaceId))
+          .MustAsync(async (w, _) => await AreUsersInWorkspace(w.Users.Select(u => u.UserId).ToList(), w.WorkspaceId))
           .WithMessage("Some users are not available for adding to the channel.");
       });
 

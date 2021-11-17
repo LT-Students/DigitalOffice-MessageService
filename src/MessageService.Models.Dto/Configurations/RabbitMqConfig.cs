@@ -10,13 +10,11 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Configurations
   {
     public string CreateWorkspaceEndpoint { get; set; }
 
-
     [AutoInjectRequest(typeof(IGetUsersDataRequest))]
     public string GetUsersDataEndpoint { get; set; }
 
     [AutoInjectRequest(typeof(ICheckUsersExistence))]
     public string CheckUsersExistenceEndpoint { get; set; }
-
 
     [AutoInjectRequest(typeof(IGetImagesRequest))]
     public string GetImagesEndpoint { get; set; }

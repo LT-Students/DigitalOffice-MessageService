@@ -37,14 +37,13 @@ namespace LT.DigitalOffice.MessageService.Data
         .FirstOrDefaultAsync(x => x.WorkspaceId == workspaseId && x.UserId == userId);
     }
 
-    public async Task<bool> WorkspaceUsersExist(List<Guid> workspaceUsersIds, Guid workspaceId)
+    public async Task<bool> WorkspaceUsersExist(List<Guid> usersIds, Guid workspaceId)
     {
       return (await _provider.WorkspacesUsers
         .Where(wu =>
-          wu.WorkspaceId == workspaceId && workspaceUsersIds.Contains(wu.Id) && wu.IsActive)
-        .Select(wu => wu.Id)
+          wu.WorkspaceId == workspaceId && usersIds.Contains(wu.UserId) && wu.IsActive)
         .ToListAsync())
-        .Count == workspaceUsersIds.Count;
+        .Count == usersIds.Count;
     }
   }
 }
