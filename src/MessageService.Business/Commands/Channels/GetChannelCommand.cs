@@ -90,7 +90,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
           await _rcGetImages.GetResponse<IOperationResult<IGetImagesResponse>>(
             IGetImagesRequest.CreateObj(imagesIds, ImageSource.User));
 
-        if (response.Message.IsSuccess)
+        if (response.Message.IsSuccess && !response.Message.Body.ImagesData.Any())
         {
           return response.Message.Body.ImagesData;
         }
