@@ -54,7 +54,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
           await _rcGetUsers.GetResponse<IOperationResult<IGetUsersDataResponse>>(
             IGetUsersDataRequest.CreateObj(usersIds));
 
-        if (response.Message.IsSuccess)
+        if (response.Message.IsSuccess && !response.Message.Body.UsersData.Any())
         {
           return response.Message.Body.UsersData;
         }
