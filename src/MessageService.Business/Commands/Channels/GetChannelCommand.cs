@@ -171,7 +171,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
       List<UserInfo> usersInfo = usersData
         ?.Select(u =>
-          _userMapper.Map(u, imagesInfo.FirstOrDefault(i => i.Id == u.ImageId))).ToList();
+          _userMapper.Map(u, imagesInfo?.FirstOrDefault(i => i.Id == u.ImageId))).ToList();
 
       response.Body = _channelMapper.Map(
         dbChannel,

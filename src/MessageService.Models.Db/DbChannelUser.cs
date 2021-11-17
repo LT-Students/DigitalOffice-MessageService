@@ -38,7 +38,8 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
       builder
         .HasOne(cu => cu.WorkspaceUser)
-        .WithMany(wu => wu.ChannelsUsers);
+        .WithMany(wu => wu.ChannelsUsers)
+        .HasForeignKey(cu => cu.UserId);
     }
   }
 }

@@ -9,9 +9,9 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Filtres
     public Guid ChannelId { get; set; }
 
     [FromQuery(Name = "skipmessagescount")]
-    public int SkipMessages { get; set; } = 0;
+    public int SkipMessagesCount { get; set; } = 0;
 
-    [FromQuery(Name = "takemessages")]
-    public int TakeMessages { get; set; }
+    [FromQuery(Name = "takemessagescount")]
+    public int TakeMessagesCount { get; set; }
   }
 }

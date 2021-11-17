@@ -40,8 +40,11 @@ namespace LT.DigitalOffice.MessageService.Data
       dbChannel = dbChannel
         .Include(c => c.Messages
           .OrderByDescending(m => m.CreatedAtUtc)
-          .Skip(filter.SkipMessages)
-          .Take(filter.TakeMessages));
+          .Skip(filter.SkipMessagesCount)
+          .Take(filter.TakeMessagesCount))
+        .ThenInclude(m => m.Images)
+        .Include(c => c.Messages)
+        .ThenInclude(m => m.Files);
 
       return await dbChannel
         .FirstOrDefaultAsync(c => c.Id == filter.ChannelId && c.IsActive);
