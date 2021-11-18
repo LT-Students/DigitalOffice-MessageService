@@ -10,7 +10,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db.Interfaces
   [AutoInject]
   public interface IDbChannelMapper
   {
-    Task<DbChannel> MapAsync(CreateChannelRequest request, DbWorkspaceUser workspaceUserCreator);
+    Task<DbChannel> MapAsync(CreateChannelRequest request);
 
     DbChannel Map(Guid workspaceId, List<DbWorkspaceUser> workspaseUsers, Guid createdBy);
   }

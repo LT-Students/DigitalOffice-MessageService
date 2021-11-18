@@ -15,6 +15,6 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
 
     Task<DbWorkspaceUser> GetAsync(Guid workspaseId, Guid userId);
 
-    Task<bool> WorkspaceUsersExist(List<Guid> workspaceUsersIds, Guid workspaceId);
+    Task<bool> WorkspaceUsersExist(List<Guid> usersIds, Guid workspaceId);
   }
 }

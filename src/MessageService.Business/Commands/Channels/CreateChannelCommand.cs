@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -10,7 +11,6 @@ using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Validation.Validators.Channel.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -44,11 +44,8 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
     public async Task<OperationResultResponse<Guid?>> ExeсuteAsync(CreateChannelRequest request)
     {
-      Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
-
-      DbWorkspaceUser dbWorkspaceCreator = await _workspaceUserRepository.GetAsync(request.WorkspaceId, createdBy);
-
-      if (dbWorkspaceCreator is null)
+      if (await _workspaceUserRepository
+        .WorkspaceUsersExist(new List<Guid>() { _httpContextAccessor.HttpContext.GetUserId() }, request.WorkspaceId))
       {
         return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.Forbidden);
       }
@@ -63,7 +60,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
       OperationResultResponse<Guid?> response = new();
 
-      response.Body = await _channelRepository.CreateAsync(await _channelMapper.MapAsync(request, dbWorkspaceCreator));
+      response.Body = await _channelRepository.CreateAsync(await _channelMapper.MapAsync(request));
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
       response.Status = OperationResultStatusType.FullSuccess;

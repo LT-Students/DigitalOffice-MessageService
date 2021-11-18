@@ -96,12 +96,13 @@ namespace LT.DigitalOffice.MessageService.Data
 
       if (filter.IncludeChannels)
       {
-        dbWorkspace = dbWorkspace.Include(w => w.Channels);
+        //to do add private channels filter
+        dbWorkspace = dbWorkspace.Include(w => w.Channels.Where(c => c.IsActive));
       }
 
       if (filter.IncludeUsers)
       {
-        dbWorkspace = dbWorkspace.Include(w => w.Users);
+        dbWorkspace = dbWorkspace.Include(w => w.Users.Where(wu => wu.IsActive));
       }
 
       return await dbWorkspace.FirstOrDefaultAsync(w => w.Id == filter.WorkspaceId);

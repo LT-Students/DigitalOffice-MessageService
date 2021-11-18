@@ -41,23 +41,23 @@ namespace LT.DigitalOffice.MessageService.Models.Db
         .ToTable(DbChannel.TableName);
 
       builder
-        .HasKey(ch => ch.Id);
+        .HasKey(c => c.Id);
 
       builder
-        .Property(ch => ch.Name)
+        .Property(c => c.Name)
         .IsRequired();
 
       builder
-        .HasOne(ch => ch.Workspace)
+        .HasOne(c => c.Workspace)
         .WithMany(w => w.Channels);
 
       builder
-        .HasMany(ch => ch.Users)
-        .WithOne(chu => chu.Channel);
+        .HasMany(c => c.Users)
+        .WithOne(cu => cu.Channel);
 
       builder
-        .HasMany(ch => ch.Messages)
-        .WithOne(chu => chu.Channel);
+        .HasMany(c => c.Messages)
+        .WithOne(m => m.Channel);
     }
   }
 }

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Filtres;
+using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
@@ -26,6 +29,25 @@ namespace LT.DigitalOffice.MessageService.Data
       await _provider.SaveAsync();
 
       return dbChannel.Id;
+    }
+
+    public async Task<DbChannel> GetAsync(GetChannelFilter filter)
+    {
+      IQueryable<DbChannel> dbChannel = _provider.Channels.AsQueryable()
+        .Include(c => c.Workspace).ThenInclude(w => w.Users.Where(wu => wu.IsActive))
+        .Include(c => c.Users.Where(cu => cu.IsActive));
+
+      dbChannel = dbChannel
+        .Include(c => c.Messages
+          .OrderByDescending(m => m.CreatedAtUtc)
+          .Skip(filter.SkipMessagesCount)
+          .Take(filter.TakeMessagesCount))
+        .ThenInclude(m => m.Images)
+        .Include(c => c.Messages)
+        .ThenInclude(m => m.Files);
+
+      return await dbChannel
+        .FirstOrDefaultAsync(c => c.Id == filter.ChannelId && c.IsActive);
     }
   }
 }

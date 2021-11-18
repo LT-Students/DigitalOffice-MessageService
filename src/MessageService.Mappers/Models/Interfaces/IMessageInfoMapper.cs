@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.User;
-using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Message;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models.Interfaces
 {
   [AutoInject]
-  public interface IWorkspaceInfoMapper
+  public interface IMessageInfoMapper
   {
-    WorkspaceInfo Map(DbWorkspace dbWorkspace, List<UserInfo> users);
+    MessageInfo Map(DbMessage dbMessage, UserInfo createdBy, List<ImageInfo> images);
   }
 }

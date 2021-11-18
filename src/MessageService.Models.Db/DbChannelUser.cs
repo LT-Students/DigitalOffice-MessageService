@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.MessageService.Models.Db
     public const string TableName = "ChannelsUsers";
 
     public Guid Id { get; set; }
-    public Guid WorkspaceUserId { get; set; }
+    public Guid UserId { get; set; }
     public Guid ChannelId { get; set; }
     public bool IsAdmin { get; set; }
     public bool IsActive { get; set; }
@@ -38,7 +38,8 @@ namespace LT.DigitalOffice.MessageService.Models.Db
 
       builder
         .HasOne(cu => cu.WorkspaceUser)
-        .WithMany(wu => wu.ChannelsUsers);
+        .WithMany(wu => wu.ChannelsUsers)
+        .HasForeignKey(cu => cu.UserId);
     }
   }
 }

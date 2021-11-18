@@ -8,13 +8,14 @@ using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
+using LT.DigitalOffice.MessageService.Models.Dto.Filtres;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
-using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.User;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Channel;
 using LT.DigitalOffice.Models.Broker.Enums;
 using LT.DigitalOffice.Models.Broker.Models;
 using LT.DigitalOffice.Models.Broker.Requests.Image;
@@ -25,19 +26,20 @@ using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
+namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 {
-  public class GetWorkspaceCommand : IGetWorkspaceCommand
+  public class GetChannelCommand : IGetChannelCommand
   {
-    private readonly IWorkspaceInfoMapper _workspaceInfoMapper;
-    private readonly IImageInfoMapper _imageMapper;
+    private readonly IChannelRepository _repository;
+    private readonly IChannelInfoMapper _channelMapper;
+    private readonly IMessageInfoMapper _messageMapper;
     private readonly IUserInfoMapper _userMapper;
-    private readonly IWorkspaceRepository _repository;
+    private readonly IImageInfoMapper _imageMapper;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IResponseCreater _responseCreator;
     private readonly IRequestClient<IGetUsersDataRequest> _rcGetUsers;
     private readonly IRequestClient<IGetImagesRequest> _rcGetImages;
-    private readonly ILogger<GetWorkspaceCommand> _logger;
-    private readonly IResponseCreater _responseCreator;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<GetChannelCommand> _logger;
 
     private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
     {
@@ -52,7 +54,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
           await _rcGetUsers.GetResponse<IOperationResult<IGetUsersDataResponse>>(
             IGetUsersDataRequest.CreateObj(usersIds));
 
-        if (response.Message.IsSuccess)
+        if (response.Message.IsSuccess && !response.Message.Body.UsersData.Any())
         {
           return response.Message.Body.UsersData;
         }
@@ -88,7 +90,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
           await _rcGetImages.GetResponse<IOperationResult<IGetImagesResponse>>(
             IGetImagesRequest.CreateObj(imagesIds, ImageSource.User));
 
-        if (response.Message.IsSuccess)
+        if (response.Message.IsSuccess && !response.Message.Body.ImagesData.Any())
         {
           return response.Message.Body.ImagesData;
         }
@@ -111,56 +113,76 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       return null;
     }
 
-    public GetWorkspaceCommand(
-      IWorkspaceInfoMapper workspaceInfoMapper,
-      IImageInfoMapper imageMapper,
+    public GetChannelCommand(
+      IChannelRepository repository,
+      IChannelInfoMapper channelMapper,
+      IMessageInfoMapper messageMapper,
       IUserInfoMapper userMapper,
-      IWorkspaceRepository repository,
+      IImageInfoMapper imageMapper,
+      IHttpContextAccessor httpContextAccessor,
+      IResponseCreater responseCreator,
       IRequestClient<IGetUsersDataRequest> rcGetUsers,
       IRequestClient<IGetImagesRequest> rcGetImages,
-      ILogger<GetWorkspaceCommand> logger,
-      IResponseCreater responseCreator,
-      IHttpContextAccessor httpContextAccessor)
+      ILogger<GetChannelCommand> logger)
     {
-      _workspaceInfoMapper = workspaceInfoMapper;
-      _imageMapper = imageMapper;
-      _userMapper = userMapper;
       _repository = repository;
+      _channelMapper = channelMapper;
+      _messageMapper = messageMapper;
+      _userMapper = userMapper;
+      _imageMapper = imageMapper;
+      _httpContextAccessor = httpContextAccessor;
+      _responseCreator = responseCreator;
       _rcGetUsers = rcGetUsers;
       _rcGetImages = rcGetImages;
       _logger = logger;
-      _responseCreator = responseCreator;
-      _responseCreator = responseCreator;
-      _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<OperationResultResponse<WorkspaceInfo>> ExecuteAsync(GetWorkspaceFilter filter)
+    public async Task<OperationResultResponse<ChannelInfo>> ExeсuteAsync(GetChannelFilter filter)
     {
-      DbWorkspace dbWorkspace = await _repository.GetAsync(filter);
+      DbChannel dbChannel = await _repository.GetAsync(filter);
 
-      if (dbWorkspace is null)
+      Guid requestUserId = _httpContextAccessor.HttpContext.GetUserId();
+
+      if (dbChannel is null)
       {
-        return _responseCreator.CreateFailureResponse<WorkspaceInfo>(HttpStatusCode.NotFound);
+        return _responseCreator.CreateFailureResponse<ChannelInfo>(HttpStatusCode.NotFound);
       }
 
-      if (!dbWorkspace.Users.Select(u => u.UserId).Contains(_httpContextAccessor.HttpContext.GetUserId()))
+      if ((dbChannel.IsPrivate
+          && !dbChannel.Users.Select(cu => cu.UserId).Contains(requestUserId))
+        || !dbChannel.Workspace.Users.Select(wu => wu.UserId).Contains(requestUserId))
       {
-        return _responseCreator.CreateFailureResponse<WorkspaceInfo>(HttpStatusCode.Forbidden);
+        return _responseCreator.CreateFailureResponse<ChannelInfo>(HttpStatusCode.Forbidden);
       }
 
-      OperationResultResponse<WorkspaceInfo> response = new();
+      OperationResultResponse<ChannelInfo> response = new();
 
-      List<UserData> usersData = await GetUsersAsync(dbWorkspace.Users?.Select(u => u.UserId).ToList(), response.Errors);
+      List<Guid> usersIds = dbChannel.Users.Select(cu => cu.WorkspaceUser.UserId).ToList();
+      usersIds.AddRange(dbChannel.Messages.Select(m => m.CreatedBy).Distinct().ToList());
 
-      List<ImageInfo> imagesInfo = (await GetImagesAsync(
-          usersData?.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList(),
-          response.Errors))
+      List<UserData> usersData = await GetUsersAsync(usersIds, response.Errors);
+
+      List<Guid> imagesIds = usersData?.Where(u => u.ImageId.HasValue)?.Select(u => u.ImageId.Value).ToList();
+
+      //add messages immages to image service
+
+      List<ImageInfo> imagesInfo = (await GetImagesAsync(imagesIds, response.Errors))
         ?.Select(_imageMapper.Map).ToList();
 
-      response.Status = response.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
-      response.Body = _workspaceInfoMapper.Map(
-        dbWorkspace,
-        usersData?.Select(u => _userMapper.Map(u, imagesInfo?.FirstOrDefault(i => i.Id == u.ImageId))).ToList());
+      List<UserInfo> usersInfo = usersData
+        ?.Select(u =>
+          _userMapper.Map(u, imagesInfo?.FirstOrDefault(i => i.Id == u.ImageId))).ToList();
+
+      response.Body = _channelMapper.Map(
+        dbChannel,
+        dbChannel.Messages.Select(
+          m => _messageMapper.Map(
+            m,
+            usersInfo?.FirstOrDefault(u => u.Id == m.CreatedBy),
+            imagesInfo?.Where(i => m.Images.Select(mi => mi.ImageId).Contains(i.Id)).ToList())).ToList(),
+        usersInfo?.Where(u => dbChannel.Users.Select(u => u.WorkspaceUser.UserId).Contains(u.Id)).ToList());
+
+      response.Status = OperationResultStatusType.FullSuccess;
 
       return response;
     }
