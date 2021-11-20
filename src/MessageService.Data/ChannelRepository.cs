@@ -40,8 +40,8 @@ namespace LT.DigitalOffice.MessageService.Data
       dbChannel = dbChannel
         .Include(c => c.Messages
           .OrderByDescending(m => m.CreatedAtUtc)
-          .Skip(filter.SkipMessagesCount)
-          .Take(filter.TakeMessagesCount))
+          .Skip(filter.SkipCount)
+          .Take(filter.TakeCount))
         .ThenInclude(m => m.Images)
         .Include(c => c.Messages)
         .ThenInclude(m => m.Files);

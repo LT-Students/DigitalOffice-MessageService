@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
+using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
+using LT.DigitalOffice.Kernel.Validators.Interfaces;
 using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
@@ -30,6 +32,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 {
   public class GetChannelCommand : IGetChannelCommand
   {
+    private readonly IBaseFindFilterValidator _baseFindValidator;
     private readonly IChannelRepository _repository;
     private readonly IChannelInfoMapper _channelMapper;
     private readonly IMessageInfoMapper _messageMapper;
@@ -114,6 +117,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
     }
 
     public GetChannelCommand(
+      IBaseFindFilterValidator baseFindValidator,
       IChannelRepository repository,
       IChannelInfoMapper channelMapper,
       IMessageInfoMapper messageMapper,
@@ -125,6 +129,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
       IRequestClient<IGetImagesRequest> rcGetImages,
       ILogger<GetChannelCommand> logger)
     {
+      _baseFindValidator = baseFindValidator;
       _repository = repository;
       _channelMapper = channelMapper;
       _messageMapper = messageMapper;
@@ -139,6 +144,11 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
     public async Task<OperationResultResponse<ChannelInfo>> ExeсuteAsync(GetChannelFilter filter)
     {
+      if (!_baseFindValidator.ValidateCustom(filter, out List<string> errors))
+      {
+        return _responseCreator.CreateFailureResponse<ChannelInfo>(HttpStatusCode.BadRequest, errors);
+      }
+
       DbChannel dbChannel = await _repository.GetAsync(filter);
 
       Guid requestUserId = _httpContextAccessor.HttpContext.GetUserId();
@@ -157,7 +167,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
       OperationResultResponse<ChannelInfo> response = new();
 
-      List<Guid> usersIds = dbChannel.Users.Select(cu => cu.WorkspaceUser.UserId).ToList();
+      List<Guid> usersIds = dbChannel.Users.Select(cu => cu.UserId).ToList();
       usersIds.AddRange(dbChannel.Messages.Select(m => m.CreatedBy).Distinct().ToList());
 
       List<UserData> usersData = await GetUsersAsync(usersIds, response.Errors);
