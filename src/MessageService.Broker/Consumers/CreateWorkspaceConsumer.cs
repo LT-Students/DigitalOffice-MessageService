@@ -12,16 +12,16 @@ namespace LT.DigitalOffice.MessageService.Broker.Consumers
     private readonly IWorkspaceRepository _workspaceRepository;
     private readonly IDbWorkspaceMapper _workspaceMapper;
 
-    private bool CreateWorkspace(ICreateWorkspaceRequest request)
+    private async Task<bool> CreateWorkspace(ICreateWorkspaceRequest request)
     {
-      _workspaceRepository.Add(_workspaceMapper.Map(request.Name, request.Users, request.CreaterId));
+      await _workspaceRepository.CreateAsync(_workspaceMapper.Map(request.Name, request.UsersIds, request.CreaterId));
 
       return true;
     }
 
     public CreateWorkspaceConsumer(
-        IWorkspaceRepository workspaceRepository,
-        IDbWorkspaceMapper workspaceMapper)
+      IWorkspaceRepository workspaceRepository,
+      IDbWorkspaceMapper workspaceMapper)
     {
       _workspaceRepository = workspaceRepository;
       _workspaceMapper = workspaceMapper;

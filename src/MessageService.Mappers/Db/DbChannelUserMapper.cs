@@ -6,12 +6,12 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
   public class DbChannelUserMapper : IDbChannelUserMapper
   {
-    public DbChannelUser Map(Guid channelId, Guid workspaceUserId, bool isAdmin, Guid createdBy)
+    public DbChannelUser Map(Guid channelId, Guid UserId, bool isAdmin, Guid createdBy)
     {
       return new DbChannelUser()
       {
         Id = Guid.NewGuid(),
-        WorkspaceUserId = workspaceUserId,
+        UserId = UserId,
         ChannelId = channelId,
         IsAdmin = isAdmin,
         IsActive = true,

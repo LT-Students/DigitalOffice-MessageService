@@ -2,54 +2,46 @@
 using System.Linq;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
-using LT.DigitalOffice.Models.Broker.Models;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.User;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
   public class WorkspaceInfoMapper : IWorkspaceInfoMapper
   {
     private readonly IShortChannelInfoMapper _channelInfoMapper;
-    private readonly IUserInfoMapper _userInfoMapper;
 
     public WorkspaceInfoMapper(
-      IShortChannelInfoMapper channelInfoMapper,
-      IUserInfoMapper userInfoMapper)
+      IShortChannelInfoMapper channelInfoMapper)
     {
       _channelInfoMapper = channelInfoMapper;
-      _userInfoMapper = userInfoMapper;
     }
 
-    public WorkspaceInfo Map(DbWorkspace dbWorkspace, List<ImageInfo> images, List<UserData> users)
+    public WorkspaceInfo Map(DbWorkspace dbWorkspace, List<UserInfo> users)
     {
-      if (dbWorkspace == null)
+      if (dbWorkspace is null)
       {
         return null;
       }
 
-      UserData creatorUserData = users?.FirstOrDefault(u => u.Id == dbWorkspace.CreatedBy);
+      ImageConsist image = dbWorkspace.ImageContent is null
+        ? null
+        : new() { Content = dbWorkspace.ImageContent, Extension = dbWorkspace.ImageExtension };
 
       return new WorkspaceInfo
       {
         Id = dbWorkspace.Id,
         Name = dbWorkspace.Name,
         Description = dbWorkspace.Description,
-        Image = new ImageConsist()
-        {
-          Content = dbWorkspace.ImageContent,
-          Extension = dbWorkspace.ImageExtension
-        },
+        Image = image,
         CreatedAtUtc = dbWorkspace.CreatedAtUtc,
-        CreatedBy = _userInfoMapper
-          .Map(creatorUserData, images?.FirstOrDefault(i => i.Id == creatorUserData.ImageId)),
+        CreatedBy = users?.FirstOrDefault(u => u.Id == dbWorkspace.CreatedBy),
         IsActive = dbWorkspace.IsActive,
         Channels = dbWorkspace.Channels?
           .Select(_channelInfoMapper.Map).ToList(),
         Users = users?
-          .Where(u => dbWorkspace.Users.Any(wu => wu.UserId == u.Id))
-          .Select(u => _userInfoMapper.Map(u, images?.FirstOrDefault(i => i.Id == u.ImageId)))
-          .ToList()
+          .Where(u => dbWorkspace.Users.Any(wu => wu.UserId == u.Id)).ToList()
       };
     }
   }

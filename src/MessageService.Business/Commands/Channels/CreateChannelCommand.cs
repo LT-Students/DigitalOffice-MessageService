@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using FluentValidation.Results;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
-using LT.DigitalOffice.Kernel.FluentValidationExtensions;
+using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Validation.Validators.Channel.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -22,60 +24,50 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
     private readonly IDbChannelMapper _channelMapper;
     private readonly IChannelRepository _channelRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IResponseCreater _responseCreator;
 
     public CreateChannelCommand(
       IWorkspaceUserRepository workspaceUserRepository,
       ICreateChannelRequestValidator validator,
       IDbChannelMapper channelMapper,
       IChannelRepository channelRepository,
-      IHttpContextAccessor httpContextAccessor)
+      IHttpContextAccessor httpContextAccessor,
+      IResponseCreater responseCreator)
     {
       _workspaceUserRepository = workspaceUserRepository;
       _validator = validator;
       _channelMapper = channelMapper;
       _channelRepository = channelRepository;
       _httpContextAccessor = httpContextAccessor;
+      _responseCreator = responseCreator;
     }
 
-    public OperationResultResponse<Guid?> Exeсute(CreateChannelRequest request)
+    public async Task<OperationResultResponse<Guid?>> ExeсuteAsync(CreateChannelRequest request)
     {
-      Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
-
-      DbWorkspaceUser dbWorkspaceCreator = _workspaceUserRepository.Get(request.WorkspaceId, createdBy);
-
-      if (dbWorkspaceCreator == null)
+      if (await _workspaceUserRepository
+        .WorkspaceUsersExist(new List<Guid>() { _httpContextAccessor.HttpContext.GetUserId() }, request.WorkspaceId))
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-
-        return new OperationResultResponse<Guid?>()
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = new List<string>() { "Not enough rights." }
-        };
+        return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.Forbidden);
       }
 
-      if (!_validator.ValidateCustom(request, out List<string> errors))
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+      ValidationResult validationResult = await _validator.ValidateAsync(request);
 
-        return new OperationResultResponse<Guid?>()
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = errors
-        };
+      if (!validationResult.IsValid)
+      {
+        return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest,
+          validationResult.Errors.Select(vf => vf.ErrorMessage).ToList());
       }
 
       OperationResultResponse<Guid?> response = new();
 
-      response.Body = _channelRepository.Add(_channelMapper.Map(request, dbWorkspaceCreator));
+      response.Body = await _channelRepository.CreateAsync(await _channelMapper.MapAsync(request));
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
       response.Status = OperationResultStatusType.FullSuccess;
 
-      if (response.Body == null)
+      if (response.Body is null)
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-        response.Status = OperationResultStatusType.Failed;
+        response = _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.BadRequest);
       }
 
       return response;

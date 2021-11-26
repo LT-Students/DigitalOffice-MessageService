@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
 {
     public class ChannelUserRepositoryTests
     {
-        private ChannelUserRepository _repository;
+        /*private ChannelUserRepository _repository;
         private IDataProvider _provider;
 
         [OneTimeSetUp]
@@ -69,7 +69,7 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
                 }
             };
 
-            _repository.AddRange(users);
+            _repository.CreateAsync(users);
 
             SerializerAssert.AreEqual(users, _provider.ChannelUsers.ToList());
         }
@@ -77,9 +77,9 @@ namespace LT.DigitalOffice.MessageService.Data.UnitTests
         [Test]
         public void ShouldThrowArgumentNullExceptionWhenAddedCollectionIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => _repository.AddRange(null));
+            Assert.Throws<ArgumentNullException>(() => _repository.CreateAsync(null));
         }
 
-        #endregion
+        #endregion*/
     }
 }

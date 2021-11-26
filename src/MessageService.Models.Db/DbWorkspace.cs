@@ -35,22 +35,22 @@ namespace LT.DigitalOffice.MessageService.Models.Db
     public void Configure(EntityTypeBuilder<DbWorkspace> builder)
     {
       builder
-          .ToTable(DbWorkspace.TableName);
+        .ToTable(DbWorkspace.TableName);
 
       builder
-          .HasKey(w => w.Id);
+        .HasKey(w => w.Id);
 
       builder
-          .Property(w => w.Name)
-          .IsRequired();
+        .Property(w => w.Name)
+        .IsRequired();
 
       builder
-          .HasMany(w => w.Users)
-          .WithOne(wa => wa.Workspace);
+        .HasMany(w => w.Users)
+        .WithOne(wu => wu.Workspace);
 
       builder
-          .HasMany(w => w.Channels)
-          .WithOne(ch => ch.Workspace);
+        .HasMany(w => w.Channels)
+        .WithOne(c => c.Workspace);
     }
   }
 }

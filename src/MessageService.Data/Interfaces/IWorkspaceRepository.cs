@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
@@ -7,21 +8,17 @@ using Microsoft.AspNetCore.JsonPatch;
 
 namespace LT.DigitalOffice.MessageService.Data.Interfaces
 {
-  /// <summary>
-  /// Represents interface of repository in repository pattern.
-  /// Provides methods for working with Workspaces in the database of MessageService.
-  /// </summary>
   [AutoInject]
   public interface IWorkspaceRepository
   {
-    Guid? Add(DbWorkspace workspace);
+    Task<Guid?> CreateAsync(DbWorkspace dbWorkspace);
 
-    DbWorkspace Get(Guid workspaceId);
+    Task<DbWorkspace> GetAsync(Guid workspaceId);
 
-    DbWorkspace Get(GetWorkspaceFilter filter);
+    Task<DbWorkspace> GetAsync(GetWorkspaceFilter filter);
 
-    List<DbWorkspace> Find(FindWorkspaceFilter filter, out int totalCount, List<string> errors);
+    Task<(List<DbWorkspace> dbWorkspases, int totalCount)> FindAsync(FindWorkspaceFilter filter);
 
-    bool Edit(DbWorkspace workspace, JsonPatchDocument<DbWorkspace> request, Guid editorId);
+    Task<bool> EditAsync(DbWorkspace workspace, JsonPatchDocument<DbWorkspace> request);
   }
 }

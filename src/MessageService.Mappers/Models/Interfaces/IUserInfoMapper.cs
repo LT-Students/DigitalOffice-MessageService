@@ -8,6 +8,6 @@ namespace LT.DigitalOffice.MessageService.Mappers.Models.Interfaces
   [AutoInject]
   public interface IUserInfoMapper
   {
-    UserInfo Map(UserData user, ImageInfo image);
+    UserInfo Map(UserData user, ImageInfo avatar);
   }
 }

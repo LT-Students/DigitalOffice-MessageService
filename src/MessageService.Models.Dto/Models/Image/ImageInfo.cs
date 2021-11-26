@@ -2,12 +2,12 @@
 
 namespace LT.DigitalOffice.MessageService.Models.Dto.Models.Image
 {
-    public record ImageInfo
-    {
-        public Guid Id { get; set; }
-        public Guid? ParentId { get; set; }
-        public string Name { get; set; }
-        public string Content { get; set; }
-        public string Extension { get; set; }
-    }
+  public record ImageInfo
+  {
+    public Guid Id { get; set; }
+    public Guid? ParentId { get; set; }
+    public string Name { get; set; }
+    public string Content { get; set; }
+    public string Extension { get; set; }
+  }
 }

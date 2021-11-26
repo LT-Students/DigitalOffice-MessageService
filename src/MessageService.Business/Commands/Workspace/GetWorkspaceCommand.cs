@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Enums;
+using LT.DigitalOffice.Kernel.Extensions;
+using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace.Filters;
+using LT.DigitalOffice.MessageService.Models.Dto.Responses.Workspace;
+using LT.DigitalOffice.Models.Broker.Enums;
 using LT.DigitalOffice.Models.Broker.Models;
-using LT.DigitalOffice.Models.Broker.Requests.File;
+using LT.DigitalOffice.Models.Broker.Requests.Image;
 using LT.DigitalOffice.Models.Broker.Requests.User;
-using LT.DigitalOffice.Models.Broker.Responses.File;
+using LT.DigitalOffice.Models.Broker.Responses.Image;
 using LT.DigitalOffice.Models.Broker.Responses.User;
 using MassTransit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
@@ -24,120 +30,137 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
   public class GetWorkspaceCommand : IGetWorkspaceCommand
   {
     private readonly IWorkspaceInfoMapper _workspaceInfoMapper;
+    private readonly IImageInfoMapper _imageMapper;
+    private readonly IUserInfoMapper _userMapper;
     private readonly IWorkspaceRepository _repository;
-    private readonly IRequestClient<IGetImagesRequest> _rcGetImages;
     private readonly IRequestClient<IGetUsersDataRequest> _rcGetUsers;
-    private readonly IImageInfoMapper _imageInfoMapper;
+    private readonly IRequestClient<IGetImagesRequest> _rcGetImages;
     private readonly ILogger<GetWorkspaceCommand> _logger;
+    private readonly IResponseCreater _responseCreator;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
+    {
+      if (usersIds is null || !usersIds.Any())
+      {
+        return null;
+      }
+
+      try
+      {
+        Response<IOperationResult<IGetUsersDataResponse>> response =
+          await _rcGetUsers.GetResponse<IOperationResult<IGetUsersDataResponse>>(
+            IGetUsersDataRequest.CreateObj(usersIds));
+
+        if (response.Message.IsSuccess)
+        {
+          return response.Message.Body.UsersData;
+        }
+
+        _logger.LogWarning(
+          "Error while geting users data with users ids: {UsersIds}.\nErrors: {Errors}",
+          string.Join(", ", usersIds),
+          string.Join('\n', response.Message.Errors));
+      }
+      catch (Exception exc)
+      {
+        _logger.LogError(
+          exc,
+          "Cannot get users data with users ids: {UsersIds}.",
+          string.Join(", ", usersIds));
+      }
+
+      errors.Add("Cannot get users data. Please try again later.");
+
+      return null;
+    }
+
+    private async Task<List<ImageData>> GetImagesAsync(List<Guid> imagesIds, List<string> errors)
+    {
+      if (imagesIds is null || !imagesIds.Any())
+      {
+        return null;
+      }
+
+      try
+      {
+        Response<IOperationResult<IGetImagesResponse>> response =
+          await _rcGetImages.GetResponse<IOperationResult<IGetImagesResponse>>(
+            IGetImagesRequest.CreateObj(imagesIds, ImageSource.User));
+
+        if (response.Message.IsSuccess)
+        {
+          return response.Message.Body.ImagesData;
+        }
+
+        _logger.LogWarning(
+          "Error while geting images with images ids: {ImagesIds}.\nErrors: {Errors}",
+          string.Join(", ", imagesIds),
+          string.Join('\n', response.Message.Errors));
+      }
+      catch (Exception exc)
+      {
+        _logger.LogError(
+          exc,
+          "Cannot get images with images ids: {ImagesIds}.",
+          string.Join(", ", imagesIds));
+      }
+
+      errors.Add("Cannot get images. Please try again later.");
+
+      return null;
+    }
 
     public GetWorkspaceCommand(
       IWorkspaceInfoMapper workspaceInfoMapper,
+      IImageInfoMapper imageMapper,
+      IUserInfoMapper userMapper,
       IWorkspaceRepository repository,
-      IRequestClient<IGetImagesRequest> rcGetImages,
       IRequestClient<IGetUsersDataRequest> rcGetUsers,
-      IImageInfoMapper imageInfoMapper,
-      ILogger<GetWorkspaceCommand> logger)
+      IRequestClient<IGetImagesRequest> rcGetImages,
+      ILogger<GetWorkspaceCommand> logger,
+      IResponseCreater responseCreator,
+      IHttpContextAccessor httpContextAccessor)
     {
       _workspaceInfoMapper = workspaceInfoMapper;
+      _imageMapper = imageMapper;
+      _userMapper = userMapper;
       _repository = repository;
-      _rcGetImages = rcGetImages;
       _rcGetUsers = rcGetUsers;
-      _imageInfoMapper = imageInfoMapper;
+      _rcGetImages = rcGetImages;
       _logger = logger;
+      _responseCreator = responseCreator;
+      _responseCreator = responseCreator;
+      _httpContextAccessor = httpContextAccessor;
     }
 
-    private List<ImageInfo> GetImages(List<Guid> imageIds, List<string> errors)
+    public async Task<OperationResultResponse<WorkspaceInfo>> ExecuteAsync(GetWorkspaceFilter filter)
     {
-      if (imageIds == null || imageIds.Count == 0)
+      DbWorkspace dbWorkspace = await _repository.GetAsync(filter);
+
+      if (dbWorkspace is null)
       {
-        return null;
+        return _responseCreator.CreateFailureResponse<WorkspaceInfo>(HttpStatusCode.NotFound);
       }
 
-      string errorMessage = "Cannot get images now. Please try again later.";
-      const string logMessage = "Cannot get images with ids: {imageIds}.";
-
-      try
+      if (!dbWorkspace.Users.Select(u => u.UserId).Contains(_httpContextAccessor.HttpContext.GetUserId()))
       {
-        IOperationResult<IGetImagesResponse> response = _rcGetImages.GetResponse<IOperationResult<IGetImagesResponse>>(
-            IGetImagesRequest.CreateObj(imageIds)).Result.Message;
-
-        if (response.IsSuccess)
-        {
-          return response.Body.Images.Select(_imageInfoMapper.Map).ToList();
-        }
-
-        _logger.LogWarning(logMessage, string.Join(", ", imageIds));
-      }
-      catch (Exception exc)
-      {
-        _logger.LogError(exc, logMessage, string.Join(", ", imageIds));
-      }
-
-      errors.Add(errorMessage);
-
-      return null;
-    }
-
-    private List<UserData> GetUsers(List<Guid> userIds, List<string> errors)
-    {
-      if (userIds == null || userIds.Count == 0)
-      {
-        return null;
-      }
-
-      string errorMessage = "Cannot get users now. Please try again later.";
-      const string logMessage = "Cannot get users with ids: {usersIds}.";
-
-      try
-      {
-        IOperationResult<IGetUsersDataResponse> response = _rcGetUsers.GetResponse<IOperationResult<IGetUsersDataResponse>>(
-            IGetUsersDataRequest.CreateObj(userIds)).Result.Message;
-
-        if (response.IsSuccess)
-        {
-          return response.Body.UsersData;
-        }
-
-        _logger.LogWarning(logMessage, string.Join(", ", userIds));
-      }
-      catch (Exception exc)
-      {
-        _logger.LogError(exc, logMessage, string.Join(", ", userIds));
-      }
-
-      errors.Add(errorMessage);
-
-      return null;
-    }
-
-    public OperationResultResponse<WorkspaceInfo> Execute(GetWorkspaceFilter filter)
-    {
-      DbWorkspace dbWorkspace = _repository.Get(filter);
-
-      if (dbWorkspace == null)
-      {
-        return new OperationResultResponse<WorkspaceInfo>
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = new() { $"Workspace with id: '{filter.WorkspaceId}' doesn't exist." }
-        };
+        return _responseCreator.CreateFailureResponse<WorkspaceInfo>(HttpStatusCode.Forbidden);
       }
 
       OperationResultResponse<WorkspaceInfo> response = new();
 
-      List<UserData> usersData = GetUsers(dbWorkspace.Users?.Select(u => u.UserId).ToList(), response.Errors);
+      List<UserData> usersData = await GetUsersAsync(dbWorkspace.Users?.Select(u => u.UserId).ToList(), response.Errors);
 
-      List<Guid> imagesIds = new();
-
-      if (usersData != null)
-      {
-        imagesIds.AddRange(usersData.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList());
-      }
-
-      List<ImageInfo> images = GetImages(imagesIds, response.Errors);
+      List<ImageInfo> imagesInfo = (await GetImagesAsync(
+          usersData?.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList(),
+          response.Errors))
+        ?.Select(_imageMapper.Map).ToList();
 
       response.Status = response.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
-      response.Body = _workspaceInfoMapper.Map(dbWorkspace, images, usersData);
+      response.Body = _workspaceInfoMapper.Map(
+        dbWorkspace,
+        usersData?.Select(u => _userMapper.Map(u, imagesInfo?.FirstOrDefault(i => i.Id == u.ImageId))).ToList());
 
       return response;
     }

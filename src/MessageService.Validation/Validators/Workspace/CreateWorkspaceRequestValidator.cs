@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentValidation;
 using LT.DigitalOffice.Kernel.Broker;
 using LT.DigitalOffice.Kernel.Extensions;
+using LT.DigitalOffice.Kernel.Validators.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
 using LT.DigitalOffice.Models.Broker.Common;
@@ -19,13 +21,12 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
     private readonly IRequestClient<ICheckUsersExistence> _rcCheckUsersExistence;
     private readonly ILogger<CreateWorkspaceRequestValidator> _logger;
 
-    private List<string> AllowedExtensions = new()
-    { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tga" };
-
     public CreateWorkspaceRequestValidator(
       IHttpContextAccessor httpContextAccessor,
       IRequestClient<ICheckUsersExistence> rcCheckUsersExistence,
-      ILogger<CreateWorkspaceRequestValidator> logger)
+      ILogger<CreateWorkspaceRequestValidator> logger,
+      IImageContentValidator imageContentValidator,
+      IImageExtensionValidator imageExtensionValidator)
     {
       _httpContextAccessor = httpContextAccessor;
       _rcCheckUsersExistence = rcCheckUsersExistence;
@@ -37,23 +38,10 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
       When(w => w.Image != null, () =>
       {
         RuleFor(w => w.Image.Content)
-          .NotEmpty().WithMessage("Image content cannot be empty.")
-          .Must(x =>
-          {
-            try
-            {
-              var byteString = new Span<byte>(new byte[x.Length]);
-              return Convert.TryFromBase64String(x, byteString, out _);
-            }
-            catch
-            {
-              return false;
-            }
-          }).WithMessage("Wrong image content.");
+          .SetValidator(imageContentValidator);
 
         RuleFor(w => w.Image.Extension)
-          .Must(AllowedExtensions.Contains)
-          .WithMessage($"Image extension is not {string.Join('/', AllowedExtensions)}");
+          .SetValidator(imageExtensionValidator);
       });
 
       RuleFor(w => w.Users)
@@ -67,12 +55,12 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
           .Must(u => u.FirstOrDefault(i =>
             i.UserId == _httpContextAccessor.HttpContext.GetUserId()) == null)
           .WithMessage("Creator cannot be added to workspace users request.")
-          .Must(u => CheckUserExistence(u.Select(i => i.UserId).ToList()))
+          .MustAsync(async (u, _) => await CheckUserExistence(u.Select(i => i.UserId).ToList()))
           .WithMessage("Some users are not available for adding to the workspace.");
       });
     }
 
-    private bool CheckUserExistence(List<Guid> usersIds)
+    private async Task<bool> CheckUserExistence(List<Guid> usersIds)
     {
       if (!usersIds.Any())
       {
@@ -81,19 +69,26 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
 
       try
       {
-        var response = _rcCheckUsersExistence.GetResponse<IOperationResult<ICheckUsersExistence>>(
-          ICheckUsersExistence.CreateObj(usersIds)).Result;
+        Response<IOperationResult<ICheckUsersExistence>> response =
+          await _rcCheckUsersExistence.GetResponse<IOperationResult<ICheckUsersExistence>>(
+            ICheckUsersExistence.CreateObj(usersIds));
+
         if (response.Message.IsSuccess)
         {
           return usersIds.Count == response.Message.Body.UserIds.Count;
         }
 
-        _logger.LogWarning("Can not find user Ids: {userIds}: " +
-          $"{Environment.NewLine}{string.Join('\n', response.Message.Errors)}");
+        _logger.LogWarning(
+          "Error while checkingexisting users withs this ids: {UsersIds}.\nErrors: {Errors}",
+          string.Join(", ", usersIds),
+          string.Join('\n', response.Message.Errors));
       }
       catch (Exception exc)
       {
-        _logger.LogError(exc, "Cannot check existing users withs this ids {userIds}");
+        _logger.LogError(
+          exc,
+          "Cannot check existing users withs this ids {UsersIds}",
+          string.Join(", ", usersIds));
       }
 
       return false;

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
+using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
@@ -16,29 +18,32 @@ namespace LT.DigitalOffice.MessageService.Data
       _provider = provider;
     }
 
-    public void AddRange(IEnumerable<DbWorkspaceUser> workspaceUsers)
+    public async Task CreateAsync(IEnumerable<DbWorkspaceUser> dbWorkspaceUsers)
     {
-      _provider.WorkspaceUsers.AddRange(workspaceUsers);
-      _provider.Save();
+      _provider.WorkspacesUsers.AddRange(dbWorkspaceUsers);
+      await _provider.SaveAsync();
     }
 
-    public List<DbWorkspaceUser> GetAdmins(Guid workspaceId)
+    public async Task<List<DbWorkspaceUser>> GetAdminsAsync(Guid workspaceId)
     {
-      return _provider.WorkspaceUsers.Where(wa => wa.WorkspaceId == workspaceId && wa.IsAdmin && wa.IsActive).ToList();
+      return await _provider.WorkspacesUsers
+        .Where(wa => wa.WorkspaceId == workspaceId && wa.IsAdmin && wa.IsActive)
+        .ToListAsync();
     }
 
-    public DbWorkspaceUser Get(Guid workspaseId, Guid userId)
+    public async Task<DbWorkspaceUser> GetAsync(Guid workspaseId, Guid userId)
     {
-      return _provider.WorkspaceUsers
-        .FirstOrDefault(x => x.WorkspaceId == workspaseId && x.UserId == userId);
+      return await _provider.WorkspacesUsers
+        .FirstOrDefaultAsync(x => x.WorkspaceId == workspaseId && x.UserId == userId);
     }
 
-    public bool DoExistWorkspaceUsers(List<Guid> workspaceUsersIds, Guid workspaceId)
+    public async Task<bool> WorkspaceUsersExist(List<Guid> usersIds, Guid workspaceId)
     {
-      return _provider.WorkspaceUsers
+      return (await _provider.WorkspacesUsers
         .Where(wu =>
-          wu.WorkspaceId == workspaceId && workspaceUsersIds.Contains(wu.Id) && wu.IsActive)
-        .Select(wu => wu.Id).ToList().Count == workspaceUsersIds.Count;
+          wu.WorkspaceId == workspaceId && usersIds.Contains(wu.UserId) && wu.IsActive)
+        .ToListAsync())
+        .Count == usersIds.Count;
     }
   }
 }

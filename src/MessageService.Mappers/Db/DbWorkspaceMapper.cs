@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using LT.DigitalOffice.ImageSupport.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
-using LT.DigitalOffice.MessageService.Mappers.Helpers.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using Microsoft.AspNetCore.Http;
@@ -12,13 +13,13 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
 {
   public class DbWorkspaceMapper : IDbWorkspaceMapper
   {
-    private readonly IResizeImageHelper _resizeHelper;
+    private readonly IImageResizeHelper _resizeHelper;
     private readonly IDbWorkspaceUserMapper _workspaceUserMapper;
     private readonly IDbChannelMapper _channelMapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public DbWorkspaceMapper(
-      IResizeImageHelper resizeHelper,
+      IImageResizeHelper resizeHelper,
       IDbWorkspaceUserMapper workspaceUserMapper,
       IDbChannelMapper channelMapper,
       IHttpContextAccessor httpContextAccessor)
@@ -29,9 +30,9 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public DbWorkspace Map(CreateWorkspaceRequest request)
+    public async Task<DbWorkspace> MapAsync(CreateWorkspaceRequest request)
     {
-      if (request == null)
+      if (request is null)
       {
         return null;
       }
@@ -45,15 +46,18 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
 
       dbWorkspaceUsers.Add(_workspaceUserMapper.Map(workspaceId, createdBy, true, createdBy));
 
+      (bool _, string resizedContent, string extension) = request.Image is null
+        ? (false, null, null)
+        : (await _resizeHelper.ResizeAsync(request.Image.Content, request.Image.Extension));
+
       return new DbWorkspace
       {
         Id = workspaceId,
         Name = request.Name,
         Description = request.Description,
         IsActive = true,
-        ImageContent = request.Image != null ?
-          _resizeHelper.Resize(request.Image.Content, request.Image.Extension) : null,
-        ImageExtension = request.Image?.Extension,
+        ImageContent = resizedContent,
+        ImageExtension = extension,
         CreatedBy = createdBy,
         CreatedAtUtc = DateTime.UtcNow,
         Users = dbWorkspaceUsers,
