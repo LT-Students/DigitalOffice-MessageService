@@ -21,14 +21,14 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IDbWorkspaceMapper _mapper;
     private readonly IWorkspaceRepository _repository;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
 
     public CreateWorkspaceCommand(
       ICreateWorkspaceRequestValidator validator,
       IDbWorkspaceMapper mapper,
       IWorkspaceRepository repository,
       IHttpContextAccessor httpContextAccessor,
-      IResponseCreater responseCreator)
+      IResponseCreator responseCreator)
     {
       _validator = validator;
       _mapper = mapper;

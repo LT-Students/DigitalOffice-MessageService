@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
@@ -36,7 +36,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IRequestClient<IGetUsersDataRequest> _rcGetUsers;
     private readonly IRequestClient<IGetImagesRequest> _rcGetImages;
     private readonly ILogger<GetWorkspaceCommand> _logger;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
@@ -119,7 +119,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       IRequestClient<IGetUsersDataRequest> rcGetUsers,
       IRequestClient<IGetImagesRequest> rcGetImages,
       ILogger<GetWorkspaceCommand> logger,
-      IResponseCreater responseCreator,
+      IResponseCreator responseCreator,
       IHttpContextAccessor httpContextAccessor)
     {
       _workspaceInfoMapper = workspaceInfoMapper;
