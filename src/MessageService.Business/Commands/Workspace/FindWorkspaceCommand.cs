@@ -21,13 +21,13 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IBaseFindFilterValidator _baseFindValidator;
     private readonly IWorkspaceRepository _repository;
     private readonly IShortWorkspaceInfoMapper _mapper;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
 
     public FindWorkspaceCommand(
       IBaseFindFilterValidator baseFindValidator,
       IWorkspaceRepository repository,
       IShortWorkspaceInfoMapper mapper,
-      IResponseCreater responseCreator)
+      IResponseCreator responseCreator)
     {
       _baseFindValidator = baseFindValidator;
       _repository = repository;

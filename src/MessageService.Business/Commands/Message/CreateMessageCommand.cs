@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
@@ -24,26 +23,23 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
   public class CreateMessageCommand : ICreateMessageCommand
   {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IAccessValidator _accessValidator;
     private readonly ICreateMessageRequestValidator _validator;
     private readonly IMessageRepository _repository;
     private readonly IDbMessageMapper _mapper;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
     private readonly IHubContext<ChatHub> _chatHub;
     private readonly ILogger<CreateMessageCommand> _logger;
 
     public CreateMessageCommand(
       IHttpContextAccessor httpContextAccessor,
-      IAccessValidator accessValidator,
       ICreateMessageRequestValidator validator,
       IDbMessageMapper mapper,
       IMessageRepository repository,
-      IResponseCreater responseCreator,
+      IResponseCreator responseCreator,
       IHubContext<ChatHub> chatHub,
       ILogger<CreateMessageCommand> logger)
     {
       _httpContextAccessor = httpContextAccessor;
-      _accessValidator = accessValidator;
       _validator = validator;
       _mapper = mapper;
       _repository = repository;

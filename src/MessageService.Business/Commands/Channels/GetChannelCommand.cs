@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
@@ -39,7 +39,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
     private readonly IUserInfoMapper _userMapper;
     private readonly IImageInfoMapper _imageMapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
     private readonly IRequestClient<IGetUsersDataRequest> _rcGetUsers;
     private readonly IRequestClient<IGetImagesRequest> _rcGetImages;
     private readonly ILogger<GetChannelCommand> _logger;
@@ -124,7 +124,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
       IUserInfoMapper userMapper,
       IImageInfoMapper imageMapper,
       IHttpContextAccessor httpContextAccessor,
-      IResponseCreater responseCreator,
+      IResponseCreator responseCreator,
       IRequestClient<IGetUsersDataRequest> rcGetUsers,
       IRequestClient<IGetImagesRequest> rcGetImages,
       ILogger<GetChannelCommand> logger)
