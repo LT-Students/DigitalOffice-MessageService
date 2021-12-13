@@ -142,6 +142,18 @@ namespace LT.DigitalOffice.MessageService
         connStr = Configuration.GetConnectionString("SQLConnectionString");
       }
 
+      if (int.TryParse(Environment.GetEnvironmentVariable("MemoryCacheLiveInMinutes"), out int memoryCacheLifetime))
+      {
+        services.Configure<MemoryCacheConfig>(options =>
+        {
+          options.CacheLiveInMinutes = memoryCacheLifetime;
+        });
+      }
+      else
+      {
+        services.Configure<MemoryCacheConfig>(Configuration.GetSection(MemoryCacheConfig.SectionName));
+      }
+
       services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
       services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
       services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
@@ -164,6 +176,7 @@ namespace LT.DigitalOffice.MessageService
         .AddControllers()
         .AddNewtonsoftJson();
 
+      services.AddMemoryCache();
       services.AddBusinessObjects();
 
       ConfigureMassTransit(services);
