@@ -98,7 +98,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
         }
 
         _logger.LogWarning(
-          "Error while geting users data with users ids: {UsersIds}.\nErrors: {Errors}",
+          "Error while getting users data with users ids: {UsersIds}.\nErrors: {Errors}",
           string.Join(", ", usersIds),
           string.Join('\n', response.Message.Errors));
       }
@@ -128,13 +128,13 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
           await _rcGetImages.GetResponse<IOperationResult<IGetImagesResponse>>(
             IGetImagesRequest.CreateObj(imagesIds, ImageSource.User));
 
-        if (response.Message.IsSuccess && !response.Message.Body.ImagesData.Any())
+        if (response.Message.IsSuccess && response.Message.Body.ImagesData.Any())
         {
           return response.Message.Body.ImagesData;
         }
 
         _logger.LogWarning(
-          "Error while geting images with images ids: {ImagesIds}.\nErrors: {Errors}",
+          "Error while getting images with images ids: {ImagesIds}.\nErrors: {Errors}",
           string.Join(", ", imagesIds),
           string.Join('\n', response.Message.Errors));
       }
