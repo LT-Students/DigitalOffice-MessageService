@@ -1,29 +1,4 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
-using LT.DigitalOffice.Kernel.Broker;
-using LT.DigitalOffice.Kernel.Enums;
-using LT.DigitalOffice.Kernel.Exceptions.Models;
-using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.Commands.Workspace;
-using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
-using LT.DigitalOffice.MessageService.Data.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Db;
-using LT.DigitalOffice.MessageService.Models.Dto.Models;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
-using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
-using LT.DigitalOffice.Models.Broker.Requests.File;
-using LT.DigitalOffice.UnitTestKernel;
-using MassTransit;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
+﻿namespace LT.DigitalOffice.MessageService.Business.UnitTests.Workspace
 {
   public class CreateWorkspaceCommandTests
   {

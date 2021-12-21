@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.Broker;
+using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
@@ -39,7 +39,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
     private readonly IUserInfoMapper _userMapper;
     private readonly IImageInfoMapper _imageMapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
     private readonly IRequestClient<IGetUsersDataRequest> _rcGetUsers;
     private readonly IRequestClient<IGetImagesRequest> _rcGetImages;
     private readonly ILogger<GetChannelCommand> _logger;
@@ -57,7 +57,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
           await _rcGetUsers.GetResponse<IOperationResult<IGetUsersDataResponse>>(
             IGetUsersDataRequest.CreateObj(usersIds));
 
-        if (response.Message.IsSuccess && !response.Message.Body.UsersData.Any())
+        if (response.Message.IsSuccess && response.Message.Body.UsersData.Any())
         {
           return response.Message.Body.UsersData;
         }
@@ -93,7 +93,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
           await _rcGetImages.GetResponse<IOperationResult<IGetImagesResponse>>(
             IGetImagesRequest.CreateObj(imagesIds, ImageSource.User));
 
-        if (response.Message.IsSuccess && !response.Message.Body.ImagesData.Any())
+        if (response.Message.IsSuccess && response.Message.Body.ImagesData.Any())
         {
           return response.Message.Body.ImagesData;
         }
@@ -124,7 +124,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
       IUserInfoMapper userMapper,
       IImageInfoMapper imageMapper,
       IHttpContextAccessor httpContextAccessor,
-      IResponseCreater responseCreator,
+      IResponseCreator responseCreator,
       IRequestClient<IGetUsersDataRequest> rcGetUsers,
       IRequestClient<IGetImagesRequest> rcGetImages,
       ILogger<GetChannelCommand> logger)
@@ -190,7 +190,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
             m,
             usersInfo?.FirstOrDefault(u => u.Id == m.CreatedBy),
             imagesInfo?.Where(i => m.Images.Select(mi => mi.ImageId).Contains(i.Id)).ToList())).ToList(),
-        usersInfo?.Where(u => dbChannel.Users.Select(u => u.WorkspaceUser.UserId).Contains(u.Id)).ToList());
+        usersInfo?.Where(u => dbChannel.Users.Select(u => u.UserId).Contains(u.Id)).ToList());
 
       response.Status = OperationResultStatusType.FullSuccess;
 

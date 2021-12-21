@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
@@ -28,7 +28,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IWorkspaceUserRepository _userRepository;
     private readonly IAccessValidator _accessValidator;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
 
     public EditWorkspaceCommand(
       IEditWorkspaceRequestValidator validator,
@@ -37,7 +37,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       IWorkspaceUserRepository userRepository,
       IAccessValidator accessValidator,
       IHttpContextAccessor httpContextAccessor,
-      IResponseCreater responseCreator)
+      IResponseCreator responseCreator)
     {
       _validator = validator;
       _mapper = mapper;
@@ -45,6 +45,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       _userRepository = userRepository;
       _accessValidator = accessValidator;
       _httpContextAccessor = httpContextAccessor;
+      _responseCreator = responseCreator;
     }
 
     public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request)

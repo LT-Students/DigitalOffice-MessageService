@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using HealthChecks.UI.Client;
+using LT.DigitalOffice.Kernel.BrokerSupport.Configurations;
+using LT.DigitalOffice.Kernel.BrokerSupport.Extensions;
+using LT.DigitalOffice.Kernel.BrokerSupport.Middlewares.Token;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
-using LT.DigitalOffice.Kernel.Middlewares.Token;
 using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Business.Commands.Message.Hubs;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
@@ -140,6 +142,18 @@ namespace LT.DigitalOffice.MessageService
         connStr = Configuration.GetConnectionString("SQLConnectionString");
       }
 
+      if (int.TryParse(Environment.GetEnvironmentVariable("MemoryCacheLiveInMinutes"), out int memoryCacheLifetime))
+      {
+        services.Configure<MemoryCacheConfig>(options =>
+        {
+          options.CacheLiveInMinutes = memoryCacheLifetime;
+        });
+      }
+      else
+      {
+        services.Configure<MemoryCacheConfig>(Configuration.GetSection(MemoryCacheConfig.SectionName));
+      }
+
       services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
       services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
       services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
@@ -162,6 +176,7 @@ namespace LT.DigitalOffice.MessageService
         .AddControllers()
         .AddNewtonsoftJson();
 
+      services.AddMemoryCache();
       services.AddBusinessObjects();
 
       ConfigureMassTransit(services);

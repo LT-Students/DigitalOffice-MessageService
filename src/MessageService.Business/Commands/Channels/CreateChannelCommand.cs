@@ -24,7 +24,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
     private readonly IDbChannelMapper _channelMapper;
     private readonly IChannelRepository _channelRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IResponseCreater _responseCreator;
+    private readonly IResponseCreator _responseCreator;
 
     public CreateChannelCommand(
       IWorkspaceUserRepository workspaceUserRepository,
@@ -32,7 +32,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
       IDbChannelMapper channelMapper,
       IChannelRepository channelRepository,
       IHttpContextAccessor httpContextAccessor,
-      IResponseCreater responseCreator)
+      IResponseCreator responseCreator)
     {
       _workspaceUserRepository = workspaceUserRepository;
       _validator = validator;
