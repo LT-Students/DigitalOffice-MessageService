@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.Helpers;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
@@ -33,131 +34,96 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IImageInfoMapper _imageMapper;
     private readonly IUserInfoMapper _userMapper;
     private readonly IWorkspaceRepository _repository;
+    private readonly IWorkspaceUserRepository _userRepository;
     private readonly IRequestClient<IGetUsersDataRequest> _rcGetUsers;
     private readonly IRequestClient<IGetImagesRequest> _rcGetImages;
     private readonly ILogger<GetWorkspaceCommand> _logger;
     private readonly IResponseCreator _responseCreator;
     private readonly IHttpContextAccessor _httpContextAccessor;
-
-    private async Task<List<UserData>> GetUsersAsync(List<Guid> usersIds, List<string> errors)
-    {
-      if (usersIds is null || !usersIds.Any())
-      {
-        return null;
-      }
-
-      try
-      {
-        Response<IOperationResult<IGetUsersDataResponse>> response =
-          await _rcGetUsers.GetResponse<IOperationResult<IGetUsersDataResponse>>(
-            IGetUsersDataRequest.CreateObj(usersIds));
-
-        if (response.Message.IsSuccess)
-        {
-          return response.Message.Body.UsersData;
-        }
-
-        _logger.LogWarning(
-          "Error while geting users data with users ids: {UsersIds}.\nErrors: {Errors}",
-          string.Join(", ", usersIds),
-          string.Join('\n', response.Message.Errors));
-      }
-      catch (Exception exc)
-      {
-        _logger.LogError(
-          exc,
-          "Cannot get users data with users ids: {UsersIds}.",
-          string.Join(", ", usersIds));
-      }
-
-      errors.Add("Cannot get users data. Please try again later.");
-
-      return null;
-    }
-
-    private async Task<List<ImageData>> GetImagesAsync(List<Guid> imagesIds, List<string> errors)
-    {
-      if (imagesIds is null || !imagesIds.Any())
-      {
-        return null;
-      }
-
-      try
-      {
-        Response<IOperationResult<IGetImagesResponse>> response =
-          await _rcGetImages.GetResponse<IOperationResult<IGetImagesResponse>>(
-            IGetImagesRequest.CreateObj(imagesIds, ImageSource.User));
-
-        if (response.Message.IsSuccess)
-        {
-          return response.Message.Body.ImagesData;
-        }
-
-        _logger.LogWarning(
-          "Error while geting images with images ids: {ImagesIds}.\nErrors: {Errors}",
-          string.Join(", ", imagesIds),
-          string.Join('\n', response.Message.Errors));
-      }
-      catch (Exception exc)
-      {
-        _logger.LogError(
-          exc,
-          "Cannot get images with images ids: {ImagesIds}.",
-          string.Join(", ", imagesIds));
-      }
-
-      errors.Add("Cannot get images. Please try again later.");
-
-      return null;
-    }
+    private readonly IAccessValidator _accessValidator;
 
     public GetWorkspaceCommand(
       IWorkspaceInfoMapper workspaceInfoMapper,
       IImageInfoMapper imageMapper,
       IUserInfoMapper userMapper,
       IWorkspaceRepository repository,
+      IWorkspaceUserRepository userRepository,
       IRequestClient<IGetUsersDataRequest> rcGetUsers,
       IRequestClient<IGetImagesRequest> rcGetImages,
       ILogger<GetWorkspaceCommand> logger,
       IResponseCreator responseCreator,
-      IHttpContextAccessor httpContextAccessor)
+      IHttpContextAccessor httpContextAccessor,
+      IAccessValidator accessValidator)
     {
       _workspaceInfoMapper = workspaceInfoMapper;
       _imageMapper = imageMapper;
       _userMapper = userMapper;
       _repository = repository;
+      _userRepository = userRepository;
       _rcGetUsers = rcGetUsers;
       _rcGetImages = rcGetImages;
       _logger = logger;
       _responseCreator = responseCreator;
       _responseCreator = responseCreator;
       _httpContextAccessor = httpContextAccessor;
+      _accessValidator = accessValidator;
     }
 
-    public async Task<OperationResultResponse<WorkspaceInfo>> ExecuteAsync(GetWorkspaceFilter filter)
+    public async Task<OperationResultResponse<WorkspaceInfo>> ExecuteAsync(
+      Guid workspaceId, GetWorkspaceFilter filter)
     {
-      DbWorkspace dbWorkspace = await _repository.GetAsync(filter);
+      DbWorkspace dbWorkspace = await _repository.GetAsync(workspaceId, filter);
 
       if (dbWorkspace is null)
       {
         return _responseCreator.CreateFailureResponse<WorkspaceInfo>(HttpStatusCode.NotFound);
       }
 
-      if (!dbWorkspace.Users.Select(u => u.UserId).Contains(_httpContextAccessor.HttpContext.GetUserId()))
+      Guid userId = _httpContextAccessor.HttpContext.GetUserId();
+
+      // maybe better always join users, it should be tested.
+      if (!(dbWorkspace.Users.Any(u => u.UserId == userId))
+        && !(!dbWorkspace.Users.Any()
+          && await _userRepository.WorkspaceUsersExist(new List<Guid>() { userId }, workspaceId))
+        && !(await _accessValidator.IsAdminAsync()))
       {
         return _responseCreator.CreateFailureResponse<WorkspaceInfo>(HttpStatusCode.Forbidden);
       }
 
       OperationResultResponse<WorkspaceInfo> response = new();
 
-      List<UserData> usersData = await GetUsersAsync(dbWorkspace.Users?.Select(u => u.UserId).ToList(), response.Errors);
+      List<UserData> usersData =
+        (await RequestHandler.ProcessRequest<IGetUsersDataRequest, IGetUsersDataResponse>(
+          _rcGetUsers,
+          IGetUsersDataRequest.CreateObj(dbWorkspace.Users?.Select(u => u.UserId).ToList()),
+          response.Errors,
+          _logger))
+        ?.UsersData;
 
-      List<ImageInfo> imagesInfo = (await GetImagesAsync(
-          usersData?.Where(u => u.ImageId.HasValue).Select(u => u.ImageId.Value).ToList(),
-          response.Errors))
-        ?.Select(_imageMapper.Map).ToList();
+      List<Guid> imagesIds = usersData
+        ?.Where(u => u.ImageId.HasValue)
+        .Select(u => u.ImageId.Value)
+        .ToList();
 
-      response.Status = response.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
+      List<ImageInfo> imagesInfo = null;
+
+      if (imagesIds.Any())
+      {
+        imagesInfo =
+          (await RequestHandler.ProcessRequest<IGetImagesRequest, IGetImagesResponse>(
+            _rcGetImages,
+            IGetImagesRequest.CreateObj(
+              imagesIds,
+              ImageSource.User),
+            response.Errors,
+            _logger))
+          ?.ImagesData?.Select(_imageMapper.Map).ToList();
+      }
+
+      response.Status = response.Errors.Any()
+        ? OperationResultStatusType.PartialSuccess
+        : OperationResultStatusType.FullSuccess;
+
       response.Body = _workspaceInfoMapper.Map(
         dbWorkspace,
         usersData?.Select(u => _userMapper.Map(u, imagesInfo?.FirstOrDefault(i => i.Id == u.ImageId))).ToList());

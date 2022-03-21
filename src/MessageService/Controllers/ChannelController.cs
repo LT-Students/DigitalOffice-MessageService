@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
   [ApiController]
   public class ChannelController : ControllerBase
   {
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<OperationResultResponse<Guid?>> CreateAsync(
       [FromServices] ICreateChannelCommand command,
       [FromBody] CreateChannelRequest request)
@@ -21,12 +21,20 @@ namespace LT.DigitalOffice.MessageService.Controllers
       return await command.ExeсuteAsync(request);
     }
 
-    [HttpGet("get")]
+    [HttpGet("{channelId}")]
     public async Task<OperationResultResponse<ChannelInfo>> GetAsync(
       [FromServices] IGetChannelCommand command,
+      [FromRoute] Guid channelId,
       [FromQuery] GetChannelFilter filter)
     {
-      return await command.ExeсuteAsync(filter);
+      return await command.ExeсuteAsync(channelId, filter);
+    }
+
+    [HttpPatch("{channelId}")]
+    public async Task<OperationResultResponse<bool>> EditAsync(
+      [FromRoute] Guid channelId)
+    {
+      throw new NotImplementedException();
     }
   }
 }

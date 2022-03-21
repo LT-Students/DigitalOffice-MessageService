@@ -31,7 +31,7 @@ namespace LT.DigitalOffice.MessageService.Data
       return dbChannel.Id;
     }
 
-    public async Task<DbChannel> GetAsync(GetChannelFilter filter)
+    public async Task<DbChannel> GetAsync(Guid channelId, GetChannelFilter filter)
     {
       IQueryable<DbChannel> dbChannel = _provider.Channels.AsQueryable()
         .Include(c => c.Workspace).ThenInclude(w => w.Users.Where(wu => wu.IsActive))
@@ -47,7 +47,7 @@ namespace LT.DigitalOffice.MessageService.Data
         .ThenInclude(m => m.Files);
 
       return await dbChannel
-        .FirstOrDefaultAsync(c => c.Id == filter.ChannelId && c.IsActive);
+        .FirstOrDefaultAsync(c => c.Id == channelId && c.IsActive);
     }
   }
 }

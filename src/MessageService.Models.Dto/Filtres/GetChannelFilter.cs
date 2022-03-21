@@ -6,7 +6,5 @@ namespace LT.DigitalOffice.MessageService.Models.Dto.Filtres
 {
   public record GetChannelFilter : BaseFindFilter
   {
-    [FromQuery(Name = "channelid")]
-    public Guid ChannelId { get; set; }
   }
 }

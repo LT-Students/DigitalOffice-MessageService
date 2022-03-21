@@ -11,6 +11,6 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
   {
     Task<Guid?> CreateAsync(DbChannel dbChannel);
 
-    Task<DbChannel> GetAsync(GetChannelFilter filter);
+    Task<DbChannel> GetAsync(Guid channelId, GetChannelFilter filter);
   }
 }

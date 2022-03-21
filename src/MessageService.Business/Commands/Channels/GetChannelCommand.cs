@@ -63,7 +63,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
         }
 
         _logger.LogWarning(
-          "Error while geting users data with users ids: {UsersIds}.\nErrors: {Errors}",
+          "Error while getting users data with users ids: {UsersIds}.\nErrors: {Errors}",
           string.Join(", ", usersIds),
           string.Join('\n', response.Message.Errors));
       }
@@ -99,7 +99,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
         }
 
         _logger.LogWarning(
-          "Error while geting images with images ids: {ImagesIds}.\nErrors: {Errors}",
+          "Error while getting images with images ids: {ImagesIds}.\nErrors: {Errors}",
           string.Join(", ", imagesIds),
           string.Join('\n', response.Message.Errors));
       }
@@ -142,14 +142,14 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
       _logger = logger;
     }
 
-    public async Task<OperationResultResponse<ChannelInfo>> ExeсuteAsync(GetChannelFilter filter)
+    public async Task<OperationResultResponse<ChannelInfo>> ExeсuteAsync(Guid channelId, GetChannelFilter filter)
     {
       if (!_baseFindValidator.ValidateCustom(filter, out List<string> errors))
       {
         return _responseCreator.CreateFailureResponse<ChannelInfo>(HttpStatusCode.BadRequest, errors);
       }
 
-      DbChannel dbChannel = await _repository.GetAsync(filter);
+      DbChannel dbChannel = await _repository.GetAsync(channelId, filter);
 
       Guid requestUserId = _httpContextAccessor.HttpContext.GetUserId();
 
@@ -159,7 +159,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
       }
 
       if ((dbChannel.IsPrivate
-          && !dbChannel.Users.Select(cu => cu.UserId).Contains(requestUserId))
+        && !dbChannel.Users.Select(cu => cu.UserId).Contains(requestUserId))
         || !dbChannel.Workspace.Users.Select(wu => wu.UserId).Contains(requestUserId))
       {
         return _responseCreator.CreateFailureResponse<ChannelInfo>(HttpStatusCode.Forbidden);
@@ -174,7 +174,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
       List<Guid> imagesIds = usersData?.Where(u => u.ImageId.HasValue)?.Select(u => u.ImageId.Value).ToList();
 
-      //add messages immages to image service
+      //add messages images to image service
 
       List<ImageInfo> imagesInfo = (await GetImagesAsync(imagesIds, response.Errors))
         ?.Select(_imageMapper.Map).ToList();

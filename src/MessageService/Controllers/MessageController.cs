@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Message.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Enums;
@@ -11,12 +12,19 @@ namespace LT.DigitalOffice.MessageService.Controllers
   [ApiController]
   public class MessageController : ControllerBase
   {
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<OperationResultResponse<StatusType>> CreateAsync(
       [FromServices] ICreateMessageCommand command,
       [FromBody] CreateMessageRequest request)
     {
       return await command.ExecuteAsync(request);
+    }
+
+    [HttpPatch("{messageId}")]
+    public async Task<OperationResultResponse<bool>> EditAsync(
+      [FromRoute] Guid messageId)
+    {
+      throw new NotImplementedException();
     }
   }
 }

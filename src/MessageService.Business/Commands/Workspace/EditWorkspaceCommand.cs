@@ -48,14 +48,16 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       _responseCreator = responseCreator;
     }
 
-    public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, JsonPatchDocument<EditWorkspaceRequest> request)
+    public async Task<OperationResultResponse<bool>> ExecuteAsync(
+      Guid workspaceId,
+      JsonPatchDocument<EditWorkspaceRequest> request)
     {
       DbWorkspace dbWorkspace = await _repository.GetAsync(workspaceId);
 
       Guid editorId = _httpContextAccessor.HttpContext.GetUserId();
 
       if (dbWorkspace.CreatedBy != editorId
-        && (await _userRepository.GetAdminsAsync(workspaceId)).FirstOrDefault(wa => wa.UserId == editorId) == null
+        && (await _userRepository.GetAdminsAsync(workspaceId)).Any(wa => wa.UserId == editorId)
         && !await _accessValidator.IsAdminAsync())
       {
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);

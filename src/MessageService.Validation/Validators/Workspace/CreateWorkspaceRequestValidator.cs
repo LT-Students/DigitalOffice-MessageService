@@ -44,9 +44,6 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
           .SetValidator(imageExtensionValidator);
       });
 
-      RuleFor(w => w.Users)
-        .NotNull().WithMessage("Users cannot be null");
-
       When(w => w.Users != null && w.Users.Count > 0, () =>
       {
         RuleFor(w => w.Users)
