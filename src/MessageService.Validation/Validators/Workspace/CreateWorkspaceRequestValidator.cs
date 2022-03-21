@@ -47,12 +47,11 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
       When(w => w.Users != null && w.Users.Count > 0, () =>
       {
         RuleFor(w => w.Users)
-          .Must(u => u.Select(i => i.UserId).ToHashSet().Count() == u.Count())
+          .Must(u => u.ToHashSet().Count == u.Count)
           .WithMessage("A user cannot be added to the workspace twice.")
-          .Must(u => u.FirstOrDefault(i =>
-            i.UserId == _httpContextAccessor.HttpContext.GetUserId()) == null)
+          .Must(u => !u.Any(userId => userId == _httpContextAccessor.HttpContext.GetUserId()))
           .WithMessage("Creator cannot be added to workspace users request.")
-          .MustAsync(async (u, _) => await CheckUserExistence(u.Select(i => i.UserId).ToList()))
+          .MustAsync(async (usersIds, _) => await CheckUserExistence(usersIds))
           .WithMessage("Some users are not available for adding to the workspace.");
       });
     }
@@ -76,7 +75,7 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
         }
 
         _logger.LogWarning(
-          "Error while checkingexisting users withs this ids: {UsersIds}.\nErrors: {Errors}",
+          "Error while checking existing users withs this ids: {UsersIds}.\nErrors: {Errors}",
           string.Join(", ", usersIds),
           string.Join('\n', response.Message.Errors));
       }

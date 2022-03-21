@@ -41,7 +41,7 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
 
       List<DbWorkspaceUser> dbWorkspaceUsers = request.Users?
-        .Select(u => _workspaceUserMapper.Map(workspaceId, u.UserId, u.IsAdmin, createdBy))
+        .Select(u => _workspaceUserMapper.Map(workspaceId, u, false, createdBy))
         .ToList();
 
       dbWorkspaceUsers.Add(_workspaceUserMapper.Map(workspaceId, createdBy, true, createdBy));

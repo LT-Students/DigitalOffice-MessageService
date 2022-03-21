@@ -44,11 +44,11 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
     public async Task<OperationResultResponse<Guid?>> ExeсuteAsync(CreateChannelRequest request)
     {
-      if (await _workspaceUserRepository
-        .WorkspaceUsersExist(new List<Guid>() { _httpContextAccessor.HttpContext.GetUserId() }, request.WorkspaceId))
-      {
-        return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.Forbidden);
-      }
+      //if (await _workspaceUserRepository
+      //  .WorkspaceUsersExist(new List<Guid>() { _httpContextAccessor.HttpContext.GetUserId() }, request.WorkspaceId))
+      //{
+      //  return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.Forbidden);
+      //}
 
       ValidationResult validationResult = await _validator.ValidateAsync(request);
 

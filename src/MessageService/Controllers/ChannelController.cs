@@ -4,7 +4,9 @@ using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Filtres;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.Channel;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses.Channel;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LT.DigitalOffice.MessageService.Controllers
@@ -32,9 +34,11 @@ namespace LT.DigitalOffice.MessageService.Controllers
 
     [HttpPatch("{channelId}")]
     public async Task<OperationResultResponse<bool>> EditAsync(
-      [FromRoute] Guid channelId)
+      [FromServices] IEditChannelCommand command,
+      [FromRoute] Guid channelId,
+      [FromBody] JsonPatchDocument<EditChannelRequest> document)
     {
-      throw new NotImplementedException();
+      return await command.ExecuteAsync(channelId, document);
     }
   }
 }

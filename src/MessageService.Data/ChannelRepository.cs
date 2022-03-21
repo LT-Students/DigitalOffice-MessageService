@@ -5,6 +5,7 @@ using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Filtres;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
@@ -31,6 +32,19 @@ namespace LT.DigitalOffice.MessageService.Data
       return dbChannel.Id;
     }
 
+    public async Task<bool> EditAsync(DbChannel channel, JsonPatchDocument<DbChannel> document)
+    {
+      if (channel is null)
+      {
+        return false;
+      }
+
+      document.ApplyTo(channel);
+      await _provider.SaveAsync();
+
+      return true;
+    }
+
     public async Task<DbChannel> GetAsync(Guid channelId, GetChannelFilter filter)
     {
       IQueryable<DbChannel> dbChannel = _provider.Channels.AsQueryable()
@@ -48,6 +62,13 @@ namespace LT.DigitalOffice.MessageService.Data
 
       return await dbChannel
         .FirstOrDefaultAsync(c => c.Id == channelId && c.IsActive);
+    }
+
+    public async Task<DbChannel> GetAsync(Guid channelId)
+    {
+      return await _provider.Channels
+        .Include(c => c.Users.Where(u => u.IsActive && u.IsAdmin))
+        .FirstOrDefaultAsync(ch => ch.Id == channelId);
     }
   }
 }
