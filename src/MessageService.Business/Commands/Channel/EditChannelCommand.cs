@@ -1,30 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.Channel.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Patch.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Channel;
 using LT.DigitalOffice.MessageService.Validation.Validators.Channel.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 
-namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
+namespace LT.DigitalOffice.MessageService.Business.Commands.Channel
 {
   public class EditChannelCommand : IEditChannelCommand
   {
     private readonly IChannelRepository _repository;
     private readonly IPatchDbChannelMapper _mapper;
     private readonly IEditChannelRequestValidator _validator;
-    private readonly IAccessValidator _accessValidator;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IResponseCreator _responseCreator;
 
@@ -32,14 +28,12 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
       IChannelRepository repository,
       IPatchDbChannelMapper mapper,
       IEditChannelRequestValidator validator,
-      IAccessValidator accessValidator,
       IHttpContextAccessor httpContextAccessor,
       IResponseCreator responseCreator)
     {
       _repository = repository;
       _mapper = mapper;
       _validator = validator;
-      _accessValidator = accessValidator;
       _httpContextAccessor = httpContextAccessor;
       _responseCreator = responseCreator;
     }
@@ -47,18 +41,17 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
     public async Task<OperationResultResponse<bool>> ExecuteAsync(
       Guid channelId, JsonPatchDocument<EditChannelRequest> document)
     {
-      DbChannel channel = await _repository.GetAsync(channelId);
+      var channel = await _repository.GetAsync(channelId);
 
-      Guid userId = _httpContextAccessor.HttpContext.GetUserId();
+      var userId = _httpContextAccessor.HttpContext.GetUserId();
 
       if (channel.CreatedBy != userId
-        && !channel.Users.Any(u => u.UserId == userId)
-        && !(await _accessValidator.IsAdminAsync()))
+        && !channel.Users.Any(u => u.UserId == userId))
       {
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
-      if (!_validator.ValidateCustom(document, out List<string> errors))
+      if (!_validator.ValidateCustom(document, out var errors))
       {
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, errors);
       }

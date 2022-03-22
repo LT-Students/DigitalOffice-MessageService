@@ -5,7 +5,7 @@ using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Models.Dto.Filtres;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses.Channel;
 
-namespace LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces
+namespace LT.DigitalOffice.MessageService.Business.Commands.Channel.Interfaces
 {
   [AutoInject]
   public interface IGetChannelCommand

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.Channel.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Filtres;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Channel;

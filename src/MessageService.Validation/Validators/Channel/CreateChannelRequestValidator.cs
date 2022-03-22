@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using FluentValidation;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Validators.Interfaces;
@@ -14,44 +11,37 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
 {
   public class CreateChannelRequestValidator : AbstractValidator<CreateChannelRequest>, ICreateChannelRequestValidator
   {
-    private IHttpContextAccessor _httpContextAccessor;
-    private readonly IWorkspaceUserRepository _workspaceUserRepository;
-
-    private async Task<bool> AreUsersInWorkspace(List<Guid> requestUsersIds, Guid workspaceId)
-    {
-      return await _workspaceUserRepository
-        .WorkspaceUsersExist(requestUsersIds, workspaceId);
-    }
-
     public CreateChannelRequestValidator(
       IWorkspaceUserRepository workspaceUserRepository,
       IHttpContextAccessor httpContextAccessor,
       IImageContentValidator imageContentValidator,
       IImageExtensionValidator imageExtensionValidator)
     {
-      _httpContextAccessor = httpContextAccessor;
-      _workspaceUserRepository = workspaceUserRepository;
-
       RuleFor(x => x.WorkspaceId)
-        .NotEmpty().WithMessage("Workspase id must not be empty.");
+        .NotEmpty()
+        .WithMessage("Workspace id must not be empty.");
 
       RuleFor(x => x.Name.Trim())
-        .NotEmpty().WithMessage("Channel name must not be empty.");
+        .NotEmpty()
+        .WithMessage("Channel name must not be empty.");
 
-      RuleFor(x => x.Users)
-        .NotNull().WithMessage("Users can not be null.");
+      RuleFor(x => x.UsersIds)
+        .NotNull()
+        .WithMessage("UsersIds cannot be null.")
+        .NotEmpty()
+        .WithMessage("UsersIds cannot be empty.");
 
-      When(x => x.Users != null && x.Users.Count > 0, () =>
+      When(x => x.UsersIds != null && x.UsersIds.Count > 0, () =>
       {
         RuleFor(w => w)
-          .Must(w => w.Users.Select(i => i.UserId).ToHashSet().Count() == w.Users.Count())
+          .Must(w => w.UsersIds.ToHashSet().Count == w.UsersIds.Count)
           .WithMessage("A user cannot be added to the channel twice.")
           .Must(w =>
           {
-            return w.Users.FirstOrDefault(i => i.UserId == _httpContextAccessor.HttpContext.GetUserId()) == null;
+            return !w.UsersIds.Contains(httpContextAccessor.HttpContext.GetUserId());
           })
           .WithMessage("User can not add himself to request users list.")
-          .MustAsync(async (w, _) => await AreUsersInWorkspace(w.Users.Select(u => u.UserId).ToList(), w.WorkspaceId))
+          .MustAsync(async (w, _) => await workspaceUserRepository.WorkspaceUsersExistAsync(w.UsersIds, w.WorkspaceId))
           .WithMessage("Some users are not available for adding to the channel.");
       });
 

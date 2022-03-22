@@ -84,7 +84,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       // maybe better always join users, it should be tested.
       if (!(dbWorkspace.Users.Any(u => u.UserId == userId))
         && !(!dbWorkspace.Users.Any()
-          && await _userRepository.WorkspaceUsersExist(new List<Guid>() { userId }, workspaceId))
+          && await _userRepository.WorkspaceUsersExistAsync(new List<Guid>() { userId }, workspaceId))
         && !(await _accessValidator.IsAdminAsync()))
       {
         return _responseCreator.CreateFailureResponse<WorkspaceInfo>(HttpStatusCode.Forbidden);

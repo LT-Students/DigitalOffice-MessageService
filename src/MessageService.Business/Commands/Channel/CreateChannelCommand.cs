@@ -8,14 +8,14 @@ using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.Commands.Channels.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.Channel.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests;
 using LT.DigitalOffice.MessageService.Validation.Validators.Channel.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
+namespace LT.DigitalOffice.MessageService.Business.Commands.Channel
 {
   public class CreateChannelCommand : ICreateChannelCommand
   {
@@ -44,13 +44,14 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channels
 
     public async Task<OperationResultResponse<Guid?>> ExeсuteAsync(CreateChannelRequest request)
     {
-      //if (await _workspaceUserRepository
-      //  .WorkspaceUsersExist(new List<Guid>() { _httpContextAccessor.HttpContext.GetUserId() }, request.WorkspaceId))
-      //{
-      //  return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.Forbidden);
-      //}
+      if (!await _workspaceUserRepository.WorkspaceUsersExistAsync(
+        new List<Guid>() { _httpContextAccessor.HttpContext.GetUserId() },
+        request.WorkspaceId))
+      {
+        return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.Forbidden);
+      }
 
-      ValidationResult validationResult = await _validator.ValidateAsync(request);
+      var validationResult = await _validator.ValidateAsync(request);
 
       if (!validationResult.IsValid)
       {

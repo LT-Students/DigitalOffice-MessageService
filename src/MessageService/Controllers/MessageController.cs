@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
       return await command.ExecuteAsync(request);
     }
 
-    [HttpPatch("{messageId}")]
+    [HttpPut("{messageId}")]
     public async Task<OperationResultResponse<bool>> EditAsync(
       [FromRoute] Guid messageId)
     {
