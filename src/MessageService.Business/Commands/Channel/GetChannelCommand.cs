@@ -13,6 +13,7 @@ using LT.DigitalOffice.Kernel.Validators.Interfaces;
 using LT.DigitalOffice.MessageService.Business.Commands.Channel.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Filtres;
 using LT.DigitalOffice.MessageService.Models.Dto.Responses.Channel;
 using LT.DigitalOffice.Models.Broker.Enums;
@@ -68,14 +69,14 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channel
 
     public async Task<OperationResultResponse<ChannelInfo>> ExeсuteAsync(Guid channelId, GetChannelFilter filter)
     {
-      if (!_baseFindValidator.ValidateCustom(filter, out var errors))
+      if (!_baseFindValidator.ValidateCustom(filter, out List<string> errors))
       {
         return _responseCreator.CreateFailureResponse<ChannelInfo>(HttpStatusCode.BadRequest, errors);
       }
 
-      var dbChannel = await _repository.GetAsync(channelId, filter);
+      DbChannel dbChannel = await _repository.GetAsync(channelId, filter);
 
-      var requestUserId = _httpContextAccessor.HttpContext.GetUserId();
+      Guid requestUserId = _httpContextAccessor.HttpContext.GetUserId();
 
       if (dbChannel is null)
       {
