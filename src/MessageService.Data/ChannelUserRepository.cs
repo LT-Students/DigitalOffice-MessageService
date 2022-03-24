@@ -74,6 +74,11 @@ namespace LT.DigitalOffice.MessageService.Data
       DbChannelUser user =
         await _provider.ChannelsUsers.FirstOrDefaultAsync(u => u.ChannelId == channelId && u.UserId == userId);
 
+      if (user is null)
+      {
+        return false;
+      }
+
       document.ApplyTo(user);
       user.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
       user.ModifiedAtUtc = DateTime.UtcNow;

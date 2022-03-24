@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
@@ -26,7 +24,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly IPatchDbWorkspaceMapper _mapper;
     private readonly IWorkspaceRepository _repository;
     private readonly IWorkspaceUserRepository _userRepository;
-    private readonly IAccessValidator _accessValidator;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IResponseCreator _responseCreator;
 
@@ -35,7 +32,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       IPatchDbWorkspaceMapper mapper,
       IWorkspaceRepository repository,
       IWorkspaceUserRepository userRepository,
-      IAccessValidator accessValidator,
       IHttpContextAccessor httpContextAccessor,
       IResponseCreator responseCreator)
     {
@@ -43,7 +39,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       _mapper = mapper;
       _repository = repository;
       _userRepository = userRepository;
-      _accessValidator = accessValidator;
       _httpContextAccessor = httpContextAccessor;
       _responseCreator = responseCreator;
     }
@@ -57,8 +52,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       Guid editorId = _httpContextAccessor.HttpContext.GetUserId();
 
       if (dbWorkspace.CreatedBy != editorId
-        && (await _userRepository.GetAdminsAsync(workspaceId)).Any(wa => wa.UserId == editorId)
-        && !await _accessValidator.IsAdminAsync())
+        && !await _userRepository.IsAdminAsync(workspaceId, editorId))
       {
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }

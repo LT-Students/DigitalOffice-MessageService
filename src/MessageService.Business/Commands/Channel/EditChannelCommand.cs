@@ -61,12 +61,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channel
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, errors);
       }
 
-      return new OperationResultResponse<bool>
-      {
-        Body = true,
-        Errors = errors,
-        Status = Kernel.Enums.OperationResultStatusType.FullSuccess
-      };
+      return new OperationResultResponse<bool>(body: true, errors: errors);
     }
   }
 }

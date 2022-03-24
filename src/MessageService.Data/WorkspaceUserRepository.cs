@@ -31,31 +31,33 @@ namespace LT.DigitalOffice.MessageService.Data
       await _provider.SaveAsync();
     }
 
-    public async Task<List<DbWorkspaceUser>> GetAdminsAsync(Guid workspaceId)
+    public async Task<bool> IsAdminAsync(Guid workspaceId, Guid userId)
     {
       return await _provider.WorkspacesUsers
-        .Where(wa => wa.WorkspaceId == workspaceId && wa.IsAdmin && wa.IsActive)
+        .AnyAsync(wa =>
+          wa.WorkspaceId == workspaceId
+          && wa.UserId == userId
+          && wa.IsAdmin
+          && wa.IsActive);
+    }
+
+    public async Task<List<DbWorkspaceUser>> GetByWorkspaceIdAsync(Guid workspaseId)
+    {
+      return await _provider.WorkspacesUsers
+        .Where(x => x.IsActive && x.WorkspaceId == workspaseId)
         .ToListAsync();
     }
 
-    public async Task<DbWorkspaceUser> GetAsync(Guid workspaseId, Guid userId)
+    public async Task RemoveAsync(Guid workspaceId, List<DbWorkspaceUser> users)
     {
-      return await _provider.WorkspacesUsers
-        .FirstOrDefaultAsync(x => x.WorkspaceId == workspaseId && x.UserId == userId);
-    }
-
-    public async Task RemoveAsync(List<Guid> usersIds, Guid workspaceId)
-    {
-      if (usersIds is null)
+      if (users is null)
       {
         return;
       }
 
       Guid userId = _httpContextAccessor.HttpContext.GetUserId();
 
-      await _provider.WorkspacesUsers
-        .Where(u => u.IsActive && u.WorkspaceId == workspaceId && usersIds.Contains(u.UserId))
-        .ForEachAsync(u =>
+      users.ForEach(u =>
         {
           u.IsActive = false;
           u.ModifiedAtUtc = DateTime.UtcNow;
@@ -65,9 +67,14 @@ namespace LT.DigitalOffice.MessageService.Data
       await _provider.SaveAsync();
     }
 
-    public async Task<bool> UpdateAsync(DbWorkspaceUser user, JsonPatchDocument<DbWorkspaceUser> document)
+    public async Task<bool> EditAsync(Guid workspaceId, Guid userId, JsonPatchDocument<DbWorkspaceUser> document)
     {
-      if (user is null || document is null)
+      DbWorkspaceUser user =
+        await _provider.WorkspacesUsers
+          .Where(u => u.WorkspaceId == workspaceId && u.UserId == userId)
+          .FirstOrDefaultAsync();
+
+      if (user is null)
       {
         return false;
       }

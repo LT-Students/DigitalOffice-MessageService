@@ -12,14 +12,14 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
   {
     Task CreateAsync(List<DbWorkspaceUser> dbWorkspaceUsers);
 
-    Task<List<DbWorkspaceUser>> GetAdminsAsync(Guid workspaceId);
+    Task RemoveAsync(Guid workspaceId, List<DbWorkspaceUser> users);
 
-    Task<DbWorkspaceUser> GetAsync(Guid workspaseId, Guid userId);
+    Task<bool> IsAdminAsync(Guid workspaceId, Guid userId);
+
+    Task<List<DbWorkspaceUser>> GetByWorkspaceIdAsync(Guid workspaseId);
 
     Task<bool> WorkspaceUsersExistAsync(List<Guid> usersIds, Guid workspaceId);
 
-    Task RemoveAsync(List<Guid> usersIds, Guid workspaceId);
-
-    Task<bool> UpdateAsync(DbWorkspaceUser user, JsonPatchDocument<DbWorkspaceUser> document);
+    Task<bool> EditAsync(Guid workspaceId, Guid userId, JsonPatchDocument<DbWorkspaceUser> document);
   }
 }

@@ -51,7 +51,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channel
         return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.Forbidden);
       }
 
-      var validationResult = await _validator.ValidateAsync(request);
+      ValidationResult validationResult = await _validator.ValidateAsync(request);
 
       if (!validationResult.IsValid)
       {

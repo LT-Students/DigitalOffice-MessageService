@@ -7,41 +7,41 @@ using FluentValidation.Results;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.Commands.ChannelUser.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.WorkspaceUser.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.MessageService.Validation.Validators.User.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace LT.DigitalOffice.MessageService.Business.Commands.ChannelUser
+namespace LT.DigitalOffice.MessageService.Business.Commands.WorkspaceUser
 {
-  public class AddChannelUsersCommand : IAddChannelUsersCommand
+  public class AddWorkspaceUsersCommand : IAddWorkspaceUsersCommand
   {
     private readonly IUserExistenceValidator _userExistenceValidator;
-    private readonly IDbChannelUserMapper _dbChannelUserMapper;
-    private readonly IChannelUserRepository _channelUserRepository;
+    private readonly IDbWorkspaceUserMapper _mapper;
+    private readonly IWorkspaceUserRepository _repository;
     private readonly IResponseCreator _responseCreator;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public AddChannelUsersCommand(
+    public AddWorkspaceUsersCommand(
       IUserExistenceValidator userExistenceValidator,
-      IDbChannelUserMapper dbChannelUserMapper,
-      IChannelUserRepository channelUserRepository,
+      IDbWorkspaceUserMapper mapper,
+      IWorkspaceUserRepository repository,
       IResponseCreator responseCreator,
       IHttpContextAccessor httpContextAccessor)
     {
       _userExistenceValidator = userExistenceValidator;
-      _dbChannelUserMapper = dbChannelUserMapper;
-      _channelUserRepository = channelUserRepository;
+      _mapper = mapper;
+      _repository = repository;
       _responseCreator = responseCreator;
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid channelId, List<Guid> usersIds)
+    public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, List<Guid> usersIds)
     {
       Guid userId = _httpContextAccessor.HttpContext.GetUserId();
 
-      if (!await _channelUserRepository.ChannelUserExistAsync(channelId, userId))
+      if (!await _repository.WorkspaceUsersExistAsync(new List<Guid> { userId }, workspaceId))
       {
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
@@ -55,8 +55,8 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.ChannelUser
           validationResult.Errors.Select(e => e.ErrorMessage).ToList());
       }
 
-      await _channelUserRepository.CreateAsync(
-        usersIds.Select(id => _dbChannelUserMapper.Map(channelId, id, false, userId)).ToList());
+      await _repository.CreateAsync(
+        usersIds.Select(id => _mapper.Map(workspaceId, id, false, userId)).ToList());
 
       return new(true);
     }

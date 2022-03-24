@@ -6,42 +6,42 @@ using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
-using LT.DigitalOffice.MessageService.Business.Commands.ChannelUser.Interfaces;
+using LT.DigitalOffice.MessageService.Business.Commands.WorkspaceUser.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Patch.Interfaces;
-using LT.DigitalOffice.MessageService.Models.Dto.Requests.ChannelUser;
-using LT.DigitalOffice.MessageService.Validation.Validators.ChannelUser.Interface;
+using LT.DigitalOffice.MessageService.Models.Dto.Requests.WorkspaceUser;
+using LT.DigitalOffice.MessageService.Validation.Validators.WorkspaceUser.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 
-namespace LT.DigitalOffice.MessageService.Business.Commands.ChannelUser
+namespace LT.DigitalOffice.MessageService.Business.Commands.WorkspaceUser
 {
-  public class EditChannelUserCommand : IEditChannelUserCommand
+  public class EditWorkspaceUserCommand : IEditWorkspaceUserCommand
   {
-    private readonly IChannelUserRepository _channelUserRepository;
-    private readonly IPatchDbChannelUserMapper _patchDbChannelUserMapper;
-    private readonly IEditChannelUserRequestValidator _validator;
+    private readonly IWorkspaceUserRepository _repository;
+    private readonly IPatchDbWorkspaceUserMapper _mapper;
+    private readonly IEditWorkspaceUserRequestValidator _validator;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IResponseCreator _responseCreator;
 
-    public EditChannelUserCommand(
-      IChannelUserRepository channelUserRepository,
-      IPatchDbChannelUserMapper patchDbChannelUserMapper,
-      IEditChannelUserRequestValidator validator,
+    public EditWorkspaceUserCommand(
+      IWorkspaceUserRepository repository,
+      IPatchDbWorkspaceUserMapper mapper,
+      IEditWorkspaceUserRequestValidator validator,
       IHttpContextAccessor httpContextAccessor,
       IResponseCreator responseCreator)
     {
-      _channelUserRepository = channelUserRepository;
-      _patchDbChannelUserMapper = patchDbChannelUserMapper;
+      _repository = repository;
+      _mapper = mapper;
       _validator = validator;
       _httpContextAccessor = httpContextAccessor;
       _responseCreator = responseCreator;
     }
 
     public async Task<OperationResultResponse<bool>> ExecuteAsync(
-      Guid channelId, Guid userId, JsonPatchDocument<EditChannelUserRequest> document)
+      Guid workspaceId, Guid userId, JsonPatchDocument<EditWorkspaceUserRequest> document)
     {
-      if (!await _channelUserRepository.IsAdminAsync(channelId, _httpContextAccessor.HttpContext.GetUserId()))
+      if (!await _repository.IsAdminAsync(workspaceId, _httpContextAccessor.HttpContext.GetUserId()))
       {
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
@@ -51,8 +51,8 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.ChannelUser
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.BadRequest, errors);
       }
 
-      await _channelUserRepository.EditAsync(
-        channelId, userId, _patchDbChannelUserMapper.Map(document));
+      await _repository.EditAsync(
+        workspaceId, userId, _mapper.Map(document));
 
       return new(body: true, errors: errors);
     }
