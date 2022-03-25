@@ -41,7 +41,8 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.ChannelUser
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
-      await _channelUserRepository.RemoveAsync(channelId, users);
+      await _channelUserRepository.RemoveAsync(
+        channelId, users.Where(u => usersIds.Contains(u.UserId)).ToList());
 
       return new(true);
     }

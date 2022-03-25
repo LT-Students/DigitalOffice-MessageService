@@ -15,23 +15,26 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.WorkspaceUser
 {
   public class DeleteWorkspaceUsersCommand : IDeleteWorkspaceUsersCommand
   {
-    private readonly IWorkspaceUserRepository _repository;
+    private readonly IWorkspaceUserRepository _workspaceUserRepository;
+    private readonly IChannelUserRepository _channelUserRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IResponseCreator _responseCreator;
 
     public DeleteWorkspaceUsersCommand(
-      IWorkspaceUserRepository repository,
+      IWorkspaceUserRepository workspaceUserRepository,
+      IChannelUserRepository channelUserRepository,
       IHttpContextAccessor httpContextAccessor,
       IResponseCreator responseCreator)
     {
-      _repository = repository;
+      _workspaceUserRepository = workspaceUserRepository;
+      _channelUserRepository = channelUserRepository;
       _httpContextAccessor = httpContextAccessor;
       _responseCreator = responseCreator;
     }
 
     public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, List<Guid> usersIds)
     {
-      List<DbWorkspaceUser> users = await _repository.GetByWorkspaceIdAsync(workspaceId);
+      List<DbWorkspaceUser> users = await _workspaceUserRepository.GetByWorkspaceIdAsync(workspaceId);
 
       Guid userId = _httpContextAccessor.HttpContext.GetUserId();
 
@@ -41,7 +44,8 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.WorkspaceUser
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
-      await _repository.RemoveAsync(workspaceId, users);
+      await _workspaceUserRepository.RemoveAsync(workspaceId, users.Where(u => usersIds.Contains(u.Id)).ToList());
+      await _channelUserRepository.RemoveAsync(workspaceId, usersIds);
 
       return new(true);
     }

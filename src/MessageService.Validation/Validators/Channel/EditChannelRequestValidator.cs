@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using FluentValidation;
 using FluentValidation.Validators;
 using LT.DigitalOffice.Kernel.Validators;
 using LT.DigitalOffice.Kernel.Validators.Interfaces;
+using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Channel;
 using LT.DigitalOffice.MessageService.Validation.Validators.Channel.Interfaces;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -27,15 +30,13 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
           nameof(EditChannelRequest.Name),
           nameof(EditChannelRequest.IsActive),
           nameof(EditChannelRequest.IsPrivate),
-          nameof(EditChannelRequest.ImageExtension),
-          nameof(EditChannelRequest.ImageContent),
+          nameof(EditChannelRequest.Image),
         });
 
       AddСorrectOperations(nameof(EditChannelRequest.Name), new List<OperationType> { OperationType.Replace });
       AddСorrectOperations(nameof(EditChannelRequest.IsPrivate), new List<OperationType> { OperationType.Replace });
       AddСorrectOperations(nameof(EditChannelRequest.IsActive), new List<OperationType> { OperationType.Replace });
-      AddСorrectOperations(nameof(EditChannelRequest.ImageExtension), new List<OperationType> { OperationType.Replace });
-      AddСorrectOperations(nameof(EditChannelRequest.ImageContent), new List<OperationType> { OperationType.Replace });
+      AddСorrectOperations(nameof(EditChannelRequest.Image), new List<OperationType> { OperationType.Replace });
 
       #endregion
 
@@ -78,23 +79,24 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
       #region ImageContent
 
       AddFailureForPropertyIf(
-        nameof(EditChannelRequest.ImageContent),
+        nameof(EditChannelRequest.Image),
         x => x == OperationType.Replace,
         new()
         {
-          { x => _imageContentValidator.Validate(x?.value.ToString()).IsValid, "Incorrect format of image content." }
-        });
+          { x =>
+            {
+              try
+              {
+                ImageConsist image = JsonSerializer.Deserialize<ImageConsist>(x.value?.ToString());
 
-      #endregion
-
-      #region ImageExtension
-
-      AddFailureForPropertyIf(
-        nameof(EditChannelRequest.ImageExtension),
-        x => x == OperationType.Replace,
-        new()
-        {
-          { x => _imageExtensionValidator.Validate(x?.value.ToString()).IsValid, "Incorrect format of image extension." },
+                return _imageContentValidator.Validate(image.Content).IsValid
+                  && _imageExtensionValidator.Validate(image.Extension).IsValid;
+              }
+              catch (Exception)
+              {
+                return false;
+              }
+            }, "Incorrect format of image." }
         });
 
       #endregion

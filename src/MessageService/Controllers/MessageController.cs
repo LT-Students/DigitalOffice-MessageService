@@ -22,9 +22,11 @@ namespace LT.DigitalOffice.MessageService.Controllers
 
     [HttpPut("{messageId}")]
     public async Task<OperationResultResponse<bool>> EditAsync(
-      [FromRoute] Guid messageId)
+      [FromServices] IEditMessageCommand command,
+      [FromRoute] Guid messageId,
+      [FromBody] EditMessageRequest request)
     {
-      throw new NotImplementedException();
+      return await command.ExecuteAsync(messageId, request);
     }
   }
 }

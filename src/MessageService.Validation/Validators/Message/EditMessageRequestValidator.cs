@@ -4,9 +4,9 @@ using LT.DigitalOffice.MessageService.Validation.Validators.Message.Interfaces;
 
 namespace LT.DigitalOffice.MessageService.Validation.Validators.Message
 {
-  public class CreateMessageRequestValidator : AbstractValidator<CreateMessageRequest>, ICreateMessageRequestValidator
+  public class EditMessageRequestValidator : AbstractValidator<EditMessageRequest>, IEditMessageRequestValidator
   {
-    public CreateMessageRequestValidator()
+    public EditMessageRequestValidator()
     {
       When(request => request.Content != null, () =>
       {

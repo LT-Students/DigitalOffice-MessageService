@@ -12,6 +12,8 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
   {
     Task CreateAsync(List<DbChannelUser> channelUsers);
 
+    Task RemoveAsync(Guid workspaceId, List<Guid> usersIds);
+
     Task RemoveAsync(Guid channelId, List<DbChannelUser> users);
 
     Task<List<DbChannelUser>> GetByChannelIdAsync(Guid channelId);

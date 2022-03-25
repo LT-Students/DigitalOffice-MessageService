@@ -49,6 +49,45 @@ namespace LT.DigitalOffice.MessageService.Data
         .AnyAsync(u => u.ChannelId == channelId && u.UserId == userId && u.IsActive && u.IsAdmin);
     }
 
+    public async Task<bool> EditAsync(Guid channelId, Guid userId, JsonPatchDocument<DbChannelUser> document)
+    {
+      DbChannelUser user =
+        await _provider.ChannelsUsers.FirstOrDefaultAsync(u => u.ChannelId == channelId && u.UserId == userId);
+
+      if (user is null)
+      {
+        return false;
+      }
+
+      document.ApplyTo(user);
+      user.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
+      user.ModifiedAtUtc = DateTime.UtcNow;
+
+      await _provider.SaveAsync();
+
+      return true;
+    }
+
+    public async Task RemoveAsync(Guid workspaceId, List<Guid> usersIds)
+    {
+      if (usersIds is null)
+      {
+        return;
+      }
+
+      await _provider.ChannelsUsers
+        .Include(u => u.WorkspaceUser)
+        .Where(u => usersIds.Contains(u.UserId) && u.WorkspaceUser.WorkspaceId == workspaceId)
+        .ForEachAsync(u =>
+        {
+          u.IsActive = false;
+          u.ModifiedAtUtc = DateTime.UtcNow;
+          u.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
+        });
+
+      await _provider.SaveAsync();
+    }
+
     public async Task RemoveAsync(Guid channelId, List<DbChannelUser> users)
     {
       if (users is null)
@@ -67,25 +106,6 @@ namespace LT.DigitalOffice.MessageService.Data
         });
 
       await _provider.SaveAsync();
-    }
-
-    public async Task<bool> EditAsync(Guid channelId, Guid userId, JsonPatchDocument<DbChannelUser> document)
-    {
-      DbChannelUser user =
-        await _provider.ChannelsUsers.FirstOrDefaultAsync(u => u.ChannelId == channelId && u.UserId == userId);
-
-      if (user is null)
-      {
-        return false;
-      }
-
-      document.ApplyTo(user);
-      user.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
-      user.ModifiedAtUtc = DateTime.UtcNow;
-
-      await _provider.SaveAsync();
-
-      return true;
     }
   }
 }

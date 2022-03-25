@@ -40,7 +40,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
     private readonly ILogger<GetWorkspaceCommand> _logger;
     private readonly IResponseCreator _responseCreator;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IAccessValidator _accessValidator;
 
     public GetWorkspaceCommand(
       IWorkspaceInfoMapper workspaceInfoMapper,
@@ -52,8 +51,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       IRequestClient<IGetImagesRequest> rcGetImages,
       ILogger<GetWorkspaceCommand> logger,
       IResponseCreator responseCreator,
-      IHttpContextAccessor httpContextAccessor,
-      IAccessValidator accessValidator)
+      IHttpContextAccessor httpContextAccessor)
     {
       _workspaceInfoMapper = workspaceInfoMapper;
       _imageMapper = imageMapper;
@@ -66,7 +64,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       _responseCreator = responseCreator;
       _responseCreator = responseCreator;
       _httpContextAccessor = httpContextAccessor;
-      _accessValidator = accessValidator;
     }
 
     public async Task<OperationResultResponse<WorkspaceInfo>> ExecuteAsync(
@@ -84,8 +81,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       // maybe better always join users, it should be tested.
       if (!(dbWorkspace.Users.Any(u => u.UserId == userId))
         && !(!dbWorkspace.Users.Any()
-          && await _userRepository.WorkspaceUsersExistAsync(new List<Guid>() { userId }, workspaceId))
-        && !(await _accessValidator.IsAdminAsync()))
+          && await _userRepository.WorkspaceUsersExistAsync(new List<Guid>() { userId }, workspaceId)))
       {
         return _responseCreator.CreateFailureResponse<WorkspaceInfo>(HttpStatusCode.Forbidden);
       }

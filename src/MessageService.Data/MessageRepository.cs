@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Provider;
 using LT.DigitalOffice.MessageService.Models.Db;
+using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.MessageService.Data
 {
@@ -25,6 +27,23 @@ namespace LT.DigitalOffice.MessageService.Data
       await _provider.SaveAsync();
 
       return request;
+    }
+
+    public async Task<DbMessage> GetAsync(Guid id)
+    {
+      return await _provider.Messages.FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<bool> UpdateAsync(DbMessage model)
+    {
+      if (model is null)
+      {
+        return false;
+      }
+
+      await _provider.SaveAsync();
+
+      return true;
     }
   }
 }
