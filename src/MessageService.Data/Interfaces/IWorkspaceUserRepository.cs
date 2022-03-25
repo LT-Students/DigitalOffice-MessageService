@@ -16,7 +16,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
 
     Task<bool> IsAdminAsync(Guid workspaceId, Guid userId);
 
-    Task<List<DbWorkspaceUser>> GetByWorkspaceIdAsync(Guid workspaseId);
+    Task<List<DbWorkspaceUser>> GetAsync(Guid workspaseId, List<Guid> usersIds = null);
 
     Task<bool> WorkspaceUsersExistAsync(List<Guid> usersIds, Guid workspaceId);
 

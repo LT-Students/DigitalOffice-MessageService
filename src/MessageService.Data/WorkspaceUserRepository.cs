@@ -41,8 +41,15 @@ namespace LT.DigitalOffice.MessageService.Data
           && wa.IsActive);
     }
 
-    public async Task<List<DbWorkspaceUser>> GetByWorkspaceIdAsync(Guid workspaseId)
+    public async Task<List<DbWorkspaceUser>> GetAsync(Guid workspaseId, List<Guid> usersIds)
     {
+      IQueryable<DbWorkspaceUser> users = _provider.WorkspacesUsers.AsQueryable();
+
+      if (usersIds != null)
+      {
+        users = users.Where(u => usersIds.Contains(u.UserId));
+      }
+
       return await _provider.WorkspacesUsers
         .Where(x => x.IsActive && x.WorkspaceId == workspaseId)
         .ToListAsync();

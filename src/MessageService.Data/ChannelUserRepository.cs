@@ -38,9 +38,18 @@ namespace LT.DigitalOffice.MessageService.Data
       await _provider.SaveAsync();
     }
 
-    public async Task<List<DbChannelUser>> GetByChannelIdAsync(Guid channelId)
+    public async Task<List<DbChannelUser>> GetAsync(
+      Guid channelId, List<Guid> usersIds = null)
     {
-      return await _provider.ChannelsUsers.Where(u => u.IsActive && u.ChannelId == channelId).ToListAsync();
+      IQueryable<DbChannelUser> users = _provider.ChannelsUsers.AsQueryable();
+
+      if (usersIds != null)
+      {
+        users = users.Where(u => usersIds.Contains(u.UserId));
+      }
+
+      return await users
+        .Where(u => u.IsActive && u.ChannelId == channelId).ToListAsync();
     }
 
     public async Task<bool> IsAdminAsync(Guid channelId, Guid userId)

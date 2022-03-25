@@ -16,7 +16,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
 
     Task RemoveAsync(Guid channelId, List<DbChannelUser> users);
 
-    Task<List<DbChannelUser>> GetByChannelIdAsync(Guid channelId);
+    Task<List<DbChannelUser>> GetAsync(Guid channelId, List<Guid> usersIds = null);
 
     Task<bool> EditAsync(Guid channelId, Guid userId, JsonPatchDocument<DbChannelUser> document);
 

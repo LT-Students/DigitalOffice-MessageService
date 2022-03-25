@@ -31,7 +31,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.ChannelUser
 
     public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid channelId, List<Guid> usersIds)
     {
-      List<DbChannelUser> users = await _channelUserRepository.GetByChannelIdAsync(channelId);
+      List<DbChannelUser> users = await _channelUserRepository.GetAsync(channelId, usersIds);
 
       Guid userId = _httpContextAccessor.HttpContext.GetUserId();
 
@@ -41,10 +41,9 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.ChannelUser
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
-      await _channelUserRepository.RemoveAsync(
-        channelId, users.Where(u => usersIds.Contains(u.UserId)).ToList());
+      await _channelUserRepository.RemoveAsync(channelId, users);
 
-      return new(true);
+      return new(body: true);
     }
   }
 }

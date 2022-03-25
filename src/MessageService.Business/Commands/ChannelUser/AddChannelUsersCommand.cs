@@ -58,7 +58,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.ChannelUser
       await _channelUserRepository.CreateAsync(
         usersIds.Select(id => _dbChannelUserMapper.Map(channelId, id, false, userId)).ToList());
 
-      return new(true);
+      return new(body: true);
     }
   }
 }

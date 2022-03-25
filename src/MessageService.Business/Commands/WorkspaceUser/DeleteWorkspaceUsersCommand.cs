@@ -34,7 +34,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.WorkspaceUser
 
     public async Task<OperationResultResponse<bool>> ExecuteAsync(Guid workspaceId, List<Guid> usersIds)
     {
-      List<DbWorkspaceUser> users = await _workspaceUserRepository.GetByWorkspaceIdAsync(workspaceId);
+      List<DbWorkspaceUser> users = await _workspaceUserRepository.GetAsync(workspaceId, usersIds);
 
       Guid userId = _httpContextAccessor.HttpContext.GetUserId();
 
@@ -44,10 +44,10 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.WorkspaceUser
         return _responseCreator.CreateFailureResponse<bool>(HttpStatusCode.Forbidden);
       }
 
-      await _workspaceUserRepository.RemoveAsync(workspaceId, users.Where(u => usersIds.Contains(u.Id)).ToList());
+      await _workspaceUserRepository.RemoveAsync(workspaceId, users);
       await _channelUserRepository.RemoveAsync(workspaceId, usersIds);
 
-      return new(true);
+      return new(body: true);
     }
   }
 }

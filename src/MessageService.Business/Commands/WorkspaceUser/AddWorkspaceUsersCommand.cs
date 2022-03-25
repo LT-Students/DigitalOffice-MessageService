@@ -58,7 +58,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.WorkspaceUser
       await _repository.CreateAsync(
         usersIds.Select(id => _mapper.Map(workspaceId, id, false, userId)).ToList());
 
-      return new(true);
+      return new(body: true);
     }
   }
 }
