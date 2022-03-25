@@ -92,20 +92,20 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channel
 
       OperationResultResponse<ChannelInfo> response = new();
 
-      var usersIds = dbChannel.Users.Select(cu => cu.UserId).ToList();
+      List<Guid> usersIds = dbChannel.Users.Select(cu => cu.UserId).ToList();
       usersIds.AddRange(dbChannel.Messages.Select(m => m.CreatedBy).Distinct().ToList());
 
-      var usersData =
+      List<DigitalOffice.Models.Broker.Models.UserData> usersData =
         (await _rcGetUsers.ProcessRequest<IGetUsersDataRequest, IGetUsersDataResponse>(
           IGetUsersDataRequest.CreateObj(usersIds),
           response.Errors,
           _logger))?.UsersData;
 
-      var imagesIds = usersData?.Where(u => u.ImageId.HasValue)?.Select(u => u.ImageId.Value).ToList();
+      List<Guid> imagesIds = usersData?.Where(u => u.ImageId.HasValue)?.Select(u => u.ImageId.Value).ToList();
 
       //add messages images to image service
 
-      var imagesInfo =
+      List<Models.Dto.Models.Image.ImageInfo> imagesInfo =
         (await _rcGetImages.ProcessRequest<IGetImagesRequest, IGetImagesResponse>(
           IGetImagesRequest.CreateObj(imagesIds, ImageSource.User),
           response.Errors,
@@ -114,7 +114,7 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channel
         .Select(_imageMapper.Map)
         .ToList();
 
-      var usersInfo = usersData
+      List<Models.Dto.Models.User.UserInfo> usersInfo = usersData
         ?.Select(u =>
           _userMapper.Map(u, imagesInfo?.FirstOrDefault(i => i.Id == u.ImageId))).ToList();
 

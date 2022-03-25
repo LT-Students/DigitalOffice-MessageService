@@ -40,7 +40,7 @@ namespace LT.DigitalOffice.MessageService.Data
 
     public async Task<bool> EditAsync(DbChannel channel, JsonPatchDocument<DbChannel> document)
     {
-      if (channel is null)
+      if (channel is null || document is null)
       {
         return false;
       }
