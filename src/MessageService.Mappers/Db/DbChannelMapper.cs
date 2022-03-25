@@ -37,9 +37,8 @@ namespace LT.DigitalOffice.MessageService.Mappers.Db
       Guid createdBy = _httpContextAccessor.HttpContext.GetUserId();
       Guid channelId = Guid.NewGuid();
 
-      ICollection<DbChannelUser> dbChannelUsers = request.Users?
-        .Select(u => _channelUserMapper.Map(channelId, u.UserId, u.IsAdmin, createdBy))
-        .ToHashSet();
+      List<DbChannelUser> dbChannelUsers = request.UsersIds
+        .Select(u => _channelUserMapper.Map(channelId, u, false, createdBy)).ToList();
 
       dbChannelUsers.Add(_channelUserMapper.Map(channelId, createdBy, true, createdBy));
 

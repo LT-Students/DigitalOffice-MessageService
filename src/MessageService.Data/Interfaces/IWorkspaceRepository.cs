@@ -13,9 +13,7 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
   {
     Task<Guid?> CreateAsync(DbWorkspace dbWorkspace);
 
-    Task<DbWorkspace> GetAsync(Guid workspaceId);
-
-    Task<DbWorkspace> GetAsync(GetWorkspaceFilter filter);
+    Task<DbWorkspace> GetAsync(Guid workspaceId, GetWorkspaceFilter filter = null);
 
     Task<(List<DbWorkspace> dbWorkspases, int totalCount)> FindAsync(FindWorkspaceFilter filter);
 

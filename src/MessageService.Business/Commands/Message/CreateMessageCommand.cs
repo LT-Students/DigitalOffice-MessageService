@@ -9,6 +9,7 @@ using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
+using LT.DigitalOffice.Kernel.BrokerSupport.Helpers;
 using LT.DigitalOffice.MessageService.Business.Commands.Message.Hubs;
 using LT.DigitalOffice.MessageService.Business.Commands.Message.Interfaces;
 using LT.DigitalOffice.MessageService.Data.Interfaces;
@@ -61,13 +62,18 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
         return userInfo;
       }
 
-      UserData userData = (await GetUsersThroughBrokerAsync(new List<Guid>() { userId }, errors))
-        ?.FirstOrDefault();
+      UserData userData =
+        (await RequestHandler.ProcessRequest<IGetUsersDataRequest, IGetUsersDataResponse>(
+          _rcGetUsers,
+          IGetUsersDataRequest.CreateObj(new List<Guid>() { userId }),
+          errors,
+          _logger))
+        .UsersData?.FirstOrDefault();
 
       ImageData imageData = userData is not null && userData.ImageId.HasValue
         ? (await GetImagesThroughBrokerAsync(new List<Guid>() { userData.ImageId.Value }, errors))?.FirstOrDefault()
         : null;
-     
+
       if (userData is not null)
       {
         _cache.Set(
@@ -77,42 +83,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
       }
 
       return userInfo;
-    }
-
-    private async Task<List<UserData>> GetUsersThroughBrokerAsync(List<Guid> usersIds, List<string> errors)
-    {
-      if (usersIds is null || !usersIds.Any())
-      {
-        return null;
-      }
-
-      try
-      {
-        Response<IOperationResult<IGetUsersDataResponse>> response =
-          await _rcGetUsers.GetResponse<IOperationResult<IGetUsersDataResponse>>(
-            IGetUsersDataRequest.CreateObj(usersIds));
-
-        if (response.Message.IsSuccess && response.Message.Body.UsersData.Any())
-        {
-          return response.Message.Body.UsersData;
-        }
-
-        _logger.LogWarning(
-          "Error while getting users data with users ids: {UsersIds}.\nErrors: {Errors}",
-          string.Join(", ", usersIds),
-          string.Join('\n', response.Message.Errors));
-      }
-      catch (Exception exc)
-      {
-        _logger.LogError(
-          exc,
-          "Cannot get users data with users ids: {UsersIds}.",
-          string.Join(", ", usersIds));
-      }
-
-      errors.Add("Cannot get users data. Please try again later.");
-
-      return null;
     }
 
     private async Task<List<ImageData>> GetImagesThroughBrokerAsync(List<Guid> imagesIds, List<string> errors)

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Filtres;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace LT.DigitalOffice.MessageService.Data.Interfaces
 {
@@ -11,6 +12,10 @@ namespace LT.DigitalOffice.MessageService.Data.Interfaces
   {
     Task<Guid?> CreateAsync(DbChannel dbChannel);
 
-    Task<DbChannel> GetAsync(GetChannelFilter filter);
+    Task<DbChannel> GetAsync(Guid channelId);
+
+    Task<DbChannel> GetAsync(Guid channelId, GetChannelFilter filter);
+
+    Task<bool> EditAsync(DbChannel channel, JsonPatchDocument<DbChannel> document);
   }
 }

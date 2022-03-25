@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
   [ApiController]
   public class WorkspaceController : ControllerBase
   {
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<OperationResultResponse<Guid?>> CreateAsync(
       [FromServices] ICreateWorkspaceCommand command,
       [FromBody] CreateWorkspaceRequest request)
@@ -22,7 +22,7 @@ namespace LT.DigitalOffice.MessageService.Controllers
       return await command.ExecuteAsync(request);
     }
 
-    [HttpGet("find")]
+    [HttpGet]
     public async Task<FindResultResponse<ShortWorkspaceInfo>> FindAsync(
       [FromServices] IFindWorkspaceCommand command,
       [FromQuery] FindWorkspaceFilter filter)
@@ -30,18 +30,19 @@ namespace LT.DigitalOffice.MessageService.Controllers
       return await command.ExecuteAsync(filter);
     }
 
-    [HttpGet("get")]
+    [HttpGet("{workspaceId}")]
     public async Task<OperationResultResponse<WorkspaceInfo>> GetAsync(
       [FromServices] IGetWorkspaceCommand command,
+      [FromRoute] Guid workspaceId,
       [FromQuery] GetWorkspaceFilter filter)
     {
-      return await command.ExecuteAsync(filter);
+      return await command.ExecuteAsync(workspaceId, filter);
     }
 
-    [HttpPatch("edit")]
+    [HttpPatch("{workspaceId}")]
     public async Task<OperationResultResponse<bool>> EditAsync(
       [FromServices] IEditWorkspaceCommand command,
-      [FromQuery] Guid workspaceId,
+      [FromRoute] Guid workspaceId,
       [FromBody] JsonPatchDocument<EditWorkspaceRequest> request)
     {
       return await command.ExecuteAsync(workspaceId, request);

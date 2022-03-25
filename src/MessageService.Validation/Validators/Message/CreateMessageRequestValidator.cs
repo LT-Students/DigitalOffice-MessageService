@@ -11,7 +11,8 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Message
       When(request => request.Content != null, () =>
       {
         RuleForEach(request => request.Content)
-          .NotEmpty().WithMessage("Content can not be empty.");
+          .NotEmpty()
+          .WithMessage("Content can not be empty.");
       });
 
       RuleFor(request => request.Status)
