@@ -1,6 +1,6 @@
 ﻿using LT.DigitalOffice.MessageService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
-using LT.DigitalOffice.Models.Broker.Models;
+using LT.DigitalOffice.Models.Broker.Models.Image;
 
 namespace LT.DigitalOffice.MessageService.Mappers.Models
 {
