@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
@@ -52,7 +51,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
         .ToList();
 
       response.TotalCount = totalCount;
-      response.Status = OperationResultStatusType.FullSuccess;
 
       if (response.Errors.Any())
       {

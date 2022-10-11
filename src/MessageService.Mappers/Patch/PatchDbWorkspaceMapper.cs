@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using LT.DigitalOffice.ImageSupport.Helpers.Interfaces;
+using LT.DigitalOffice.Kernel.ImageSupport.Helpers.Interfaces;
 using LT.DigitalOffice.MessageService.Mappers.Patch.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Db;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;

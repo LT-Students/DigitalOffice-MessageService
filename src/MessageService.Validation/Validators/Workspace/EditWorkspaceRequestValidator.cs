@@ -6,6 +6,7 @@ using LT.DigitalOffice.Kernel.Validators;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Workspace;
 using LT.DigitalOffice.MessageService.Validation.Validators.Workspace.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Newtonsoft.Json;
 
@@ -16,7 +17,9 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Workspace
     private List<string> AllowedExtensions = new()
     { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tga" };
 
-    private void HandleInternalPropertyValidation(Operation<EditWorkspaceRequest> requestedOperation, CustomContext context)
+    private void HandleInternalPropertyValidation(
+      Operation<EditWorkspaceRequest> requestedOperation,
+      ValidationContext<JsonPatchDocument<EditWorkspaceRequest>> context)
     {
       Context = context;
       RequestedOperation = requestedOperation;
