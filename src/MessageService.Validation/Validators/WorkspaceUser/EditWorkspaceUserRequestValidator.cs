@@ -4,6 +4,7 @@ using LT.DigitalOffice.Kernel.Validators;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.ChannelUser;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.WorkspaceUser;
 using LT.DigitalOffice.MessageService.Validation.Validators.WorkspaceUser.Interface;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace LT.DigitalOffice.MessageService.Validation.Validators.ChannelUser
@@ -12,7 +13,8 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.ChannelUser
     : BaseEditRequestValidator<EditWorkspaceUserRequest>, IEditWorkspaceUserRequestValidator
   {
     private void HandleInternalPropertyValidation(
-      Operation<EditWorkspaceUserRequest> requestedOperation, CustomContext context)
+      Operation<EditWorkspaceUserRequest> requestedOperation,
+      ValidationContext<JsonPatchDocument<EditWorkspaceUserRequest>> context)
     {
       Context = context;
       RequestedOperation = requestedOperation;

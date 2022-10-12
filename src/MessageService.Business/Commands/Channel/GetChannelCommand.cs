@@ -127,8 +127,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channel
             imagesInfo?.Where(i => m.Images.Select(mi => mi.ImageId).Contains(i.Id)).ToList())).ToList(),
         usersInfo?.Where(u => dbChannel.Users.Select(u => u.UserId).Contains(u.Id)).ToList());
 
-      response.Status = OperationResultStatusType.FullSuccess;
-
       return response;
     }
   }

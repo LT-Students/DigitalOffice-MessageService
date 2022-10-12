@@ -8,6 +8,7 @@ using LT.DigitalOffice.Kernel.Validators.Interfaces;
 using LT.DigitalOffice.MessageService.Models.Dto.Models.Image;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.Channel;
 using LT.DigitalOffice.MessageService.Validation.Validators.Channel.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
@@ -17,7 +18,9 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.Channel
     private readonly IImageContentValidator _imageContentValidator;
     private readonly IImageExtensionValidator _imageExtensionValidator;
 
-    private void HandleInternalPropertyValidation(Operation<EditChannelRequest> requestedOperation, CustomContext context)
+    private void HandleInternalPropertyValidation(
+      Operation<EditChannelRequest> requestedOperation,
+      ValidationContext<JsonPatchDocument<EditChannelRequest>> context)
     {
       Context = context;
       RequestedOperation = requestedOperation;

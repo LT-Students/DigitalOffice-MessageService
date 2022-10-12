@@ -11,6 +11,8 @@ using LT.DigitalOffice.MessageService.Broker.Consumers;
 using LT.DigitalOffice.MessageService.Business.Commands.Message.Hubs;
 using LT.DigitalOffice.MessageService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.MessageService.Models.Dto.Configurations;
+using LT.DigitalOffice.Kernel.EFSupport.Extensions;
+using LT.DigitalOffice.Kernel.EFSupport.Helpers;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -88,17 +90,6 @@ namespace LT.DigitalOffice.MessageService
       services.AddMassTransitHostedService();
     }
 
-    private void UpdateDatabase(IApplicationBuilder app)
-    {
-      using var serviceScope = app.ApplicationServices
-        .GetRequiredService<IServiceScopeFactory>()
-        .CreateScope();
-
-      using var context = serviceScope.ServiceProvider.GetService<MessageServiceDbContext>();
-
-      context.Database.Migrate();
-    }
-
     #endregion
 
     #region public methods
@@ -136,11 +127,7 @@ namespace LT.DigitalOffice.MessageService
           });
       });
 
-      string connStr = Environment.GetEnvironmentVariable("ConnectionString");
-      if (string.IsNullOrEmpty(connStr))
-      {
-        connStr = Configuration.GetConnectionString("SQLConnectionString");
-      }
+      string connStr = ConnectionStringHandler.Get(Configuration);
 
       if (int.TryParse(Environment.GetEnvironmentVariable("MemoryCacheLiveInMinutes"), out int memoryCacheLifetime))
       {
@@ -184,7 +171,7 @@ namespace LT.DigitalOffice.MessageService
 
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
     {
-      UpdateDatabase(app);
+      app.UpdateDatabase<MessageServiceDbContext>();
 
       app.UseForwardedHeaders();
 

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentValidation.Results;
-using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
 using LT.DigitalOffice.MessageService.Business.Commands.Workspace.Interfaces;
@@ -50,7 +49,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Workspace
       OperationResultResponse<Guid?> response = new();
 
       response.Body = await _repository.CreateAsync(await _mapper.MapAsync(request));
-      response.Status = OperationResultStatusType.FullSuccess;
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 

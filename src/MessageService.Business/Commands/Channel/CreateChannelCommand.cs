@@ -64,7 +64,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Channel
       response.Body = await _channelRepository.CreateAsync(await _channelMapper.MapAsync(request));
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-      response.Status = OperationResultStatusType.FullSuccess;
 
       if (response.Body is null)
       {

@@ -3,6 +3,7 @@ using FluentValidation.Validators;
 using LT.DigitalOffice.Kernel.Validators;
 using LT.DigitalOffice.MessageService.Models.Dto.Requests.ChannelUser;
 using LT.DigitalOffice.MessageService.Validation.Validators.ChannelUser.Interface;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace LT.DigitalOffice.MessageService.Validation.Validators.ChannelUser
@@ -11,7 +12,8 @@ namespace LT.DigitalOffice.MessageService.Validation.Validators.ChannelUser
     : BaseEditRequestValidator<EditChannelUserRequest>, IEditChannelUserRequestValidator
   {
     private void HandleInternalPropertyValidation(
-      Operation<EditChannelUserRequest> requestedOperation, CustomContext context)
+      Operation<EditChannelUserRequest> requestedOperation,
+      ValidationContext<JsonPatchDocument<EditChannelUserRequest>> context)
     {
       Context = context;
       RequestedOperation = requestedOperation;

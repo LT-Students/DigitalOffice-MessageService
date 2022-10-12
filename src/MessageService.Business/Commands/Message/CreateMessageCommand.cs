@@ -184,7 +184,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
           });
 
         response.Body = StatusType.Sent;
-        response.Status = OperationResultStatusType.FullSuccess;
 
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
       }

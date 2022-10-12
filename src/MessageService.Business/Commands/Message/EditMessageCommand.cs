@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Helpers.Interfaces;
@@ -64,7 +63,6 @@ namespace LT.DigitalOffice.MessageService.Business.Commands.Message
       return new()
       {
         Body = result,
-        Status = result ? OperationResultStatusType.FullSuccess : OperationResultStatusType.Failed,
         Errors = errors
       };
     }
